@@ -1,38 +1,30 @@
-.App {
-  text-align: center;
+/* .navb:hover {
+  background-color: #8d68f2 !important;
+} */
+.active {
+  background-color: #8d68f2;
+}
+.list-item{
+  padding: 8px 10px;
+}
+.scrollbar {
+  overflow-y: hidden; /* Ẩn thanh cuộn mặc định */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Hiển thị thanh cuộn khi hover vào phần chứa nội dung */
+.scrollbar:hover {
+  overflow-y: auto; /* Hiển thị thanh cuộn khi hover */
+  scrollbar-width: thin;
+  scrollbar-color: #cccccc transparent;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Kéo thanh cuộn */
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Thân thanh cuộn */
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 4px;
 }
