@@ -2,7 +2,7 @@ import '../App.css';
 import pubg from '../assets/pubg.jpg'
 export default function ListService() {
     const stickySidebar = {
-        backgroundColor: "#363640",
+        backgroundColor: "#20202b",
         width: "100%",
         position: "sticky",
         top: "56px",

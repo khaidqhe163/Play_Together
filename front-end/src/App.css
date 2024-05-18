@@ -1,19 +1,27 @@
-/* .navb:hover {
-  background-color: #8d68f2 !important;
-} */
+
+.hover-card:hover {
+  border: 1px solid #cccccc90; 
+  cursor: pointer;
+}
 .active {
-  background-color: #8d68f2;
+  background-color: #20202b;
+  border-radius: 20px;
+}
+.carousel-control-prev-icon{
+  margin-right: 50px;
+}
+.carousel-control-next-icon{
+  margin-left: 50px;
 }
 .list-item{
   padding: 8px 10px;
 }
 .scrollbar {
-  overflow-y: hidden; /* Ẩn thanh cuộn mặc định */
+  overflow-y: hidden; 
 }
 
-/* Hiển thị thanh cuộn khi hover vào phần chứa nội dung */
 .scrollbar:hover {
-  overflow-y: auto; /* Hiển thị thanh cuộn khi hover */
+  overflow-y: auto; 
   scrollbar-width: thin;
   scrollbar-color: #cccccc transparent;
 }
@@ -28,3 +36,20 @@
   background-color: #cccccc;
   border-radius: 4px;
 }
+
+.story-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+
+.story-card {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.story-container:active {
+  cursor: grabbing;
+}
+

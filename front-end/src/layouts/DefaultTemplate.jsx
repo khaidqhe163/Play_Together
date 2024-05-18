@@ -4,7 +4,7 @@ import NavBar from './NavBar';
 export default function DefaultTemplate({ children }) {
     return (
         <div className='container-fluid d-flex flex-column vh-100 overflow-x-hidden' style={{ backgroundColor: "#13131a" }}>
-            <div className='row'>
+            <div className='row sticky-top'>
                 <div className='col-12'>
                     <NavBar />
                 </div>
@@ -13,8 +13,12 @@ export default function DefaultTemplate({ children }) {
                 <div className='col-2 position-relative'>
                     <ListService />
                 </div>
-                <div className='col position-relative overflow-auto'>
-                    {children}
+                <div className='col-10'>
+                    <div className='row d-flex justify-content-center'>
+                        <div className='col-10 py-3'>
+                            {children}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
