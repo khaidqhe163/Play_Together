@@ -3,7 +3,7 @@ import NavBar from './NavBar';
 
 export default function DefaultTemplate({ children }) {
     return (
-        <div className='container-fluid d-flex flex-column vh-100 overflow-x-hidden' style={{ backgroundColor: "#13131a" }}>
+        <div className='container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain'>
             <div className='row sticky-top'>
                 <div className='col-12'>
                     <NavBar />
