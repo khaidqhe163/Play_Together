@@ -1,0 +1,58 @@
+.pw-rule{
+    display: flex;
+    align-items: center;
+}
+.pw-rule span{
+    color: white;
+    text-align: left;
+}
+
+#formRegister{
+    width: 70%;
+    margin: auto;
+    margin-top: 10%;
+}
+
+form{
+    margin-top: 50px;
+}
+
+#registerForm{
+    margin-bottom: 50px;
+}
+.form-label{
+    color: white;
+}
+
+#login-submit{
+    background-color: #7b47ff;
+    color: white;
+    width: 128px;
+    height: 48px;
+    /* border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px; */
+    border-radius: 25px;
+    border: 0;
+    font-weight: bold;
+}
+#login-alter{
+    text-align: center;
+}
+#login-alter button{
+    width: 90px;
+    height: 48px;
+    font-size: 25px;
+    background-color: #282836;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    border-radius: 25px;
+}
+
+#login-alter button:hover{
+    color: #3e3e52;
+}
+
+.register-error{
+    color: red;
+}

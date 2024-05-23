@@ -1,0 +1,131 @@
+@font-face {
+    font-family: Badabb;
+    src: url('../fonts/Badabb/Badabb.ttf');
+}
+
+@font-face {
+    font-family: Poppins;
+    src: url('../fonts/Poppins/Poppins.otf');
+}
+
+#login-leftside {
+    background-color: #6b47ff;
+    height: 100vh;
+    position: relative;
+}
+
+#login-img {
+    width: 80%;
+    position: absolute;
+    top: 30%;
+    left: 10%;
+}
+
+#login-leftside h2 {
+    text-align: center;
+    font-family: Badabb;
+    color: white;
+    font-size: 80px;
+    margin-top: 30px;
+}
+
+#login-rightside{
+    background-color: #13131a;
+    position: relative;
+    height: 100vh;
+    overflow: auto;
+}
+
+#login-header{
+    height: 50px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin-top: 30px;
+}
+
+#login-header button{
+    border: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background-color: #6b47ff;
+    color: white;
+    font-weight: bold;
+}
+#login-close{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #282836;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    right: 4%;
+    top: 4%;
+    margin-left: 20px;
+}
+
+#login-close:hover{
+    background-color: #3d3d52;
+    cursor: pointer;
+}
+#login-close ion-icon{
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+#login-rightside h1{
+    font-family: sans-serif;
+    color: white;
+    font-weight: 700;
+}
+
+#formlogin{
+    width: 70%;
+    margin: auto;
+    margin-top: 10%;
+}
+
+form{
+    margin-top: 50px;
+}
+.form-label{
+    color: white;
+}
+
+#login-submit{
+    background-color: #7b47ff;
+    color: white;
+    width: 128px;
+    height: 48px;
+    /* border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px; */
+    border-radius: 25px;
+    border: 0;
+    font-weight: bold;
+}
+
+#formlogin p{
+    text-align: center;
+    margin-top: 30px;
+    color: rgb(173, 173, 191);
+}
+#login-alter{
+    text-align: center;
+    margin-bottom: 50px;
+}
+#login-alter button{
+    width: 90px;
+    height: 48px;
+    font-size: 25px;
+    background-color: #282836;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    border-radius: 25px;
+}
+
+#login-alter button:hover{
+    color: #3e3e52;
+}
