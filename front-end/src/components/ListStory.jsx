@@ -19,10 +19,10 @@ export default function ListStory() {
 
     return (
         <>
-            <div className="row">
+            <div className="row" style={{maxHeight:"25em"}}>
                 {stories.map(story => (
                     <div className="col-md-2 mb-4" key={story.id}>
-                        <div className="card rounded-4 w-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
+                        <div className="card rounded-4 w-100 h-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
                             <div className='mx-auto position-relative'>
                                 <img src={story.img} style={{ width: "11em", height: "15em", objectFit: "cover" }} className=" mt-2 card-img-top img-fluid mx-auto rounded-top-4" alt="story" />
                                 <p className='position-absolute' style={{ bottom: "-10px", right: "10px" }}><FaRegEye />120</p>
@@ -36,7 +36,7 @@ export default function ListStory() {
                     </div>
                 ))}
                 <div className="col-md-2 mb-4">
-                    <div className="card rounded-4 w-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
+                    <div className="card rounded-4 w-100 h-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
                         <div className='mx-auto d-flex align-items-center justify-content-center w-100' style={{ height: "16em" }}>
                             <div>
                                 <GrLinkNext className='b' size={50} />
