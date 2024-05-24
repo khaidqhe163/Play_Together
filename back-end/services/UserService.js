@@ -51,9 +51,26 @@ const addSocialAccount = async (profile) => {
         throw new Error(error.toString());
     }
 }
+
+const resetPassword = async(email, password) => {
+    try {
+        const hashPassword = bcrypt.hashSync(password, salt)
+        const user = await User.updateOne({ email: email }, {$set: {password: hashPassword}}).exec();
+        if (!user) {
+            const account = {
+                username: profile.displayName,
+                email: profile.emails[0].value
+            }
+            User.create(account);
+        }
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     register,
     findUserByEmail,
     autoLogin,
-    addSocialAccount
+    addSocialAccount,
+    resetPassword
 }

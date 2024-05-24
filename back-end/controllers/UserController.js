@@ -108,17 +108,22 @@ const sendEmail = async (req, res) => {
             viewPath: path.resolve('./templates/'),
         };
         transporter.use('compile', hbs(handlebarOptions))
-        const user = UserService.findUserByEmail(req.body.email);
-        let token = req.body.email + "&" + (Date.now() + 5 * 60 * 1000) + "&" + user.updateAt;
+        const user = await UserService.findUserByEmail(req.body.email);
+        const updateAt = user.updatedAt;
+        // console.log(user);
+        // console.log(user.updatedAt);
+        const updateDate = new Date(updateAt);
+        console.log(updateDate.getMilliseconds());
+        let token = req.body.email + "&" + (Date.now() + 5 * 60 * 1000) + "&" + updateDate.getMilliseconds();
         token = btoa(token);
         const mail = {
             from: '"Play Together" <khaidqhe163770@fpt.edu.vn>',
             to: `${req.body.email}`,
-            subject: 'Test',
+            subject: 'Reset Password',
             template: 'resetpassword',
             context: {
                 email: req.body.email,
-                link: "http://localhost:3000/resetpassword/token"
+                link: `http://localhost:3000/resetpassword/${token}`
             },
             attachments: [{
                 filename: 'imagebackground.png',
@@ -136,12 +141,56 @@ const sendEmail = async (req, res) => {
             message: "Send email success"
         })
     } catch (error) {
-        console.log(error);
+        res.status(500).json({
+            message: error.toString()
+        })
     }
 }
 
-const verifyToken = () => {
+const verifyToken = async (req, res) => {
+    try {
+        let token = req.body.token;
+        token = atob(token);
+        const splToken = token.split("&");
+        const user = await UserService.findUserByEmail(splToken[0]);
+        if (splToken[1] < Date.now()) {
+            return res.status(404).json({
+                message: "Token 1 is not valid!"
+            })
+        };
+        const updateDate = new Date(user.updatedAt);
+        console.log(updateDate.getMilliseconds());
+        console.log(splToken[2]);
+        if (updateDate.getMilliseconds() != splToken[2]) {
+            return res.status(404).json({
+                message: "Token 2 is not valid!"
+            })
+        }
+        res.status(200).json({
+            message: "Token is valid!",
+            email: splToken[0]
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        })
+    }
+}
 
+const resetPassword = async (req, res) => {
+    try {
+        console.log(req.body);
+        console.log(req.body.password);
+
+        const resetPassword = await UserService.resetPassword(req.body.email, req.body.password);
+        res.status(200).json({
+            message: "reset password success"
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        })
+    }
 }
 export default {
     register,
@@ -149,5 +198,6 @@ export default {
     autoLogin,
     loginPassport,
     sendEmail,
-    verifyToken
+    verifyToken,
+    resetPassword
 }
