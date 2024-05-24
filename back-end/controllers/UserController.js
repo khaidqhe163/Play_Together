@@ -1,6 +1,9 @@
 import { UserService } from "../services/index.js"
 import jwt from '../middleware/jwt.js';
 import bcrypt from 'bcryptjs'
+import nodemailer from "nodemailer";
+import hbs from 'nodemailer-express-handlebars'
+import * as path from 'path'
 const register = async (req, res) => {
     try {
         const {
@@ -85,9 +88,66 @@ const loginPassport = async (req, res) => {
         })
     }
 }
+
+const sendEmail = async (req, res) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // Use `true` for port 465, `false` for all other ports
+            auth: {
+                user: "khaidqhe163770@fpt.edu.vn",
+                pass: "iyrdweksgcrjokhw",
+            },
+        });
+        const handlebarOptions = {
+            viewEngine: {
+                partialsDir: path.resolve('./templates/'),
+                defaultLayout: false,
+            },
+            viewPath: path.resolve('./templates/'),
+        };
+        transporter.use('compile', hbs(handlebarOptions))
+        const user = UserService.findUserByEmail(req.body.email);
+        let token = req.body.email + "&" + (Date.now() + 5 * 60 * 1000) + "&" + user.updateAt;
+        token = btoa(token);
+        const mail = {
+            from: '"Play Together" <khaidqhe163770@fpt.edu.vn>',
+            to: `${req.body.email}`,
+            subject: 'Test',
+            template: 'resetpassword',
+            context: {
+                email: req.body.email,
+                link: "http://localhost:3000/resetpassword/token"
+            },
+            attachments: [{
+                filename: 'imagebackground.png',
+                path: './public/emailbackground.png',
+                cid: 'emailbackground' //same cid value as in the html img src
+            }, {
+                filename: 'lockicon.png',
+                path: './public/lockicon.png',
+                cid: 'lockicon'
+            }]
+        }
+        transporter.sendMail(mail);
+        console.log("Send End");
+        return res.status(200).json({
+            message: "Send email success"
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const verifyToken = () => {
+
+}
 export default {
     register,
     login,
     autoLogin,
-    loginPassport
+    loginPassport,
+    sendEmail,
+    verifyToken
 }

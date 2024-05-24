@@ -38,4 +38,7 @@ UserRouter.get('/auth/facebook/callback',
 
 UserRouter.post('/login-success', UserController.loginPassport);
 
+UserRouter.post("/forgot-password", UserController.sendEmail);
+
+UserRouter.post("/verify-password-token", UserController.verifyToken)
 export default UserRouter

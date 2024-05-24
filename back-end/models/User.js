@@ -54,6 +54,8 @@ const UserSchema = new Schema({
     player: {
         type: PlayerSchema
     }
+}, {
+    timestamps: true
 })
 
 const User = mongoose.model("user", UserSchema);

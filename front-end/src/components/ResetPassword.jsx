@@ -16,9 +16,17 @@ function ResetPassword() {
     //         nav("/");
     //     };
     // }, [])
+
+    const verifyToken = () => {
+        try {
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <Container fluid>
-            <Row sx={{ backgroundColor: 'red'}}>
+            <Row sx={{ backgroundColor: 'red' }}>
                 <LoginLeft />
                 <Col md={6} id='rp-right'>
                     <h1>Reset Password</h1>
