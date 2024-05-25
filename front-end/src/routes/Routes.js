@@ -4,6 +4,7 @@ import Register from "../components/Register"
 import ResetPassword from "../components/ResetPassword"
 import SocialMediaLogin from "../components/SocialMediaLogin"
 import HomePage from "../pages/HomePage"
+import StoryPage from "../pages/StoryPage"
 const routes = [
     {
         path: '/',
@@ -28,6 +29,10 @@ const routes = [
     {
         path: '/home',
         element: HomePage
+    },
+    {
+        path: '/stories',
+        element: StoryPage
     }
 ]
 
