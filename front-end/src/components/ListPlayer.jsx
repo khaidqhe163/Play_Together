@@ -54,7 +54,7 @@ export default function ListPlayer() {
             {listPlayer.map(p => (
                 <div className='col-md-3 mb-4'>
                     <Link className='text-decoration-none'>
-                        <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", width: "15rem", backgroundColor: "#20202b" }}>
+                        <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
                             <img className="card-img-top rounded-top-4" src={p.image} alt="Card image cap" />
                             <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>
                                 <p className='text-white m-0'>{p.price.toLocaleString('en-US', {
