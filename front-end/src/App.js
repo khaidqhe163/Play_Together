@@ -1,9 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUserInformation, userInfor } from './features/userSlice'
-import route from './routes/Routes'
+import { setUserInformation, userInfor } from './features/userSlice';
+import route from './routes/Routes';
+import './App.css';
 function App() {
   const dispatch = useDispatch();
   const userInfo = useSelector(userInfor);
