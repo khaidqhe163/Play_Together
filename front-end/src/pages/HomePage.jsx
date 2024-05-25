@@ -2,7 +2,7 @@ import ListCarousel from "../components/ListCarousel";
 import ListPlayer from "../components/ListPlayer";
 import ListStory from "../components/ListStory";
 import Search from "../components/Search";
-import DefaultTemplate from "../layouts/DefaultTemplate";
+import DefaultTemplate from "../layouts/DefaultTemplate1";
 
 export default function HomePage() {
     return (
