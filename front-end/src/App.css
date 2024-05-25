@@ -53,6 +53,6 @@
 }
 
 .player::placeholder{
-  color: white;
-  opacity: 0.5;
+  color: white !important;
+  opacity: 0.5 !important;
 }
