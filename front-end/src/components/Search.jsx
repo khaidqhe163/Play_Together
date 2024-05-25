@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-
+import '../App.css';
 export default function Search() {
   const [showPopUpRange, setShowPopUpRange] = useState(false);
   const [value, setValue] = useState([10000, 1000000]);
