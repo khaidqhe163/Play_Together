@@ -1,7 +1,9 @@
 import '../App.css';
-import pubg from '../assets/pubg.jpg'
-import gtav from '../assets/gtav.jpg'
+
+import { useEffect, useState } from 'react';
+import { baseUrl } from '../utils/service.js'
 export default function ListService() {
+
     const stickySidebar = {
         backgroundColor: "#20202b",
         width: "100%",
@@ -21,60 +23,22 @@ export default function ListService() {
         margin: "0",
         color: "#cccbcc",
     };
-    const listService = [
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: gtav,
-            name: "GTA V"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-        {
-            image: pubg,
-            name: "PUBG Mobile"
-        },
-    ]
+
+    const [listService, setListService] = useState([]);
+    const fetchApiService = async () => {
+        try {
+            const response = await fetch(baseUrl + 'api/service');
+            const data = await response.json();
+            setListService(data);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(() => {
+        fetchApiService();
+    }, [])
+
     return (
         <div className='row d-flex flex-column py-2' style={stickySidebar}>
             <div style={{ height: "6%" }}>
@@ -84,10 +48,10 @@ export default function ListService() {
             <div className='p-0 overflow-x-hidden scrollbar' style={{ height: "94%" }}>
                 <ul className="w-100 d-flex flex-column" style={listStyle}>
                     {listService.map(s => (
-                        <li className="list-item">
+                        <li className="list-item" key={s._id}>
                             <div className="media d-flex align-items-center">
                                 <div className="mediaL text-left" style={{ marginRight: "10px" }}>
-                                    <img className='rounded' src={s.image} width={"35px"} />
+                                    <img className='rounded' src={baseUrl + s.image} width={"35px"} />
                                 </div>
                                 <div className='mediaM'>
                                     <p className='text-center my-auto'>{s.name}</p>
