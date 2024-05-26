@@ -109,6 +109,11 @@ const sendEmail = async (req, res) => {
         };
         transporter.use('compile', hbs(handlebarOptions))
         const user = await UserService.findUserByEmail(req.body.email);
+        if(!user) {
+            return res.status(400).json({
+                message: "Email chưa được đăng ký!"
+            })
+        }
         const updateAt = user.updatedAt;
         // console.log(user);
         // console.log(user.updatedAt);

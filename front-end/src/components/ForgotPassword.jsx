@@ -17,7 +17,11 @@ function ForgotPassword({ show, handleClose }) {
                 handleClose();
             }, 5000)
         } catch (error) {
-            console.log(error);
+            if (error.response && error.response.status === 400) {
+                alert(error.response.data.message)
+            } else {
+                alert('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
+            }
         }
     }
     console.log(email);
