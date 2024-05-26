@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 3007;
 const server = http.Server(app);
 async function main() {
   try {
+    console.log(process.env.MONGO_DB_URL);
     await mongoose.connect(process.env.MONGO_DB_URL);
     console.log("Connect to MongoDB success");
     const corsOrigin = {
