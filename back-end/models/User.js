@@ -13,6 +13,8 @@ const PlayerSchema = new Schema({
     youtubeUrl: String,
     videoHightlight: String,
     linkRoom: String,
+    totalHiredHour: Number,
+    contentStatus: String,
     rentCost: {
         type: Number,
         default: 0
@@ -51,6 +53,17 @@ const UserSchema = new Schema({
         type: Number,
         default: 0
     },
+    avatar: {
+        type: String,
+    },
+    images: {
+        type: [String]
+    },
+    info: {
+        type: String,
+        default: ""
+    }
+    ,
     player: {
         type: PlayerSchema
     }
