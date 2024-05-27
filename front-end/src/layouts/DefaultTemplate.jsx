@@ -5,7 +5,7 @@ import NavBar from './NavBar';
 export default function DefaultTemplate({ children }) {
     return (
         <div className="container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain">
-            <div className="row sticky-top bg-white shadow-sm">
+            <div className="row sticky-top bg-white shadow-sm" style={{zIndex: '1'}}>
                 <div className="col-12">
                     <NavBar />
                 </div>
