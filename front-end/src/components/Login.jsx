@@ -4,7 +4,7 @@ import "../css/login.css"
 import LoginLeft from './LoginLeft'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setUserInformation } from '../features/userSlice'
 import ForgotPassword from './ForgotPassword'
 function Login() {
@@ -54,30 +54,30 @@ function Login() {
                 <LoginLeft />
                 <Col md={6} id='login-rightside'>
                     <div id='login-header'>
-                        <button onClick={() => { nav('/register') }}>Sign up</button>
+                        <button onClick={() => { nav('/register') }}>Đăng ký</button>
                         <div id='login-close'>
                             <ion-icon name="close-outline"></ion-icon>
                         </div>
                     </div>
                     <div id='formlogin'>
-                        <h1>Login</h1>
+                        <h1>Đăng nhập</h1>
                         <Form onSubmit={handleLogin}>
                             <Form.Group className="mb-3" controlId="formEmail">
-                                <Form.Label>Email address</Form.Label>
+                                <Form.Label>Email</Form.Label>
                                 <Form.Control type="email" placeholder="Enter email" ref={email} />
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="formPassword">
-                                <Form.Label>Password</Form.Label>
+                                <Form.Label>Mật khẩu</Form.Label>
                                 <Form.Control type="password" placeholder="Password" ref={password} />
                             </Form.Group>
                             <p style={{ marginBottom: "5px", color: "blue", textAlign: "left", cursor: "pointer" }}
-                                onClick={handleShow}>Forgot Password</p> <br />
+                                onClick={handleShow}>Quên mật khẩu?</p> <br />
                             <button id='login-submit'>
-                                Submit
+                                Đăng nhập
                             </button>
                         </Form>
-                        <p>or continue with</p>
+                        <p>hoặc tiếp tục với</p>
                         <div id='login-alter'>
                             <button onClick={(e) => loginGG(e, 1)}>
                                 <ion-icon name="logo-google"></ion-icon>
