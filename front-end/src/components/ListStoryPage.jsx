@@ -1,34 +1,40 @@
-import React from 'react';
-import storyImage1 from '../assets/imagevideo2.jpg';
-import storyImage3 from '../assets/imagevideo3.jpg';
-import avatar1 from '../assets/avatar1.jpg';
-import avatar2 from '../assets/avatar2.jpg';
-import avatar3 from '../assets/avatar3.jpg';
+import React, { useEffect, useState } from 'react';
+import {baseUrl} from ''
 
 export default function ListStoryPage() {
-    const stories = [
-        { id: 1, img: storyImage1, avatar: avatar1, name: 'Minh Châu' },
-        { id: 2, img: storyImage3, avatar: avatar2, name: 'Hương Ly' },
-        { id: 3, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-        { id: 4, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-        { id: 5, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-        { id: 6, img: storyImage1, avatar: avatar1, name: 'Minh Châu' },
-        { id: 7, img: storyImage3, avatar: avatar2, name: 'Hương Ly' },
-        { id: 8, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-        { id: 9, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-        { id: 10, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-    ];
+    const [stories, setStories] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStories = async () => {
+            try {
+                const response = await fetch('http://localhost:3008/api/stories'); 
+                const data = await response.json();
+                setStories(data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching stories:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchStories();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
             <div className="row">
                 {stories.map(story => (
-                    <div className="col-6 col-md-4 col-lg-2 mb-4" key={story.id}>
+                    <div className="col-6 col-md-4 col-lg-2 mb-4" key={story._id}>
                         <div className="card rounded-4 text-white hover-card" style={styles.card}>
-                            <img src={story.img} className="card-img-top rounded-top-4" style={styles.cardImage} alt="story" />
+                            <img src={story.thumbnail} className="card-img-top rounded-top-4" style={styles.cardImage} alt="story" />
                             <div className="overlay-info" style={styles.overlayInfo}>
-                                <img className='rounded-circle' src={story.avatar} style={styles.avatar} alt='none' />
-                                <p className="mb-0" style={styles.name}>{story.name}</p>
+                                <img className='rounded-circle' src={story.author.avatar} style={styles.avatar} alt='author' />
+                                <p className="mb-0" style={styles.name}>{story.author.username}</p>
                             </div>
                         </div>
                     </div>
@@ -58,7 +64,8 @@ const styles = {
         display: "flex",
         alignItems: "center",
         borderRadius: "5px",
-        padding: "5px 10px"
+        padding: "5px 10px",
+        backgroundColor: "rgba(0, 0, 0, 0.5)"
     },
     avatar: {
         width: "2em",
