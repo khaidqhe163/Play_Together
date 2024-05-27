@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {baseUrl} from ''
+import {baseUrl} from '../utils/service.js'
 
 export default function ListStoryPage() {
     const [stories, setStories] = useState([]);
@@ -31,9 +31,9 @@ export default function ListStoryPage() {
                 {stories.map(story => (
                     <div className="col-6 col-md-4 col-lg-2 mb-4" key={story._id}>
                         <div className="card rounded-4 text-white hover-card" style={styles.card}>
-                            <img src={story.thumbnail} className="card-img-top rounded-top-4" style={styles.cardImage} alt="story" />
+                            <img src={baseUrl+story.thumbnail} className="card-img-top rounded-top-4" style={styles.cardImage} alt="story" />
                             <div className="overlay-info" style={styles.overlayInfo}>
-                                <img className='rounded-circle' src={story.author.avatar} style={styles.avatar} alt='author' />
+                                <img className='rounded-circle' src={baseUrl+story.author.avatar} style={styles.avatar} alt='author' />
                                 <p className="mb-0" style={styles.name}>{story.author.username}</p>
                             </div>
                         </div>
