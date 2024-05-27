@@ -8,7 +8,7 @@ import StoryPage from "../pages/StoryPage"
 const routes = [
     {
         path: '/',
-        element: Home
+        element: HomePage
     },
     {
         path: '/login',
