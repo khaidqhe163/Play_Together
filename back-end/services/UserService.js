@@ -67,10 +67,21 @@ const resetPassword = async(email, password) => {
         throw new Error(error.toString());
     }
 }
+
+const getPopularPlayers = async (minFollowers) => {
+    try {
+        const popularPlayers = await User.find({ followers: { $size: { $gte: minFollowers } } }).exec();
+        return popularPlayers;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
+
 export default {
     register,
     findUserByEmail,
     autoLogin,
     addSocialAccount,
-    resetPassword
+    resetPassword,
+    getPopularPlayers
 }
