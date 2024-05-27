@@ -4,9 +4,12 @@ import { FaUserShield, FaRegBell } from "react-icons/fa";
 import { GoTrophy } from "react-icons/go";
 import { Link } from 'react-router-dom';
 import '../App.css';
+import RankingModal from '../components/Modal/RankingModal';
+import StoryModal from '../components/Modal/StoryModal';
 
 export default function NavBar() {
     const [activeButton, setActiveButton] = useState(null);
+    const [openModalRanking, setOpenModalRanking] = useState()
 
     const fontF = {
         fontFamily: 'Arial, Helvetica, sans-serif',
@@ -34,13 +37,15 @@ export default function NavBar() {
                         <IoHomeOutline color="white" size={35} />
                     </div>
                 </Link>
-                <Link to={'/home'} className="btn mx-3 rounded-circle navb" style={activeButton === 'videocam' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('videocam')}>
+                <Link to={'/stories'} className="btn mx-3 rounded-circle navb" style={activeButton === 'videocam' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('videocam')}>
                     <div className="d-flex justify-content-center align-items-center">
                         <IoVideocamOutline color="white" size={35} />
                     </div>
                 </Link>
-                <Link to={'/home'} className="btn mx-3 rounded-circle navb" style={activeButton === 'trophy' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('trophy')}>
-                    <div className="d-flex justify-content-center align-items-center">
+                <Link  className="btn mx-3 rounded-circle navb" style={activeButton === 'trophy' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('trophy')}>
+                    <div className="d-flex justify-content-center align-items-center"
+                        onClick={() => setOpenModalRanking(true)}
+                    >
                         <GoTrophy color="white" size={35} />
                     </div>
                 </Link>
@@ -67,6 +72,14 @@ export default function NavBar() {
                     </div>
                 </Link>
             </div>
+
+            {!!openModalRanking && (
+                <RankingModal
+                    open={openModalRanking}
+                    onCancel={() => setOpenModalRanking(undefined)}
+                    // onOk={getList}
+                />
+            )}
         </div>
     );
 };
