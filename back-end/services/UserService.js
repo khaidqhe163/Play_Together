@@ -1,4 +1,5 @@
 import User from '../models/User.js'
+import Service from '../models/Service.js';
 import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
 
@@ -52,10 +53,10 @@ const addSocialAccount = async (profile) => {
     }
 }
 
-const resetPassword = async(email, password) => {
+const resetPassword = async (email, password) => {
     try {
         const hashPassword = bcrypt.hashSync(password, salt)
-        const user = await User.updateOne({ email: email }, {$set: {password: hashPassword}}).exec();
+        const user = await User.updateOne({ email: email }, { $set: { password: hashPassword } }).exec();
         if (!user) {
             const account = {
                 username: profile.displayName,
@@ -67,10 +68,23 @@ const resetPassword = async(email, password) => {
         throw new Error(error.toString());
     }
 }
+
+const getAllPlayer = async () => {
+    try {
+        const players = await User.find({
+            'player.duoSettings': true,
+            'player.totalHiredHour': { $gte: 155 },
+        }).populate("player.serviceType", "-_id image");
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     register,
     findUserByEmail,
     autoLogin,
     addSocialAccount,
-    resetPassword
+    resetPassword,
+    getAllPlayer,
 }

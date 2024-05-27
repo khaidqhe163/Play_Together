@@ -33,7 +33,7 @@ async function main() {
 
 
     server.listen(PORT, () => {
-      console.log('Dinter running on port ' + PORT);
+      console.log('Play Together running on port ' + PORT);
     })
   } catch (err) {
     console.log(err);
