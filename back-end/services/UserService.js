@@ -27,11 +27,9 @@ const findUserByEmail = async (email) => {
 const autoLogin = async (email) => {
     try {
         const user = await User.findOne({ email: email }).exec();
-        const token = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const { password, ...returnInfo } = user._doc;
         return {
             user: returnInfo,
-            accessToken: token
         };
     } catch (error) {
         throw new Error(error.toString());
