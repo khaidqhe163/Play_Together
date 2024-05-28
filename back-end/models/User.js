@@ -1,4 +1,4 @@
-import mongoose, { Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import Service from './Service.js'
 const PlayerSchema = new Schema({
     deviceStatus: {
@@ -56,6 +56,7 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String,
+        default: "public\\avatar\\default.webp"
     },
     images: {
         type: [String]
