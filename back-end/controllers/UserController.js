@@ -109,7 +109,7 @@ const sendEmail = async (req, res) => {
         };
         transporter.use('compile', hbs(handlebarOptions))
         const user = await UserService.findUserByEmail(req.body.email);
-        if(!user) {
+        if (!user) {
             return res.status(400).json({
                 message: "Email chưa được đăng ký!"
             })
@@ -197,6 +197,19 @@ const resetPassword = async (req, res) => {
         })
     }
 }
+
+const getAllPlayer = async (req, res) => {
+    try {
+        const players = await UserService.getAllPlayer();
+        if (players.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy người chơi nào.' });
+        }
+
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+};
 export default {
     register,
     login,
@@ -204,5 +217,6 @@ export default {
     loginPassport,
     sendEmail,
     verifyToken,
-    resetPassword
+    resetPassword,
+    getAllPlayer,
 }
