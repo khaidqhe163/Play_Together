@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux'
 import { setUserInformation } from '../features/userSlice'
 import { setAccessToken } from '../features/accessTokenSlice'
 import { setRefreshToken } from '../features/refreshTokenSlice'
-
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import ForgotPassword from './ForgotPassword'
 function Login() {
     const nav = useNavigate();
@@ -22,7 +22,7 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         if (email.current.value === "" || password.current.value === "") {
-            alert("Vui lòng nhập đẩy đủ thông tin!");
+            toast("Vui lòng nhập đẩy đủ thông tin!");
             return;
         }
         try {
@@ -40,13 +40,15 @@ function Login() {
             dispatch(setUserInformation(userInfo.data.user));
             dispatch(setAccessToken(userInfo.data.accessToken))
             dispatch(setRefreshToken(userInfo.data.refreshToken))
+            toast("Đăng nhập thành công!");
             nav('/')
         } catch (error) {
             console.log(error);
             if (error.response && error.response.status === 401) {
-                alert(error.response.data.message)
+                // alert(error.response.data.message)
+                toast(error.response.data.message);
             } else {
-                alert('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
+                toast('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
             }
         }
     }
@@ -100,6 +102,18 @@ function Login() {
                 </Col>
             </Row>
             <ForgotPassword show={showResetPassword} handleClose={handleClose} />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce} />
         </Container>
     )
 }
