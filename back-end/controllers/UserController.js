@@ -201,6 +201,7 @@ const resetPassword = async (req, res) => {
 const getAllPlayer = async (req, res) => {
     try {
         const players = await UserService.getAllPlayer();
+        console.log(players);
         if (players.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy người chơi nào.' });
         }
@@ -210,6 +211,16 @@ const getAllPlayer = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 };
+
+const searchPlayerByCriteria = async (req, res) => {
+    try {
+        const { gender, playerName, gameName, priceRange } = req.body;
+        const players = await UserService.searchPlayerByCriteria(gender, playerName, gameName, priceRange);
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+}
 export default {
     register,
     login,
@@ -219,4 +230,5 @@ export default {
     verifyToken,
     resetPassword,
     getAllPlayer,
+    searchPlayerByCriteria,
 }

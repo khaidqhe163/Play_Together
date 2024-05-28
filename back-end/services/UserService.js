@@ -79,6 +79,35 @@ const getAllPlayer = async () => {
     } catch (error) {
         throw new Error(error.toString());
     }
+};
+
+const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) => {
+    try {
+        const query = {};
+
+        if (gender) {
+            query.gender = gender;
+        }
+
+        if (playerName) {
+            query.username = { $regex: playerName, $options: 'i' };
+        }
+
+        if (priceRange && priceRange.length === 2) {
+            query['player.rentCost'] = { $gte: priceRange[0], $lte: priceRange[1] };
+        }
+        console.log(query);
+        let players = await User.find(query).populate({
+            path: 'player.serviceType',
+            match: { name: { $regex: gameName, $options: 'i' } },
+        }).exec();
+
+        players = players.filter(user => user.player.serviceType.length > 0);
+
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
 }
 export default {
     register,
@@ -87,4 +116,5 @@ export default {
     addSocialAccount,
     resetPassword,
     getAllPlayer,
+    searchPlayerByCriteria,
 }
