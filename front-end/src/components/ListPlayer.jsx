@@ -8,6 +8,7 @@ import pubg from '../assets/pubg.jpg'
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { baseUrl } from '../utils/service.js'
+import { TfiMoreAlt } from "react-icons/tfi";
 export default function ListPlayer() {
 
     const [players, setPlayers] = useState([]);
@@ -88,13 +89,13 @@ export default function ListPlayer() {
                                 </h3>
                                 {p.player.contentStatus ? <p className="card-text text-sm mb-0" style={{ color: "#ADADAD" }}>{p.player.contentStatus}</p> : <br />}
                                 <div className='d-flex align-items-center mt-3'>
-                                    <div className='w-50 d-flex'>
+                                    <div className='w-50 d-flex items-center'>
                                         {p.player.serviceType.slice(0, 4).map((i, index) => (
                                             <>
                                                 {index < 3 ? (
                                                     <img src={baseUrl + i.image} className='w-6 h-6 rounded-circle mr-1' alt={`Image ${index}`} />
                                                 ) : (
-                                                    <span className='text-red-500'>end</span>
+                                                    <div className='rounded-full w-7 h-7 bg-slate-700 flex justify-center items-center opacity-50'><TfiMoreAlt className='text-center' color='white' size={20}/></div>
                                                 )}
                                             </>
                                         ))}
