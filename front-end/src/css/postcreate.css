@@ -50,6 +50,7 @@ button{
     align-items: center;
     justify-content: center;
     position: relative;
+    background-color: #354052;
 }
 
 .pre-img {
@@ -107,7 +108,7 @@ button{
 
 #next-stage,
 #share-post {
-    color: #fd297b;
+    color: #6b47ff;
     cursor: pointer;
 }
 
@@ -138,7 +139,7 @@ button{
 }
 
 .post-option li:first-child {
-    color: #fd2965;
+    color: #6b47ff;
 }
 
 .post-option li:hover {
