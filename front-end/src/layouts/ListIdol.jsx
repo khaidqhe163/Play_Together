@@ -4,6 +4,8 @@ import storyImage3 from '../assets/imagevideo3.jpg';
 import avatar1 from '../assets/avatar1.jpg';
 import avatar2 from '../assets/avatar2.jpg';
 import avatar3 from '../assets/avatar3.jpg';
+import { useState } from 'react';
+import StoryCreation from '../components/StoryCreation';
 
 export default function ListIdol() {
     const stories = [
@@ -96,12 +98,19 @@ export default function ListIdol() {
         fontSize: "16px",
     };
 
+    const [openModalCreate, setOpenModalCreate] = useState(false);
+    const handleShowOpenCreate = () => {
+        setOpenModalCreate(true);
+    }
+    const handleCloseOpenCreate = () => {
+        setOpenModalCreate(false);
+    }
     return (
         <div style={containerStyle}>
             <div>
                 <p style={headingStyle}>Tin của bạn</p>
                 <div style={buttonContainerStyle}>
-                    <button style={buttonStyle}>
+                    <button style={buttonStyle} onClick={handleShowOpenCreate}>
                         <i className="bi bi-plus-circle-fill" style={iconStyle}></i>
                     </button>
                     <div style={textContainerStyle}>
@@ -114,10 +123,10 @@ export default function ListIdol() {
                 <p style={headingStyle}>Thịnh hành</p>
                 <div style={storyContainerStyle}>
                     {stories.map(story => (
-                        <div 
-                            key={story.id} 
-                            style={storyStyle} 
-                            onMouseEnter={e => e.currentTarget.style.backgroundColor = storyHoverStyle.backgroundColor} 
+                        <div
+                            key={story.id}
+                            style={storyStyle}
+                            onMouseEnter={e => e.currentTarget.style.backgroundColor = storyHoverStyle.backgroundColor}
                             onMouseLeave={e => e.currentTarget.style.backgroundColor = storyStyle.backgroundColor}
                         >
                             <img src={story.avatar} style={avatarStyle} alt='Avatar' />
@@ -126,6 +135,9 @@ export default function ListIdol() {
                     ))}
                 </div>
             </div>
+            <StoryCreation show={openModalCreate} close={handleCloseOpenCreate} />
+
         </div>
+
     );
 }

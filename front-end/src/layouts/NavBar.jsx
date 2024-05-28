@@ -61,12 +61,12 @@ export default function NavBar() {
                         <FaRegBell color="white" size={35} />
                     </div>
                 </Link>
-                <Link to={'/home'} className="mx-2" style={fontF}>
+                <Link to={'/login'} className="mx-2" style={fontF}>
                     <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#333345" }}>
                         Đăng nhập
                     </div>
                 </Link>
-                <Link to={'/home'} className="mx-2" style={fontF}>
+                <Link to={'/register'} className="mx-2" style={fontF}>
                     <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#8d68f2" }}>
                         Đăng ký
                     </div>
