@@ -1,0 +1,153 @@
+.create-img-input {
+    text-align: center;
+    height: 450px;
+    width: 500px;
+    background: #354052;
+    color: white;
+}
+
+button{
+    background-color: #6b47ff !important;
+}
+.modal-header {
+    background-color: #354052;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
+.create-img-input div {
+    margin-top: 100px;
+}
+
+.create-img-input svg {
+    margin: auto;
+}
+
+.create-img-input P {
+    font-size: 30px;
+    margin-top: 30px;
+}
+
+.create-img-input button {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.modal-content {
+    width: 1000px;
+}
+
+.form-post {
+    min-width: 500px;
+    height: 450px;
+    display: flex;
+}
+
+.img-create-box {
+    width: 500px;
+    height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: #354052;
+}
+
+.pre-img {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.914);
+    font-size: 20px;
+    height: 30px;
+    width: 30px;
+    color: white;
+    border-radius: 50%;
+    left: 10px;
+    text-align: center;
+}
+
+.next-img {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.914);
+    font-size: 20px;
+    height: 30px;
+    width: 30px;
+    color: white;
+    border-radius: 50%;
+    right: 10px;
+    text-align: center;
+}
+
+.pre-img:hover,
+.next-img:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.681);
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.modal-header {
+    position: relative;
+}
+
+#back-stage {
+    width: 40px;
+    height: 20px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#close-create-modal {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: -500px;
+    top: -80px;
+    font-size: 30px;
+    cursor: pointer;
+    color: white;
+}
+
+#next-stage,
+#share-post {
+    color: #6b47ff;
+    cursor: pointer;
+}
+
+.post-caption {
+    width: 490px;
+    padding: 20px;
+}
+
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+}
+
+.post-caption textarea {
+    margin-top: 20px;
+    border: none;
+}
+
+.post-option {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.post-option li {
+    padding: 5px;
+}
+
+.post-option li:first-child {
+    color: #6b47ff;
+}
+
+.post-option li:hover {
+    background-color: #f6f6f6;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 0;
+}

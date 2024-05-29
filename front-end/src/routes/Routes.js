@@ -33,6 +33,10 @@ const routes = [
     {
         path: '/stories',
         element: StoryPage
+    },
+    {
+        path: '/test',
+        element: Home
     }
 ]
 
