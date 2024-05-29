@@ -37,7 +37,7 @@ function Login() {
             }
             )
             console.log(userInfo);
-            dispatch(setUserInformation(userInfo.data.user));
+            dispatch(setUserInformation(userInfo.data._doc));
             dispatch(setAccessToken(userInfo.data.accessToken))
             dispatch(setRefreshToken(userInfo.data.refreshToken))
             toast("Đăng nhập thành công!");
