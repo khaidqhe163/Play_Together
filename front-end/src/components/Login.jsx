@@ -36,7 +36,7 @@ function Login() {
                 withCredentials: true
             }
             )
-            console.log(userInfo);
+            console.log(userInfo.data);
             dispatch(setUserInformation(userInfo.data.user));
             dispatch(setAccessToken(userInfo.data.accessToken))
             dispatch(setRefreshToken(userInfo.data.refreshToken))

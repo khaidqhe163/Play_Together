@@ -56,6 +56,7 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String,
+        default:"public\\avatar\\default.webp"
     },
     images: {
         type: [String]

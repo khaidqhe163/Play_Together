@@ -46,6 +46,7 @@ const login = async (req, res) => {
         }
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
+        console.log(user);
         const { password, ...returnUser } = user;
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
         res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
@@ -66,11 +67,10 @@ const autoLogin = async (req, res) => {
         console.log(req.cookies);
         const user = await UserService.autoLogin(req.payload.email);
         const refreshToken = req.cookies.RefreshToken;
-        const accessToken = req.cookies.AccessToken;
-        const { password, ...returnUser } = user;
+        const { password, ...returnUser } = user.user;
         res.status(200).json({
             user: returnUser,
-            accessToken: accessToken,
+            accessToken: user.accessToken,
             refreshToken: refreshToken
         });
     } catch (error) {

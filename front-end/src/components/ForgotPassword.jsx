@@ -24,7 +24,6 @@ function ForgotPassword({ show, handleClose }) {
             }
         }
     }
-    console.log(email);
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
