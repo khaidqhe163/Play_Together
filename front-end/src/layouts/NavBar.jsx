@@ -6,11 +6,15 @@ import { Link } from 'react-router-dom';
 import '../App.css';
 import RankingModal from '../components/Modal/RankingModal';
 import StoryModal from '../components/Modal/StoryModal';
+import { userInfor } from '../features/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { baseUrl } from '../utils/service.js'
 
 export default function NavBar() {
     const [activeButton, setActiveButton] = useState(null);
     const [openModalRanking, setOpenModalRanking] = useState()
-
+    const userInfo = useSelector(userInfor);
+    console.log(userInfo);
     const fontF = {
         fontFamily: 'Arial, Helvetica, sans-serif',
         fontWeight: 500,
@@ -42,7 +46,7 @@ export default function NavBar() {
                         <IoVideocamOutline color="white" size={35} />
                     </div>
                 </Link>
-                <Link  className="btn mx-3 rounded-circle navb" style={activeButton === 'trophy' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('trophy')}>
+                <Link className="btn mx-3 rounded-circle navb" style={activeButton === 'trophy' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('trophy')}>
                     <div className="d-flex justify-content-center align-items-center"
                         onClick={() => setOpenModalRanking(true)}
                     >
@@ -61,23 +65,24 @@ export default function NavBar() {
                         <FaRegBell color="white" size={35} />
                     </div>
                 </Link>
-                <Link to={'/login'} className="mx-2" style={fontF}>
+                {!userInfo ? <><Link to={'/login'} className="mx-2" style={fontF}>
                     <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#333345" }}>
                         Đăng nhập
                     </div>
                 </Link>
-                <Link to={'/register'} className="mx-2" style={fontF}>
-                    <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#8d68f2" }}>
-                        Đăng ký
-                    </div>
-                </Link>
+                    <Link to={'/register'} className="mx-2" style={fontF}>
+                        <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#8d68f2" }}>
+                            Đăng ký
+                        </div>
+                    </Link></> : <div className='mx-2'><img className='w-12 h-12 rounded-circle object-cover object-center' src={baseUrl+userInfo.user.avatar}/></div>}
+
             </div>
 
             {!!openModalRanking && (
                 <RankingModal
                     open={openModalRanking}
                     onCancel={() => setOpenModalRanking(undefined)}
-                    // onOk={getList}
+                // onOk={getList}
                 />
             )}
         </div>
