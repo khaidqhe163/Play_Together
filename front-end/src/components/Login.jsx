@@ -2,23 +2,29 @@ import React, { useRef, useState } from 'react'
 import { Col, Container, Row, Form } from 'react-bootstrap'
 import "../css/login.css"
 import LoginLeft from './LoginLeft'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { setUserInformation } from '../features/userSlice'
+import { setAccessToken } from '../features/accessTokenSlice'
+import { setRefreshToken } from '../features/refreshTokenSlice'
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import ForgotPassword from './ForgotPassword'
 function Login() {
     const nav = useNavigate();
     const email = useRef();
     const password = useRef();
     const dispatch = useDispatch();
-
     const [showResetPassword, setShowResetPassword] = useState(false);
 
     const handleClose = () => setShowResetPassword(false);
     const handleShow = () => setShowResetPassword(true);
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (email.current.value === "" || password.current.value === "") {
+            toast("Vui lòng nhập đẩy đủ thông tin!");
+            return;
+        }
         try {
             const userInfo = await axios.post(`http://localhost:3008/api/user/login`, {
                 email: email.current.value,
@@ -31,14 +37,18 @@ function Login() {
             }
             )
             console.log(userInfo);
-            dispatch(setUserInformation(userInfo.data));
+            dispatch(setUserInformation(userInfo.data.user));
+            dispatch(setAccessToken(userInfo.data.accessToken))
+            dispatch(setRefreshToken(userInfo.data.refreshToken))
+            toast("Đăng nhập thành công!");
             nav('/')
         } catch (error) {
             console.log(error);
             if (error.response && error.response.status === 401) {
-                alert(error.response.data.message)
+                // alert(error.response.data.message)
+                toast(error.response.data.message);
             } else {
-                alert('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
+                toast('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
             }
         }
     }
@@ -55,9 +65,11 @@ function Login() {
                 <Col md={6} id='login-rightside'>
                     <div id='login-header'>
                         <button onClick={() => { nav('/register') }}>Đăng ký</button>
-                        <div id='login-close'>
-                            <ion-icon name="close-outline"></ion-icon>
-                        </div>
+                        <Link to="/">
+                            <div id='login-close'>
+                                <ion-icon name="close-outline"></ion-icon>
+                            </div>
+                        </Link>
                     </div>
                     <div id='formlogin'>
                         <h1>Đăng nhập</h1>
@@ -90,6 +102,18 @@ function Login() {
                 </Col>
             </Row>
             <ForgotPassword show={showResetPassword} handleClose={handleClose} />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce} />
         </Container>
     )
 }

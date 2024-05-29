@@ -44,12 +44,15 @@ const login = async (req, res) => {
                 message: "Wrong password"
             })
         }
-        const token = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
         const { password, ...returnUser } = user;
-        res.cookie("jwt", token, { maxAge: 60000, httpOnly: true });
+        res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
+        res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json({
             user: returnUser,
-            accessToken: token
+            accessToken: accessToken,
+            refreshToken: refreshToken
         })
     } catch (error) {
         res.status(500).json({
@@ -62,7 +65,14 @@ const autoLogin = async (req, res) => {
     try {
         console.log(req.cookies);
         const user = await UserService.autoLogin(req.payload.email);
-        res.status(200).json(user);
+        const refreshToken = req.cookies.RefreshToken;
+        const accessToken = req.cookies.AccessToken;
+        const { password, ...returnUser } = user;
+        res.status(200).json({
+            user: returnUser,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        });
     } catch (error) {
         res.status(500).json({
             message: error.toString()

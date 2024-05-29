@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import '../css/register.css'
 import { useFormik } from 'formik';
 import axios from 'axios'
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 function Register() {
     const nav = useNavigate();
     const [pwRule, setPwRule] = useState([]);
@@ -80,12 +81,13 @@ function Register() {
         try {
             await axios.post("http://localhost:3008/api/user/register", values);
             console.log("success");
+            toast('Đăng ký thành công!')
             nav('/login')
         } catch (error) {
             if (error.response && error.response.status === 400) {
-                alert(error.response.data.message)
+                toast(error.response.data.message)
             } else {
-                alert('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
+                toast('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
             }
         }
     }
@@ -183,6 +185,18 @@ function Register() {
                     </div>
                 </Col>
             </Row>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce} />
         </Container>
     )
 }
