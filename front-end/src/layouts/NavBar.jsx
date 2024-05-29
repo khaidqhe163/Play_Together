@@ -74,7 +74,7 @@ export default function NavBar() {
                         <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#8d68f2" }}>
                             Đăng ký
                         </div>
-                    </Link></> : <div className='mx-2'><img className='w-12 h-12 rounded-circle object-cover object-center' src={baseUrl+userInfo.user.avatar}/></div>}
+                    </Link></> : <div className='mx-2'><img className='w-12 h-12 rounded-circle object-cover object-center' src={baseUrl+userInfo._doc.avatar}/></div>}
 
             </div>
 
