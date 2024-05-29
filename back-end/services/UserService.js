@@ -97,12 +97,20 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
             query['player.rentCost'] = { $gte: priceRange[0], $lte: priceRange[1] };
         }
         console.log(query);
-        let players = await User.find(query).populate({
-            path: 'player.serviceType',
-            match: { name: { $regex: gameName, $options: 'i' } },
-        }).exec();
+        // let players = await User.find(query).populate({
+        //     path: 'player.serviceType',
+        //     match: { name: { $regex: gameName, $options: 'i' } },
+        // }).exec();
 
-        players = players.filter(user => user.player.serviceType.length > 0);
+        // players = players.filter(user => user.player.serviceType.length > 0);
+        let players = await User.find(query).populate('player.serviceType').exec();
+        console.log(players);
+        // Lọc lại các player có serviceType khớp với gameName
+        players = players.filter(user =>
+            user.player.serviceType.some(service =>
+                new RegExp(gameName, 'i').test(service.name)
+            )
+        );
 
         return players;
     } catch (error) {
