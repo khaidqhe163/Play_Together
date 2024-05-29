@@ -55,17 +55,20 @@ export default function NavBar() {
                 </Link>
             </div>
             <div className='col-sm-3 d-flex justify-content-end align-items-center'>
-                <Link to={'/home'} className="btn mx-2 rounded-circle" style={bgButton}>
-                    <div className="d-flex justify-content-center align-items-center">
-                        <FaUserShield color="white" size={35} />
-                    </div>
-                </Link>
-                <Link to={'/home'} className="btn mx-2 rounded-circle" style={bgButton}>
-                    <div className="d-flex justify-content-center align-items-center">
-                        <FaRegBell color="white" size={35} />
-                    </div>
-                </Link>
-                {!userInfo ? <><Link to={'/login'} className="mx-2" style={fontF}>
+                {userInfo && userInfo !== null ? <>
+                    <Link to={'/home'} className="btn mx-2 rounded-circle" style={bgButton}>
+                        <div className="d-flex justify-content-center align-items-center">
+                            <FaUserShield color="white" size={35} />
+                        </div>
+                    </Link>
+                    <Link to={'/home'} className="btn mx-2 rounded-circle" style={bgButton}>
+                        <div className="d-flex justify-content-center align-items-center">
+                            <FaRegBell color="white" size={35} />
+                        </div>
+                    </Link>
+                </> : null
+                }
+                {!userInfo || userInfo === null ? <><Link to={'/login'} className="mx-2" style={fontF}>
                     <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#333345" }}>
                         Đăng nhập
                     </div>
@@ -74,7 +77,7 @@ export default function NavBar() {
                         <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#8d68f2" }}>
                             Đăng ký
                         </div>
-                    </Link></> : <div className='mx-2'><img className='w-12 h-12 rounded-circle object-cover object-center' src={baseUrl+userInfo.user.avatar}/></div>}
+                    </Link></> : <div className='mx-2'><img className='w-12 h-12 rounded-circle object-cover object-center' src={baseUrl + userInfo.avatar} /></div>}
 
             </div>
 

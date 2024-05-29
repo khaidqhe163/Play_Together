@@ -17,7 +17,7 @@ const register = async (email, username, dob, gender, password) => {
 const findUserByEmail = async (email) => {
     try {
         const existEmail = await User.findOne({ email: email }).exec();
-        return existEmail
+        return existEmail._doc
     } catch (error) {
         throw new Error(error.toString());
     }

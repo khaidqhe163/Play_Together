@@ -36,8 +36,8 @@ function Login() {
                 withCredentials: true
             }
             )
-            console.log(userInfo);
-            dispatch(setUserInformation(userInfo.data._doc));
+            console.log(userInfo.data);
+            dispatch(setUserInformation(userInfo.data.user));
             dispatch(setAccessToken(userInfo.data.accessToken))
             dispatch(setRefreshToken(userInfo.data.refreshToken))
             toast("Đăng nhập thành công!");

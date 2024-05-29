@@ -47,7 +47,6 @@ function verifyAccessToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const bearerToken = authHeader.split(' ');
     const token = bearerToken[1];
-    console.log(token);
     jwt.verify(token, process.env.PRIVATE_KEY, (err, payload) => {
         if (err) {
             return res.status(401).json({
