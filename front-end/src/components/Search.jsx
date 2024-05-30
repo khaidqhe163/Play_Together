@@ -1,72 +1,210 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+import { Link } from 'react-router-dom';
+import { baseUrl } from '../utils/service.js';
+import { IoIosCheckmarkCircle } from "react-icons/io";
+import { FaStar } from "react-icons/fa6";
+import { TfiMoreAlt } from "react-icons/tfi";
 export default function Search() {
   const [showPopUpRange, setShowPopUpRange] = useState(false);
-  const [value, setValue] = useState([10000, 1000000]);
+  const [formData, setFormData] = useState({
+    gender: '',
+    category: '',
+    playerName: '',
+    gameName: '',
+    priceRange: [10000, 1000000]
+  });
+
+  const [listSearch, setListSearch] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const onChangeData = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+  console.log(formData);
 
   const rangeSelector = (event, newValue) => {
-    setValue(newValue);
-    console.log(newValue);
+    setFormData(prevState => ({
+      ...prevState,
+      priceRange: newValue
+    }));
   };
 
   const handleClickRange = () => {
     setShowPopUpRange(!showPopUpRange);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form Data:', formData);
+
+    fetch('http://localhost:3008/api/user/search-player', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        setListSearch(data);
+        setHasSearched(true);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+
   return (
-    <div className='row'>
-      <div className='col-md-12'>
+    <>
+      <form onSubmit={handleSubmit}>
         <div className='row'>
-          <div className='col-md-2'>
-            <select className="rounded-4 form-select border-0 text-white-50 mr-2" style={{ backgroundColor: "#20202b" }} aria-label="Default select example">
-              <option selected>Giới tính</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-          <div className='col-md-2'>
-            <select className="rounded-4 form-select border-0 text-white-50 mr-2" style={{ backgroundColor: "#20202b" }} aria-label="Default select example">
-              <option selected>Thể loại</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-          <div className='col-md-2'>
-            <input type="text" className="rounded-4 player form-control border-0 mr-2" style={{ backgroundColor: "#20202b", color:"#ADADAD" }} placeholder="Tên player"></input>
-          </div>
-          <div className='col-md-2'>
-            <input type="text" className="rounded-4 player form-control border-0 mr-2" style={{ backgroundColor: "#20202b", color:"#ADADAD" }} placeholder="Tên game"></input>
-          </div>
-          <div className='col-md-2'>
-            <div className='relative h-full w-40'>
-            {value[0]!==10000 || value[1]!==1000000 ? <button type="button" className="rounded-4 text-white bg-bgButton h-full w-full" onClick={handleClickRange}>{value[0]} - {value[1]}</button>: <button type="button" className="rounded-4 text-white-50 bg-bgSecondary h-full w-full" onClick={handleClickRange}>Khoảng giá</button>}
-              {showPopUpRange && (
-                <div className='p-4 rounded-lg text-white-50 absolute top-12 w-64 bg-bgSecondary z-10' style={{left: "-4rem"}}>
-                  <Typography id="range-slider" gutterBottom>
-                    Khoảng giá:
-                  </Typography>
-                  <Slider
-                    value={value}
-                    min={10000}
-                    max={1000000}
-                    step={10000}
-                    onChange={rangeSelector}
-                    valueLabelDisplay="auto"
-                    valueLabelFormat={(value) => `${value.toLocaleString()}`}
-                  />
-                  {value[0].toLocaleString()} đến {value[1].toLocaleString()} VND
+          <div className='col-md-12'>
+            <div className='row'>
+              <div className='col-md-2'>
+                <select
+                  name="gender"
+                  className="rounded-4 form-select border-0 text-white-50 mr-2"
+                  style={{ backgroundColor: "#20202b" }}
+                  aria-label="Default select example"
+                  value={formData.gender}
+                  onChange={onChangeData}
+                >
+                  <option value="">Giới tính</option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                </select>
+              </div>
+              <div className='col-md-2'>
+                <select
+                  name="category"
+                  className="rounded-4 form-select border-0 text-white-50 mr-2"
+                  style={{ backgroundColor: "#20202b" }}
+                  aria-label="Default select example"
+                  value={formData.category}
+                  onChange={onChangeData}
+                >
+                  <option value="">Thể loại</option>
+                  <option value="1">Người mới</option>
+                  <option value="2">Hot player</option>
+                  <option value="3">Vip player</option>
+                </select>
+              </div>
+              <div className='col-md-2'>
+                <input
+                  type="text"
+                  name="playerName"
+                  className="rounded-4 player form-control border-0 mr-2"
+                  style={{ backgroundColor: "#20202b", color: "#ADADAD" }}
+                  placeholder="Tên player"
+                  value={formData.playerName}
+                  onChange={onChangeData}
+                />
+              </div>
+              <div className='col-md-2'>
+                <input
+                  type="text"
+                  name="gameName"
+                  className="rounded-4 player form-control border-0 mr-2"
+                  style={{ backgroundColor: "#20202b", color: "#ADADAD" }}
+                  placeholder="Tên game"
+                  value={formData.gameName}
+                  onChange={onChangeData}
+                />
+              </div>
+              <div className='col-md-2'>
+                <div className='relative h-full w-40'>
+                  {formData.priceRange[0] !== 10000 || formData.priceRange[1] !== 1000000 ? (
+                    <button type="button" className="rounded-4 text-white bg-bgButton h-full w-full" onClick={handleClickRange}>
+                      {formData.priceRange[0].toLocaleString()} - {formData.priceRange[1].toLocaleString()}
+                    </button>
+                  ) : (
+                    <button type="button" className="rounded-4 text-white-50 bg-bgSecondary h-full w-full" onClick={handleClickRange}>
+                      Khoảng giá
+                    </button>
+                  )}
+                  {showPopUpRange && (
+                    <div className='p-4 rounded-lg text-white-50 absolute top-12 w-64 bg-bgSecondary z-10' style={{ left: "-4rem" }}>
+                      <Typography id="range-slider" gutterBottom>
+                        Khoảng giá:
+                      </Typography>
+                      <Slider
+                        value={formData.priceRange}
+                        min={10000}
+                        max={1000000}
+                        step={10000}
+                        onChange={rangeSelector}
+                        valueLabelDisplay="auto"
+                        valueLabelFormat={(value) => `${value.toLocaleString()}`}
+                      />
+                      {formData.priceRange[0].toLocaleString()} đến {formData.priceRange[1].toLocaleString()} VND
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+              <div className='col-md-2 text-end'>
+                <button className='text-white bg-bgButton h-full w-36 rounded-4 fw-medium' type='submit'>Tìm kiếm</button>
+              </div>
             </div>
           </div>
-          <div className='col-md-2 text-end'>
-            <button className='text-white bg-bgButton h-full w-36 rounded-4 fw-medium' type='submit'>Tìm kiếm</button>
-          </div>
         </div>
-      </div>
-    </div>
+      </form>
+      {hasSearched && (
+        <>
+          <h5 className='text-white my-4'>Kết quả tìm kiếm</h5>
+          {listSearch.length > 0?
+            <div className='row'>
+            {listSearch.map(p => (
+              <div className='col-md-3 mb-4'>
+                <Link className='text-decoration-none'>
+                  <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
+                    <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
+                    <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>
+                      <p className='text-white m-0'>{p.player.rentCost.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 3,
+                      })} đ/h</p>
+                    </div>
+                    <div className="card-body">
+                      <h3 className="card-title text-lg text-white d-flex align-items-center">
+                        <Link className='text-decoration-none text-white'>{p.username}</Link>
+                        <IoIosCheckmarkCircle size={20} className='ml-1 text-bgButton' />
+                        <div class="player-status ready"> </div>
+                      </h3>
+                      {p.player.contentStatus ? <p className="card-text text-sm mb-0" style={{ color: "#ADADAD" }}>{p.player.contentStatus}</p> : <br />}
+                      <div className='d-flex align-items-center mt-3'>
+                        <div className='w-50 d-flex'>
+                          {p.player.serviceType.slice(0, 4).map((i, index) => (
+                            <>
+                              {index < 3 ? (
+                                <img src={baseUrl + i.image} className='w-6 h-6 rounded-circle mr-1' alt={`Image ${index}`} />
+                              ) : (
+                                <div className='rounded-full w-7 h-7 bg-slate-700 flex justify-center items-center opacity-50'><TfiMoreAlt className='text-center' color='white' size={20} /></div>
+                              )}
+                            </>
+                          ))}
+
+                        </div>
+                        <div className='w-50 d-flex align-items-center justify-content-end'>
+                          <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>4.8 <span>(355)</span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+
+          </div>:<div className='row'><h5 className='text-textSecondary my-3'>Không tìm thấy kết quả phù hợp!</h5></div>}
+        </>
+      )}
+    </>
+
   );
 }

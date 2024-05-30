@@ -46,6 +46,7 @@ const login = async (req, res) => {
         }
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
+        console.log(user);
         const { password, ...returnUser } = user;
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
         res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
@@ -66,11 +67,10 @@ const autoLogin = async (req, res) => {
         console.log(req.cookies);
         const user = await UserService.autoLogin(req.payload.email);
         const refreshToken = req.cookies.RefreshToken;
-        const accessToken = req.cookies.AccessToken;
-        const { password, ...returnUser } = user;
+        const { password, ...returnUser } = user.user;
         res.status(200).json({
             user: returnUser,
-            accessToken: accessToken,
+            accessToken: user.accessToken,
             refreshToken: refreshToken
         });
     } catch (error) {
@@ -211,6 +211,7 @@ const resetPassword = async (req, res) => {
 const getAllPlayer = async (req, res) => {
     try {
         const players = await UserService.getAllPlayer();
+        console.log(players);
         if (players.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy người chơi nào.' });
         }
@@ -220,6 +221,16 @@ const getAllPlayer = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 };
+
+const searchPlayerByCriteria = async (req, res) => {
+    try {
+        const { gender, playerName, gameName, priceRange } = req.body;
+        const players = await UserService.searchPlayerByCriteria(gender, playerName, gameName, priceRange);
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+}
 export default {
     register,
     login,
@@ -229,4 +240,5 @@ export default {
     verifyToken,
     resetPassword,
     getAllPlayer,
+    searchPlayerByCriteria,
 }

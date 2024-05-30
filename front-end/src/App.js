@@ -20,10 +20,11 @@ function App() {
           withCredentials: true,
           headers: { 'Content-Type': 'multipart/form-data' },
         });
+        console.log(autoLogin.data);
         dispatch(setUserInformation(autoLogin.data.user))
         dispatch(setAccessToken(autoLogin.data.accessToken))
         dispatch(setRefreshToken(autoLogin.data.refreshToken))
-        console.log(autoLogin.data);
+        // console.log(autoLogin.data);
       }
       else {
         return;

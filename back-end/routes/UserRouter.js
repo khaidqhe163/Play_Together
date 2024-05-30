@@ -40,5 +40,6 @@ UserRouter.post("/reset-password", UserController.resetPassword);
 UserRouter.post("/verify-password-token", UserController.verifyToken);
 
 UserRouter.get('/players', UserController.getAllPlayer);
+UserRouter.post('/search-player', UserController.searchPlayerByCriteria);
 
 export default UserRouter
