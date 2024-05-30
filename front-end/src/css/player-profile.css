@@ -1,0 +1,76 @@
+.player-profile {
+    color: white;
+}
+
+
+#pp-left {
+    text-align: center
+}
+
+#pp-left p {
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+#pp-left h5 {
+    font-weight: bold;
+    text-align: left;
+    color: #7b47ff;
+}
+
+hr {
+    background-color: white;
+}
+
+.player-profile .row {
+    padding-top: 40px;
+}
+
+#player-avatar {
+    height: 250px;
+    width: 250px;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.achivement div{
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+
+.achivement-content{
+    margin-left: 5px;
+    font-weight: bold;
+    width: 80%;
+    font-size: 15px !important;
+}
+
+.achivement-date{
+    text-align: right;
+    margin-top: 0 !important;
+}
+
+.achivement-icon{
+    font-size: 20px;
+    width: 40px;
+}
+
+.service-container {
+    display: flex;
+
+}
+
+.service{
+    margin-right: 10px;
+    padding: 0px 10px;
+}
+
+.album-player{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.star-container{
+    color: #ff9948;
+}
