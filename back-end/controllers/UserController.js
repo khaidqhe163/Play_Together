@@ -44,12 +44,16 @@ const login = async (req, res) => {
                 message: "Wrong password"
             })
         }
-        const token = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
+        console.log(user);
         const { password, ...returnUser } = user;
-        res.cookie("jwt", token, { maxAge: 60000, httpOnly: true });
+        res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
+        res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json({
             user: returnUser,
-            accessToken: token
+            accessToken: accessToken,
+            refreshToken: refreshToken
         })
     } catch (error) {
         res.status(500).json({
@@ -62,7 +66,13 @@ const autoLogin = async (req, res) => {
     try {
         console.log(req.cookies);
         const user = await UserService.autoLogin(req.payload.email);
-        res.status(200).json(user);
+        const refreshToken = req.cookies.RefreshToken;
+        const { password, ...returnUser } = user.user;
+        res.status(200).json({
+            user: returnUser,
+            accessToken: user.accessToken,
+            refreshToken: refreshToken
+        });
     } catch (error) {
         res.status(500).json({
             message: error.toString()
@@ -109,7 +119,7 @@ const sendEmail = async (req, res) => {
         };
         transporter.use('compile', hbs(handlebarOptions))
         const user = await UserService.findUserByEmail(req.body.email);
-        if(!user) {
+        if (!user) {
             return res.status(400).json({
                 message: "Email chưa được đăng ký!"
             })
@@ -197,6 +207,30 @@ const resetPassword = async (req, res) => {
         })
     }
 }
+
+const getAllPlayer = async (req, res) => {
+    try {
+        const players = await UserService.getAllPlayer();
+        console.log(players);
+        if (players.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy người chơi nào.' });
+        }
+
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+};
+
+const searchPlayerByCriteria = async (req, res) => {
+    try {
+        const { gender, playerName, gameName, priceRange } = req.body;
+        const players = await UserService.searchPlayerByCriteria(gender, playerName, gameName, priceRange);
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+}
 export default {
     register,
     login,
@@ -204,5 +238,7 @@ export default {
     loginPassport,
     sendEmail,
     verifyToken,
-    resetPassword
+    resetPassword,
+    getAllPlayer,
+    searchPlayerByCriteria,
 }

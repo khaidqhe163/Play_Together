@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserInformation, userInfor } from './features/userSlice';
+import { setAccessToken } from './features/accessTokenSlice'
+import { setRefreshToken } from './features/refreshTokenSlice'
 import route from './routes/Routes';
 import './App.css';
 function App() {
@@ -14,11 +16,15 @@ function App() {
   const autoLogin = async () => {
     try {
       if (userInfo === null) {
-        const autoLogin = await axios.get('http://localhost:3008/account/autologin', {
+        const autoLogin = await axios.get('http://localhost:3008/api/user/autologin', {
           withCredentials: true,
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-        dispatch(setUserInformation(autoLogin.data))
+        console.log(autoLogin.data);
+        dispatch(setUserInformation(autoLogin.data.user))
+        dispatch(setAccessToken(autoLogin.data.accessToken))
+        dispatch(setRefreshToken(autoLogin.data.refreshToken))
+        // console.log(autoLogin.data);
       }
       else {
         return;

@@ -1,5 +1,5 @@
-import mongoose, { Schema, mongo } from "mongoose";
-
+import mongoose, { Schema} from "mongoose";
+import Service from './Service.js'
 const PlayerSchema = new Schema({
     deviceStatus: {
         microphone: Boolean,
@@ -20,7 +20,8 @@ const PlayerSchema = new Schema({
         default: 0
     },
     serviceType: [{
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref: Service,
     }],
     achievements: [String]
 })
@@ -55,6 +56,7 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String,
+        default:"public\\avatar\\default.webp"
     },
     images: {
         type: [String]

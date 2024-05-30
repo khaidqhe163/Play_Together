@@ -2,6 +2,7 @@ import express from 'express';
 import { UserController, StoryController} from '../controllers/index.js';
 import middleware from '../middleware/jwt.js';
 import passport from 'passport';
+import jwt from '../middleware/jwt.js';
 
 const UserRouter = express.Router();
 
@@ -31,10 +32,14 @@ UserRouter.get('/auth/facebook/callback',
         res.redirect('http://localhost:3000/login-success/' + token);
     });
 
+UserRouter.get('/refresh-token', jwt.verifyRefreshToken);
 UserRouter.post('/login-success', UserController.loginPassport);
 
 UserRouter.post("/forgot-password", UserController.sendEmail);
 UserRouter.post("/reset-password", UserController.resetPassword);
 UserRouter.post("/verify-password-token", UserController.verifyToken);
 
-export default UserRouter;
+UserRouter.get('/players', UserController.getAllPlayer);
+UserRouter.post('/search-player', UserController.searchPlayerByCriteria);
+
+export default UserRouter

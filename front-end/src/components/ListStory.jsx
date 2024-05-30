@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import storyImage1 from '../assets/imagevideo2.jpg';
 import storyImage2 from '../assets/imagevideo1.jpg';
 import storyImage3 from '../assets/imagevideo3.jpg';
@@ -7,8 +7,12 @@ import avatar2 from '../assets/avatar2.jpg';
 import avatar3 from '../assets/avatar3.jpg';
 import { FaRegEye } from "react-icons/fa";
 import { GrLinkNext } from "react-icons/gr";
+import StoryModal from './Modal/StoryModal';
 
 export default function ListStory() {
+
+    const [openModalStory, setOpenModalStory] = useState()
+
     const stories = [
         { id: 1, img: storyImage1, avatar: avatar1, name: 'Minh Châu' },
         { id: 2, img: storyImage2, avatar: avatar2, name: 'Hương Ly' },
@@ -21,7 +25,9 @@ export default function ListStory() {
         <>
             <div className="row" style={{maxHeight:"25em"}}>
                 {stories.map(story => (
-                    <div className="col-md-2 mb-4" key={story.id}>
+                    <div className="col-md-2 mb-4" key={story.id}
+                        onClick={() => setOpenModalStory(story)}
+                    >
                         <div className="card rounded-4 w-100 h-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
                             <div className='mx-auto position-relative'>
                                 <img src={story.img} style={{ width: "11em", height: "15em", objectFit: "cover" }} className=" mt-2 card-img-top img-fluid mx-auto rounded-top-4" alt="story" />
@@ -48,6 +54,14 @@ export default function ListStory() {
                     </div>
                 </div>
             </div>
+
+            {!!openModalStory && (
+                <StoryModal
+                    open={openModalStory}
+                    onCancel={() => setOpenModalStory(undefined)}
+                    // onOk={getList}
+                />
+            )}
         </>
     );
 }

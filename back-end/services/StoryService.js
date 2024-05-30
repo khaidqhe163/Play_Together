@@ -9,6 +9,17 @@ const getAllStories = async () => {
     }
 }
 
+
+const uploadVideo = async (userId, path, thumbnail, text) => {
+    try {
+        const video = await Story.create({ userId, path, thumbnail, text, liked: [], viewed: [] });
+        return video;
+    } catch (error) {
+        throw new Error(error.toString())
+    }
+}
+
 export default {
-    getAllStories
+    getAllStories,
+    uploadVideo
 }

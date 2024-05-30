@@ -75,7 +75,6 @@ const routes = [
         element: PlayerGuidePage
     }
 ]
-
 export default {
     routes
 }

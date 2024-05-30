@@ -1,4 +1,5 @@
 import User from '../models/User.js'
+import Service from '../models/Service.js';
 import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
 
@@ -16,7 +17,7 @@ const register = async (email, username, dob, gender, password) => {
 const findUserByEmail = async (email) => {
     try {
         const existEmail = await User.findOne({ email: email }).exec();
-        return existEmail
+        return existEmail._doc
     } catch (error) {
         throw new Error(error.toString());
     }
@@ -52,10 +53,10 @@ const addSocialAccount = async (profile) => {
     }
 }
 
-const resetPassword = async(email, password) => {
+const resetPassword = async (email, password) => {
     try {
         const hashPassword = bcrypt.hashSync(password, salt)
-        const user = await User.updateOne({ email: email }, {$set: {password: hashPassword}}).exec();
+        const user = await User.updateOne({ email: email }, { $set: { password: hashPassword } }).exec();
         if (!user) {
             const account = {
                 username: profile.displayName,
@@ -68,20 +69,59 @@ const resetPassword = async(email, password) => {
     }
 }
 
-const getPopularPlayers = async (minFollowers) => {
+const getAllPlayer = async () => {
     try {
-        const popularPlayers = await User.find({ followers: { $size: { $gte: minFollowers } } }).exec();
-        return popularPlayers;
+        const players = await User.find({
+            'player.duoSettings': true,
+            'player.totalHiredHour': { $gte: 155 },
+        }).populate("player.serviceType", "-_id image");
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) => {
+    try {
+        const query = {};
+
+        if (gender) {
+            query.gender = gender;
+        }
+
+        if (playerName) {
+            query.username = { $regex: playerName, $options: 'i' };
+        }
+
+        if (priceRange && priceRange.length === 2) {
+            query['player.rentCost'] = { $gte: priceRange[0], $lte: priceRange[1] };
+        }
+        console.log(query);
+        // let players = await User.find(query).populate({
+        //     path: 'player.serviceType',
+        //     match: { name: { $regex: gameName, $options: 'i' } },
+        // }).exec();
+
+        // players = players.filter(user => user.player.serviceType.length > 0);
+        let players = await User.find(query).populate('player.serviceType').exec();
+        // Lọc lại các player có serviceType khớp với gameName
+        players = players.filter(user =>
+            user.player.serviceType.some(service =>
+                new RegExp(gameName, 'i').test(service.name)
+            )
+        );
+
+        return players;
     } catch (error) {
         throw new Error(error.toString());
     }
 }
-
 export default {
     register,
     findUserByEmail,
     autoLogin,
     addSocialAccount,
     resetPassword,
-    getPopularPlayers
+    getAllPlayer,
+    searchPlayerByCriteria,
 }

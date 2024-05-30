@@ -1,0 +1,7 @@
+.ant-modal {
+    z-index: 1000 !important;
+}
+
+.ant-modal .ant-modal-content {
+    z-index: 1000 !important;
+}

@@ -9,6 +9,8 @@ import './fonts/Badabb/Badabb.ttf'
 import './fonts/Poppins/Poppins.otf'
 import store from './app/store';
 import { Provider } from 'react-redux'
+import "../src/assets/scss/index.scss"
+import 'react-toastify/dist/ReactToastify.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
