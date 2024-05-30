@@ -27,9 +27,8 @@ const StoryModal = ({open, onCancel}) => {
     const getStoryDetail = async () => {
       try {
         const res = await fetch('http://localhost:3008/api/stories/' + open._id);
-            const data = await res.json();
-            setStory(data);
-            // setLoading(false);
+        const data = await res.json();
+        setStory(data);
       } catch (error) {
         console.log(error.message);
       }
@@ -79,7 +78,7 @@ const StoryModal = ({open, onCancel}) => {
                         </Col>
                         <Col span={12} className="video__content">
                             <div>
-                              <video controls style={{width: '100%'}} autoPlay autoFocus autoCapitalize="true">
+                              <video controls style={{width: '100%'}} autoPlay loop autoCapitalize="true">
                                 <source src={baseUrl + open.path} type="video/mp4"/>
                               </video>
                               {/* {open.path} */}
