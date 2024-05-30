@@ -111,7 +111,7 @@ export default function ListIdol() {
                 <p style={headingStyle}>Tin của bạn</p>
                 <div style={buttonContainerStyle}>
                     <button style={buttonStyle} onClick={handleShowOpenCreate}>
-                        <i className="bi bi-plus-circle-fill" style={iconStyle}></i>
+                    <ion-icon name="add-outline"></ion-icon>
                     </button>
                     <div style={textContainerStyle}>
                         <h5 style={{ color: "#fff", margin: "0" }}>Tạo tin</h5>
