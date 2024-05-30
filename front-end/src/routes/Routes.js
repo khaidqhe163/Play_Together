@@ -1,10 +1,18 @@
-import Home from "../components/Home"
+
 import Login from "../components/Login"
 import Register from "../components/Register"
 import ResetPassword from "../components/ResetPassword"
 import SocialMediaLogin from "../components/SocialMediaLogin"
+import ChangePasswordPage from "../pages/ChangePasswordPage"
 import HomePage from "../pages/HomePage"
+import ProfilePage from "../pages/ProfilePage"
 import StoryPage from "../pages/StoryPage"
+import CustomerHistoryPage from "../pages/CustomerHistoryPage"
+import PlayerSettingPage from "../pages/PlayerSettingPage"
+import PlayerHistoryPage from "../pages/PlayerHistoryPage"
+import PlayerSettingDuoPage from "../pages/PlayerSettingDuoPage"
+import PlayerBlockListPage from "../pages/PlayerBlockListPage"
+import PlayerGuidePage from "../pages/PlayerGuidePage"
 const routes = [
     {
         path: '/',
@@ -35,11 +43,38 @@ const routes = [
         element: StoryPage
     },
     {
-        path: '/test',
-        element: Home
+        path: '/profile',
+        element: ProfilePage
+    },
+    {
+        path: '/change-password',
+        element: ChangePasswordPage
+    },
+    {
+        path: '/customer-history',
+        element: CustomerHistoryPage
+    },
+    {
+        path: '/player-setting',
+        element: PlayerSettingPage
+    },
+    {
+        path: '/player-history',
+        element: PlayerHistoryPage
+    },
+    {
+        path: '/player-setting-duo',
+        element: PlayerSettingDuoPage
+    },
+    {
+        path: '/player-block-list',
+        element: PlayerBlockListPage
+    },
+    {
+        path: '/player-guide',
+        element: PlayerGuidePage
     }
 ]
-
 export default {
     routes
 }
