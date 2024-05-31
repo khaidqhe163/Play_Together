@@ -18,7 +18,9 @@ const getStories = async (req, res) => {
 
 const createStory = async (req, res) => {
     try {
-        const userId =  "6651f21e079075c8a3da9d02";
+        console.log(req.headers);
+        const userId = req.payload.id;
+        console.log(req.body.video);
         let video;
         console.log(req.body);
         await getVideoDurationInSeconds(req.file.path).then((duration) => {
