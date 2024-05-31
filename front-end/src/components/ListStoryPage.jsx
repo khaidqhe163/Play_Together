@@ -2,31 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { baseUrl } from '../utils/service.js'
 import StoryModal from './Modal/StoryModal'
 
-export default function ListStoryPage({stories}) {
-    // const [stories, setStories] = useState([]);
-    // const [loading, setLoading] = useState(true);
+export default function ListStoryPage({ stories }) {
     const [openModalStory, setOpenModalStory] = useState(false)
-
-    // useEffect(() => {
-    //     const fetchStories = async () => {
-    //         try {
-    //             const response = await fetch('http://localhost:3008/api/stories');
-    //             const data = await response.json();
-    //             setStories(data);
-    //             setLoading(false);
-    //         } catch (error) {
-    //             console.error("Error fetching stories:", error);
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchStories();
-    // }, []);
-
-    // if (loading) {
-    //     return <div>Loading...</div>;
-    // }
-
 
     return (
         <>
