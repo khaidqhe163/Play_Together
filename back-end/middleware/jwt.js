@@ -6,7 +6,7 @@ function signAccessToken(user) {
     };
     const secret = process.env.PRIVATE_KEY;
     const options = {
-        expiresIn: "10h"
+        expiresIn: "1h"
     };
     let token = null;
     try {
