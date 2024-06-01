@@ -2,10 +2,19 @@ import React, { useEffect, useState } from 'react';
 import ListIdol from '../layouts/ListIdol';
 import NavBar from '../layouts/NavBar';
 import ListStoryPage from "../components/ListStoryPage";
+import StoryModal from '../components/Modal/StoryModal';
 
 export default function StoryPage() {
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentStory, setCurrentStory] = useState();
+    const [openModalStory, setOpenModalStory] = useState(false)
+
+    useEffect(() => {
+        if (currentStory !== undefined && !openModalStory) {
+            setOpenModalStory(true);
+        }
+    }, [currentStory])
 
     useEffect(() => {
         const fetchStories = async () => {
@@ -29,7 +38,7 @@ export default function StoryPage() {
 
     return (
         <div className="container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain">
-            <div className="row sticky-top bg-white shadow-sm" style={{zIndex: '1'}}>
+            <div className="row sticky-top bg-white shadow-sm" style={{ zIndex: '1' }}>
                 <div className="col-12">
                     <NavBar />
                 </div>
@@ -37,17 +46,28 @@ export default function StoryPage() {
             <div className="row flex-grow-1">
                 <div className="col-2 p-0">
                     <div className="sticky-top" style={{ top: '4rem' }}>
-                        <ListIdol stories={stories}/>
+                        <ListIdol stories={stories} setStory={setStories} />
                     </div>
                 </div>
                 <div className="col-10" style={{ backgroundColor: '#20202b' }}>
                     <div className="row d-flex justify-content-center">
                         <div className="col-12 col-md-10 py-3">
-                            <ListStoryPage stories={stories}/>
+                            <ListStoryPage stories={stories} setOpenModalStory={setOpenModalStory} setCurrentStory={setCurrentStory}/>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {!!openModalStory && (
+                <StoryModal
+                    open={stories[currentStory]}
+                    onCancel={() => setOpenModalStory(undefined)}
+                    setCurrentStory={setCurrentStory}
+                    stories={stories}
+                    // story={stories[currentStory]}
+                // onOk={getList}
+                />
+            )}
         </div>
        
     );

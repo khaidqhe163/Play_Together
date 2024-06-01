@@ -1,39 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { baseUrl } from '../utils/service.js'
-import StoryModal from './Modal/StoryModal'
 
-export default function ListStoryPage({stories}) {
-    // const [stories, setStories] = useState([]);
-    // const [loading, setLoading] = useState(true);
-    const [openModalStory, setOpenModalStory] = useState(false)
+export default function ListStoryPage({ stories, setOpenModalStory, setCurrentStory }) {
 
-    // useEffect(() => {
-    //     const fetchStories = async () => {
-    //         try {
-    //             const response = await fetch('http://localhost:3008/api/stories');
-    //             const data = await response.json();
-    //             setStories(data);
-    //             setLoading(false);
-    //         } catch (error) {
-    //             console.error("Error fetching stories:", error);
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchStories();
-    // }, []);
-
-    // if (loading) {
-    //     return <div>Loading...</div>;
-    // }
+    console.log('setCurrentStory', setCurrentStory);
 
 
     return (
         <>
             <div className="row">
-                {stories.map(story => (
-                    <div className="col-6 col-md-4 col-lg-2 mb-4" key={story.id}
-                        onClick={() => setOpenModalStory(story)}
+                {stories.map((story, index) => (
+                    <div className="col-6 col-md-4 col-lg-2 mb-4" key={story._id}
+                        onClick={() => setCurrentStory(index)}
                     >
                         <div className="card rounded-4 text-white hover-card" style={styles.card}>
                             <img src={baseUrl + story.thumbnail} className="card-img-top rounded-top-4" style={styles.cardImage} alt="story" />
@@ -45,14 +23,6 @@ export default function ListStoryPage({stories}) {
                     </div>
                 ))}
             </div>
-
-            {!!openModalStory && (
-                <StoryModal
-                    open={openModalStory}
-                    onCancel={() => setOpenModalStory(undefined)}
-                // onOk={getList}
-                />
-            )}
 
         </>
     );

@@ -48,8 +48,8 @@ export const StoryConponent = styled.div`
 
     .video__content {
         margin-top: 30px;
-        width: 90%;
-        background-color: #666;
+        width: 100%;
+        /* background-color: #666; */
     }
 
     .user {
