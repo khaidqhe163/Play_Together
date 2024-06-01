@@ -231,6 +231,15 @@ const searchPlayerByCriteria = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 }
+const getPlayerByServiceId = async (req, res) => {
+    try {
+        const serviceId = req.params.serviceId;
+        const players = await UserService.getPlayerByServiceId(serviceId);
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+}
 export default {
     register,
     login,
@@ -241,4 +250,5 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    getPlayerByServiceId,
 }

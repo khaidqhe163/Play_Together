@@ -2,6 +2,7 @@ import User from '../models/User.js'
 import Service from '../models/Service.js';
 import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
+import mongoose from 'mongoose';
 
 var salt = bcrypt.genSaltSync(10);
 const register = async (email, username, dob, gender, password) => {
@@ -116,6 +117,23 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         throw new Error(error.toString());
     }
 }
+const getPlayerByServiceId = async (serviceId) => {
+    try {
+
+        let players = await User.find({}).populate('player.serviceType').exec();
+
+        players = players.filter(user =>
+            user.player && user.player.serviceType && user.player.serviceType.some(service =>
+                service._id.equals(serviceId) 
+            )
+        );
+
+        console.log(players);
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
 export default {
     register,
     findUserByEmail,
@@ -124,4 +142,5 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    getPlayerByServiceId,
 }
