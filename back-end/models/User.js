@@ -1,10 +1,17 @@
 import mongoose, { Schema } from "mongoose";
 import Service from './Service.js'
+
+const achivementSchema = new Schema({
+    date: Date,
+    text: String
+})
+
+const deviceStatusSchema = new Schema({
+    cam: Boolean,
+    mic: Boolean
+})
 const PlayerSchema = new Schema({
-    deviceStatus: {
-        microphone: Boolean,
-        camera: Boolean,
-    },
+    deviceStatus: deviceStatusSchema,
     images: {
         type: [String]
     },
@@ -19,7 +26,7 @@ const PlayerSchema = new Schema({
     facebookUrl: String,
     youtubeUrl: String,
     videoHightlight: String,
-    linkRoom: String,
+    roomVoice: String,
     totalHiredHour: Number,
     contentStatus: String,
     rentCost: {
@@ -30,8 +37,9 @@ const PlayerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Service,
     }],
-    achievements: [String]
+    achivements: [achivementSchema]
 })
+
 
 const UserSchema = new Schema({
     username: {
