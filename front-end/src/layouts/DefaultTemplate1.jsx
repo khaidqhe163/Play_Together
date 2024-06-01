@@ -1,6 +1,6 @@
 import ListService from './ListService';
 import NavBar from './NavBar';
-
+import toast, { Toaster } from 'react-hot-toast';
 export default function DefaultTemplate({ children }) {
     return (
         <div className='container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain'>
