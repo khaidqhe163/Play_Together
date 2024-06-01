@@ -1,6 +1,7 @@
 import { UserService } from "../services/index.js"
 import jwt from '../middleware/jwt.js';
 import bcrypt from 'bcryptjs'
+// import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 import * as path from 'path'
@@ -230,6 +231,29 @@ const getPlayerByServiceId = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 }
+
+const changePassword = async (req, res) => {
+    try {
+      const { id, currentPassword, newPassword } = req.body;
+      console.log(req.body);
+      const user = await UserService.findByUserId(id);
+  
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ error: "Mật khẩu không đúng!" });
+      }
+      var salt = bcrypt.genSaltSync(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+  
+      user.password = hashedPassword;
+      await user.save();
+  
+      return res.status(200).json({ message: "Đổi mật khẩu thành công!" });
+    } catch (error) {
+      console.error("Change password error:", error);
+      return res.status(500).json({ error: "Có lỗi trong việc đổi mật khẩu!" });
+    }
+  };
 export default {
     register,
     login,
@@ -241,4 +265,5 @@ export default {
     getAllPlayer,
     searchPlayerByCriteria,
     getPlayerByServiceId,
+    changePassword,
 }

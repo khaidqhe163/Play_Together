@@ -27,16 +27,31 @@ export default function ChangePassword() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (changePassword.newPassword !== changePassword.confirmPassword) {
       toast("Mật khẩu không khớp!");
     } else {
       try {
-        toast("Đổi mật khẩu thành công!");
-        console.log("Đổi mật khẩu thành công!");
+        const update = await api.put("/api/user/change-password", changePassword);
+        console.log(update.status);
+        if (update.status === 200) {
+          toast(update.data.message);
+          console.log("Đổi mật khẩu thành công!");
+          setChangePassword(prev => ({
+            ...prev,
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+          }));
+        }
       } catch (error) {
-        console.error("Failed to change password:", error);
+        console.log(error);
+        if (error.response.status === 400) {
+          toast(error.response.data.error);
+        } else {
+          toast('Có lỗi trong việc đổi mật khẩu!');
+        }
       }
     }
   };
@@ -48,7 +63,7 @@ export default function ChangePassword() {
         <div className="mb-4 w-3/4">
           <label className="block text-white">Mật khẩu cũ</label>
           <input
-          type='password'
+            type='password'
             name="currentPassword"
             value={changePassword.currentPassword}
             onChange={handleChange}

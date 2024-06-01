@@ -133,6 +133,15 @@ const getPlayerByServiceId = async (serviceId) => {
         throw new Error(error.toString());
     }
 };
+
+const findByUserId = async (id) => {
+    try {
+        const user = await User.findById(id);
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 export default {
     register,
     findUserByEmail,
@@ -142,4 +151,5 @@ export default {
     getAllPlayer,
     searchPlayerByCriteria,
     getPlayerByServiceId,
+    findByUserId,
 }

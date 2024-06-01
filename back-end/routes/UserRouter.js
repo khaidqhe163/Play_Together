@@ -42,4 +42,5 @@ UserRouter.post("/verify-password-token", UserController.verifyToken);
 UserRouter.get('/players', UserController.getAllPlayer);
 UserRouter.post('/search-player', UserController.searchPlayerByCriteria);
 UserRouter.get('/players-by-service/:serviceId', UserController.getPlayerByServiceId);
+UserRouter.put('/change-password',UserController.changePassword);
 export default UserRouter
