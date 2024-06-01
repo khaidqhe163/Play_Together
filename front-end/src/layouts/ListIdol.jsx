@@ -7,8 +7,8 @@ import avatar3 from '../assets/avatar3.jpg';
 import { useState } from 'react';
 import StoryCreation from '../components/StoryCreation';
 
-export default function ListIdol() {
-    const stories = [
+export default function ListIdol({ stories, setStory }) {
+    const idols = [
         { id: 1, img: storyImage1, avatar: avatar1, name: 'Minh Châu' },
         { id: 2, img: storyImage3, avatar: avatar2, name: 'Hương Ly' },
         { id: 3, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
@@ -111,7 +111,7 @@ export default function ListIdol() {
                 <p style={headingStyle}>Tin của bạn</p>
                 <div style={buttonContainerStyle}>
                     <button style={buttonStyle} onClick={handleShowOpenCreate}>
-                        <i className="bi bi-plus-circle-fill" style={iconStyle}></i>
+                        <ion-icon name="add-outline"></ion-icon>
                     </button>
                     <div style={textContainerStyle}>
                         <h5 style={{ color: "#fff", margin: "0" }}>Tạo tin</h5>
@@ -122,7 +122,7 @@ export default function ListIdol() {
             <div>
                 <p style={headingStyle}>Thịnh hành</p>
                 <div style={storyContainerStyle}>
-                    {stories.map(story => (
+                    {idols.map(story => (
                         <div
                             key={story.id}
                             style={storyStyle}
@@ -135,7 +135,7 @@ export default function ListIdol() {
                     ))}
                 </div>
             </div>
-            <StoryCreation show={openModalCreate} close={handleCloseOpenCreate} />
+            <StoryCreation show={openModalCreate} close={handleCloseOpenCreate} stories={stories} setStory={setStory} />
 
         </div>
 

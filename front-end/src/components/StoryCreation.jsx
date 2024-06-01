@@ -1,15 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
 import '../css/postcreate.css'
-import axios from 'axios';
-function StoryCreation({ show, close }) {
+import { useSelector } from 'react-redux';
+import { userInfor } from '../features/userSlice';
+import api from '../utils/axiosConfig'
+import { baseUrl } from '../utils/service';
+function StoryCreation({ show, close, stories, setStory }) {
     const inputFile = useRef();
     const [stage, setStage] = useState(0);
     const [file, setFile] = useState();
     const [showDiscard, setShowDiscard] = useState(false);
     const caption = useRef();
     const modalCreate = useRef();
-
+    const userInfo = useSelector(userInfor);
     const videosrc = useRef();
     useEffect(() => {
         if (show === false) {
@@ -49,16 +52,24 @@ function StoryCreation({ show, close }) {
     const handlePostStory = async () => {
         try {
             const form = new FormData();
-            console.log(file);
             form.append('video', file);
             form.append('text', caption.current.value)
-            await axios.post('http://localhost:3008/api/stories/create-story', form)
+            const story = await api.post('/api/stories/create-story', form,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+            console.log(story);
+            const updateStory = [story.data, ...stories];
+            console.log(updateStory);
+            setStory(updateStory)
             close();
         } catch (error) {
             console.log(error);
         }
     }
-    console.log(stage);
     return (
         <>
             <Modal show={show} onHide={close} centered ref={modalCreate}>
@@ -107,7 +118,7 @@ function StoryCreation({ show, close }) {
                             {
                                 stage === 1 && (
                                     <div className='img-create-box'>
-                                        <video autoPlay muted loop style={{ maxWidth: "100%", maxHeight: "100%" }} ref={videosrc} >
+                                        <video controls style={{ maxWidth: "100%", maxHeight: "100%" }} ref={videosrc} >
                                             <source type='video/mp4' src='' />
                                             Have some problem with your internet
                                         </video>
@@ -119,8 +130,8 @@ function StoryCreation({ show, close }) {
                                 stage === 2 && (
                                     <div className='post-caption'>
                                         <div className='user-info'>
-                                            <img src='images/common/avatar.png' alt='error' />
-                                            <span>Khai Dao</span>
+                                            <img src={baseUrl + userInfo.avatar} alt='error' />
+                                            <span>{userInfo?.username}</span>
                                         </div>
                                         <div>
                                             <Form>

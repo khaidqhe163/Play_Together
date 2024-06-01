@@ -1,0 +1,12 @@
+.title {
+    color: #90959c;
+    margin-top: 20px
+}
+
+.service:hover{
+    border: 2px solid red;
+}
+
+.pickedGame{
+    border: 5px solid green;
+}

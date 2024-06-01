@@ -1,5 +1,5 @@
 import express from 'express';
-import { UserController, StoryController} from '../controllers/index.js';
+import { UserController, StoryController } from '../controllers/index.js';
 import middleware from '../middleware/jwt.js';
 import passport from 'passport';
 import jwt from '../middleware/jwt.js';
@@ -32,7 +32,7 @@ UserRouter.get('/auth/facebook/callback',
         res.redirect('http://localhost:3000/login-success/' + token);
     });
 
-UserRouter.get('/refresh-token', jwt.verifyRefreshToken);
+UserRouter.post('/refresh-token', jwt.verifyRefreshToken);
 UserRouter.post('/login-success', UserController.loginPassport);
 
 UserRouter.post("/forgot-password", UserController.sendEmail);
