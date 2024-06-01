@@ -221,6 +221,37 @@ const searchPlayerByCriteria = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 }
+
+const updatePlayerInfo = async (req, res) => {
+    try {
+        console.log(req.body.achivements);
+        const userId = req.payload.id;
+        const {
+            rentCost,
+            info,
+            youtubeUrl,
+            facebookUrl,
+            roomVoice,
+            deviceStatus,
+            serviceType,
+            videoHightlight,
+            achivements
+        } = req.body
+        const device = JSON.parse(deviceStatus);
+        const service = JSON.parse(serviceType)
+        const achivement = JSON.parse(achivements)
+        console.log(achivement);
+        const updatePlayer = await UserService.updatePlayerInfo(userId, rentCost, info, youtubeUrl, facebookUrl, roomVoice,
+            device, service, videoHightlight, achivement)
+            
+        res.status(200).json({
+            message: "Update successfully",
+            user: updatePlayer
+        })
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
 export default {
     register,
     login,
@@ -231,4 +262,5 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    updatePlayerInfo
 }
