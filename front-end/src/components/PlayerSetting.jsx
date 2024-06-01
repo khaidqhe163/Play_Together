@@ -156,9 +156,10 @@ export default function PlayerSetting() {
       const update = await api.post("/api/user/update-player-info", requestObject);
       console.log(update.user);
       dispatch(setUserInformation(update.user));
+      toast('Cập nhật thành công!')
       console.log(requestObject);
     } catch (error) {
-      console.log(error);
+      toast('Cập nhật thất bại!')
     }
   }
 
@@ -311,6 +312,19 @@ export default function PlayerSetting() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce} />
     </Container>
   );
 }
