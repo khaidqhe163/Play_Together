@@ -1,9 +1,16 @@
-import mongoose, { Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import Service from './Service.js'
 const PlayerSchema = new Schema({
     deviceStatus: {
         microphone: Boolean,
         camera: Boolean,
+    },
+    images: {
+        type: [String]
+    },
+    info: {
+        type: String,
+        default: ""
     },
     duoSettings: {
         type: Boolean,
@@ -56,16 +63,8 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String,
-        default:"public\\avatar\\default.webp"
+        default: "public\\avatar\\default.webp"
     },
-    images: {
-        type: [String]
-    },
-    info: {
-        type: String,
-        default: ""
-    }
-    ,
     player: {
         type: PlayerSchema
     }
