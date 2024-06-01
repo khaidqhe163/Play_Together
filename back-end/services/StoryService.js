@@ -20,7 +20,20 @@ const uploadVideo = async (userId, path, thumbnail, text) => {
     }
 }
 
+const getStoryDetail = async (storyId) => {
+    try {
+      const story = await Story.findById(storyId).populate('author', 'avatar username');
+      if (!story) {
+        throw new Error('Story not found');
+      }
+      return story;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
 export default {
     getAllStories,
-    uploadVideo
+    uploadVideo,
+    getStoryDetail,
 }

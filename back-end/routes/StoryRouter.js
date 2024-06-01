@@ -24,6 +24,8 @@ StoryRouter.get('/', StoryController.getStories);
 
 StoryRouter.post('/create-story', jwt.verifyAccessToken, upload.single("video"), StoryController.createStory)
 
+StoryRouter.get('/:id', StoryController.getStoryDetail);
+
 
 
 export default StoryRouter;

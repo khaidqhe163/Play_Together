@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { baseUrl } from '../utils/service.js'
-import StoryModal from './Modal/StoryModal'
 
-export default function ListStoryPage({ stories }) {
-    const [openModalStory, setOpenModalStory] = useState(false)
+export default function ListStoryPage({ stories, setOpenModalStory, setCurrentStory }) {
+
+    console.log('setCurrentStory', setCurrentStory);
+
 
     return (
         <>
             <div className="row">
-                {stories.map(story => (
-                    <div className="col-6 col-md-4 col-lg-2 mb-4" key={story.id}
-                        onClick={() => setOpenModalStory(story)}
+                {stories.map((story, index) => (
+                    <div className="col-6 col-md-4 col-lg-2 mb-4" key={story._id}
+                        onClick={() => setCurrentStory(index)}
                     >
                         <div className="card rounded-4 text-white hover-card" style={styles.card}>
                             <img src={baseUrl + story.thumbnail} className="card-img-top rounded-top-4" style={styles.cardImage} alt="story" />
@@ -22,14 +23,6 @@ export default function ListStoryPage({ stories }) {
                     </div>
                 ))}
             </div>
-
-            {!!openModalStory && (
-                <StoryModal
-                    open={openModalStory}
-                    onCancel={() => setOpenModalStory(undefined)}
-                // onOk={getList}
-                />
-            )}
 
         </>
     );
