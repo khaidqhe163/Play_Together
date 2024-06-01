@@ -135,7 +135,7 @@ export default function ListIdol() {
                     ))}
                 </div>
             </div>
-            <StoryCreation show={openModalCreate} close={handleCloseOpenCreate} />
+            <StoryCreation show={openModalCreate} close={handleCloseOpenCreate} stories={stories}/>
 
         </div>
 

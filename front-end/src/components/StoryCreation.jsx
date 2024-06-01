@@ -2,14 +2,16 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
 import '../css/postcreate.css'
 import axios from 'axios';
-function StoryCreation({ show, close }) {
+import { useSelector } from 'react-redux';
+import { accessToken } from '../features/accessTokenSlice';
+function StoryCreation({ show, close, stories }) {
     const inputFile = useRef();
     const [stage, setStage] = useState(0);
     const [file, setFile] = useState();
     const [showDiscard, setShowDiscard] = useState(false);
     const caption = useRef();
     const modalCreate = useRef();
-
+    const acessTokenRedux = useSelector(accessToken);
     const videosrc = useRef();
     useEffect(() => {
         if (show === false) {
@@ -52,7 +54,14 @@ function StoryCreation({ show, close }) {
             console.log(file);
             form.append('video', file);
             form.append('text', caption.current.value)
-            await axios.post('http://localhost:3008/api/stories/create-story', form)
+            await axios.post('http://localhost:3008/api/stories/create-story', form,
+                {
+                    headers: {
+                        "authorization": `Bearer ${acessTokenRedux}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            )
             close();
         } catch (error) {
             console.log(error);

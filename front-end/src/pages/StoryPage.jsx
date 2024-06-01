@@ -46,7 +46,7 @@ export default function StoryPage() {
             <div className="row flex-grow-1">
                 <div className="col-2 p-0">
                     <div className="sticky-top" style={{ top: '4rem' }}>
-                        <ListIdol />
+                        <ListIdol stories={stories}/>
                     </div>
                 </div>
                 <div className="col-10" style={{ backgroundColor: '#20202b' }}>

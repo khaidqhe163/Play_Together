@@ -13,6 +13,7 @@ import PlayerHistoryPage from "../pages/PlayerHistoryPage"
 import PlayerSettingDuoPage from "../pages/PlayerSettingDuoPage"
 import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
+import Home from "../components/Home"
 const routes = [
     {
         path: '/',
@@ -36,7 +37,7 @@ const routes = [
     },
     {
         path: '/home',
-        element: HomePage
+        element: Home
     },
     {
         path: '/stories',

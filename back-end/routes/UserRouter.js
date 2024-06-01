@@ -32,7 +32,7 @@ UserRouter.get('/auth/facebook/callback',
         res.redirect('http://localhost:3000/login-success/' + token);
     });
 
-UserRouter.get('/refresh-token', jwt.verifyRefreshToken);
+UserRouter.post('/refresh-token', jwt.verifyRefreshToken);
 UserRouter.post('/login-success', UserController.loginPassport);
 
 UserRouter.post("/forgot-password", UserController.sendEmail);
