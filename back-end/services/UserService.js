@@ -2,7 +2,6 @@ import User from '../models/User.js'
 import Service from '../models/Service.js';
 import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
-import mongoose from 'mongoose';
 
 var salt = bcrypt.genSaltSync(10);
 const register = async (email, username, dob, gender, password) => {
