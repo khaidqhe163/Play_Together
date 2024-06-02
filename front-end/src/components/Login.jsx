@@ -41,7 +41,7 @@ function Login() {
             dispatch(setAccessToken(userInfo.data.accessToken))
             dispatch(setRefreshToken(userInfo.data.refreshToken))
             toast("Đăng nhập thành công!");
-            nav('/change-password')
+            nav('/')
         } catch (error) {
             console.log(error);
             if (error.response && error.response.status === 401) {
