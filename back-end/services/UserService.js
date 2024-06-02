@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
 
 var salt = bcrypt.genSaltSync(10);
-const register = async (email, username, dob, gender, password) => {
+const register = async (email, username, dateOfBirth, gender, password) => {
     try {
         const hashPassword = bcrypt.hashSync(password, salt)
         await User.create({ email, username, dob, gender, password: hashPassword });
