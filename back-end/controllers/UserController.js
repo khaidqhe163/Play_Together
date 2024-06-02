@@ -243,11 +243,26 @@ const updatePlayerInfo = async (req, res) => {
         console.log(achivement);
         const updatePlayer = await UserService.updatePlayerInfo(userId, rentCost, info, youtubeUrl, facebookUrl, roomVoice,
             device, service, videoHightlight, achivement)
-            
+
         res.status(200).json({
             message: "Update successfully",
             user: updatePlayer
         })
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+const getPlayerById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        console.log(id);
+        const user = await UserService.getPlayerById(id);
+        // console.log(user);
+        const { _id, username, gender, followers, player, avatar, images, createdAt } = user;
+        const returnPlayer = { _id, username, gender, followers, player, avatar, images, createdAt }
+        console.log(returnPlayer);
+        res.status(200).json(returnPlayer)
     } catch (error) {
         res.status(500).json(error);
     }
@@ -262,5 +277,6 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
-    updatePlayerInfo
+    updatePlayerInfo,
+    getPlayerById
 }

@@ -145,6 +145,15 @@ const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roo
         throw new Error(error.toString());
     }
 }
+
+const getPlayerById = async (id) => {
+    try {
+        const player = await User.findById(id);
+        return player;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     register,
     findUserByEmail,
@@ -153,5 +162,6 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
-    updatePlayerInfo
+    updatePlayerInfo,
+    getPlayerById
 }
