@@ -11,6 +11,7 @@ const createService = async ({name, image}) => {
 const getAllService = async () => {
     try {
         const allService = await Service.find({});
+        console.log(allService);
         return allService;
     } catch (error) {
         throw new Error(error);
