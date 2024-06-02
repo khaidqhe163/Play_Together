@@ -33,7 +33,7 @@ export default function ListPlayer(props) {
             {players.length > 0 ? <>
                 {players.map(p => (
                     <div className='col-md-3 my-3'>
-                        <Link className='text-decoration-none'>
+                        <Link className='text-decoration-none' to={`/player-profile/${p._id}`}>
                             <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
                                 <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
                                 <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>

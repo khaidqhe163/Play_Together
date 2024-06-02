@@ -10,7 +10,7 @@ export default function ListService() {
         backgroundColor: "#20202b",
         width: "100%",
         position: "sticky",
-        top: "56px",
+        top: "0px",
         height: "calc(100vh - 70px)",
 
     };

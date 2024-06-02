@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { userInfor } from '../features/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { baseUrl } from '../utils/service.js'
-import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
-import axios from 'axios';
 export default function ChangePassword() {
   const userInfo = useSelector(userInfor);
   const [changePassword, setChangePassword] = useState({
-    id: userInfo._id,
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -16,6 +13,13 @@ export default function ChangePassword() {
 
   const [passwordMatch, setPasswordMatch] = useState(true);
 
+  useEffect(() => {
+    setChangePassword({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    })
+  }, [userInfo])
   const handleChange = (e) => {
     const { name, value } = e.target;
     setChangePassword({
@@ -55,7 +59,7 @@ export default function ChangePassword() {
       }
     }
   };
-  console.log(changePassword);
+  console.log(userInfo);
   return (
     <>
       <h1 className="text-white">Đổi mật khẩu</h1>

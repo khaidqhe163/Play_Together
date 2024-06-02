@@ -5,6 +5,7 @@ import ResetPassword from "../components/ResetPassword"
 import SocialMediaLogin from "../components/SocialMediaLogin"
 import ChangePasswordPage from "../pages/ChangePasswordPage"
 import HomePage from "../pages/HomePage"
+import PlayerProfile from "../pages/PlayerProfile"
 import ProfilePage from "../pages/ProfilePage"
 import StoryPage from "../pages/StoryPage"
 import CustomerHistoryPage from "../pages/CustomerHistoryPage"
@@ -14,6 +15,7 @@ import PlayerSettingDuoPage from "../pages/PlayerSettingDuoPage"
 import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
 import Home from "../components/Home"
+import ImageGallery from "../components/ImageGallery"
 const routes = [
     {
         path: '/',
@@ -37,11 +39,15 @@ const routes = [
     },
     {
         path: '/home',
-        element: Home
+        element: ImageGallery
     },
     {
         path: '/stories',
         element: StoryPage
+    },
+    {
+        path: '/player-profile/:id',
+        element: PlayerProfile,
     },
     {
         path: '/profile',

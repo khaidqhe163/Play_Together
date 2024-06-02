@@ -154,7 +154,7 @@ export default function PlayerSetting() {
         serviceType: JSON.stringify(pickGame)
       }
       const update = await api.post("/api/user/update-player-info", requestObject);
-      console.log(update.user);
+      console.log(update.data.user);
       dispatch(setUserInformation(update.user));
       toast('Cập nhật thành công!')
       console.log(requestObject);
@@ -282,11 +282,11 @@ export default function PlayerSetting() {
                 <option value={true}>Có mic</option>
               </Form.Select>
             </div>
-            <button type='submit'
-              className="bg-[#7b47ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-50"
+            <Button type='submit'
+              className="text-white mt-20 mb-20" style={{ width: "100%" }}
             >
               Cập nhật
-            </button>
+            </Button>
           </form>
         </Col>
 
