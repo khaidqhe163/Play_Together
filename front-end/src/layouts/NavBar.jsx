@@ -33,10 +33,10 @@ export default function NavBar() {
     return (
         <div className='row d-flex justify-content-center align-items-center py-2 navbar-wrapper' style={{ backgroundColor: "#20202b", height: "70px", zIndex: "100" , borderBottom: "1px solid black"}}>
             <div className='col-sm-3 d-flex'>
-                <Link to={'/home'}><IoGameControllerOutline color="white" size={35} /></Link>
+                <Link to={'/'}><IoGameControllerOutline color="white" size={35} /></Link>
             </div>
             <div className='col-sm-6 text-center'>
-                <Link to={'/home'} className="btn mx-3 rounded-circle navb" style={activeButton === 'home' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('home')}>
+                <Link to={'/'} className="btn mx-3 rounded-circle navb" style={activeButton === 'home' ? bgButtonActive : bgButton} onClick={() => handleButtonClick('home')}>
                     <div className="d-flex justify-content-center align-items-center">
                         <IoHomeOutline color="white" size={35} />
                     </div>
@@ -56,12 +56,12 @@ export default function NavBar() {
             </div>
             <div className='col-sm-3 d-flex justify-content-end align-items-center'>
                 {userInfo && userInfo !== null ? <>
-                    <Link to={'/home'} className="btn mx-2 rounded-circle" style={bgButton}>
+                    <Link to={'/'} className="btn mx-2 rounded-circle" style={bgButton}>
                         <div className="d-flex justify-content-center align-items-center">
                             <FaUserShield color="white" size={35} />
                         </div>
                     </Link>
-                    <Link to={'/home'} className="btn mx-2 rounded-circle" style={bgButton}>
+                    <Link to={'/'} className="btn mx-2 rounded-circle" style={bgButton}>
                         <div className="d-flex justify-content-center align-items-center">
                             <FaRegBell color="white" size={35} />
                         </div>
