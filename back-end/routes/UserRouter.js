@@ -43,6 +43,6 @@ UserRouter.get('/players', UserController.getAllPlayer);
 UserRouter.post('/search-player', UserController.searchPlayerByCriteria);
 UserRouter.post('/update-player-info', jwt.verifyAccessToken, UserController.updatePlayerInfo)
 UserRouter.get('/player-information/:id', UserController.getPlayerById);
-
-
+UserRouter.get('/players-by-service/:serviceId', UserController.getPlayerByServiceId);
+UserRouter.put('/change-password', jwt.verifyAccessToken, UserController.changePassword);
 export default UserRouter

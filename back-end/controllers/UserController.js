@@ -1,6 +1,7 @@
 import { UserService } from "../services/index.js"
 import jwt from '../middleware/jwt.js';
 import bcrypt from 'bcryptjs'
+// import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 import * as path from 'path'
@@ -221,7 +222,17 @@ const searchPlayerByCriteria = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 }
+const getPlayerByServiceId = async (req, res) => {
+    try {
+        const serviceId = req.params.serviceId;
+        const players = await UserService.getPlayerByServiceId(serviceId);
+        res.status(200).json(players);
 
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+}
 const updatePlayerInfo = async (req, res) => {
     try {
         console.log(req.body.achivements);
@@ -252,7 +263,29 @@ const updatePlayerInfo = async (req, res) => {
         res.status(500).json(error);
     }
 }
+const changePassword = async (req, res) => {
+    try {
+        const id = req.payload.id;
+        const { currentPassword, newPassword } = req.body;
+        console.log(req.body);
+        const user = await UserService.findByUserId(id);
 
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: "Mật khẩu không đúng!" });
+        }
+        var salt = bcrypt.genSaltSync(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        await user.save();
+
+        return res.status(200).json({ message: "Đổi mật khẩu thành công!" });
+    } catch (error) {
+        console.error("Change password error:", error);
+        return res.status(500).json({ error: "Có lỗi trong việc đổi mật khẩu!" });
+    }
+};
 const getPlayerById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -277,6 +310,8 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    getPlayerByServiceId,
+    changePassword,
     updatePlayerInfo,
     getPlayerById
 }

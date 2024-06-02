@@ -206,12 +206,17 @@ function PlayerProfile() {
                                     }
                                 </div>
                                 <p style={{ whiteSpace: "pre-line" }} className='text-white'>{player.player.info}</p>
-                                <iframe width="100%" height="315"
-                                    src="https://www.youtube.com/embed/5iPEK0uD50E?si=4s3bHiKcKhub4amZ"
-                                    title="YouTube video player"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                {
+                                    player.player.videoHightlight && (
+                                        <iframe width="100%" height="315"
+                                            src={player.player.videoHightlight}
+                                            title="YouTube video player"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                    )
+                                }
+
                                 <hr></hr>
                                 <h5>ĐÁNH GIÁ</h5>
                             </Col>

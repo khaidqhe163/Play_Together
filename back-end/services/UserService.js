@@ -116,6 +116,32 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         throw new Error(error.toString());
     }
 }
+const getPlayerByServiceId = async (serviceId) => {
+    try {
+
+        let players = await User.find({}).populate('player.serviceType').exec();
+
+        players = players.filter(user =>
+            user.player && user.player.serviceType && user.player.serviceType.some(service =>
+                service._id.equals(serviceId)
+            )
+        );
+
+        console.log(players);
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const findByUserId = async (id) => {
+    try {
+        const user = await User.findById(id);
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 
 const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roomVoice, device, service, videoHightlight, achivement) => {
     try {
@@ -162,6 +188,8 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    getPlayerByServiceId,
+    findByUserId,
     updatePlayerInfo,
     getPlayerById
 }

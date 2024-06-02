@@ -154,7 +154,7 @@ export default function PlayerSetting() {
         serviceType: JSON.stringify(pickGame)
       }
       const update = await api.post("/api/user/update-player-info", requestObject);
-      console.log(update.user);
+      console.log(update.data.user);
       dispatch(setUserInformation(update.user));
       toast('Cập nhật thành công!')
       console.log(requestObject);
