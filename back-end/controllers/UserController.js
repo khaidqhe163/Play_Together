@@ -46,7 +46,6 @@ const login = async (req, res) => {
         }
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
-        console.log(user);
         const { password, ...returnUser } = user;
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
         res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
@@ -64,7 +63,6 @@ const login = async (req, res) => {
 
 const autoLogin = async (req, res) => {
     try {
-        console.log(req.cookies);
         const user = await UserService.autoLogin(req.payload.email);
         const refreshToken = req.cookies.RefreshToken;
         const { password, ...returnUser } = user.user;
@@ -125,10 +123,7 @@ const sendEmail = async (req, res) => {
             })
         }
         const updateAt = user.updatedAt;
-        // console.log(user);
-        // console.log(user.updatedAt);
         const updateDate = new Date(updateAt);
-        console.log(updateDate.getMilliseconds());
         let token = req.body.email + "&" + (Date.now() + 5 * 60 * 1000) + "&" + updateDate.getMilliseconds();
         token = btoa(token);
         const mail = {
@@ -174,8 +169,6 @@ const verifyToken = async (req, res) => {
             })
         };
         const updateDate = new Date(user.updatedAt);
-        console.log(updateDate.getMilliseconds());
-        console.log(splToken[2]);
         if (updateDate.getMilliseconds() != splToken[2]) {
             return res.status(404).json({
                 message: "Token 2 is not valid!"
@@ -194,8 +187,6 @@ const verifyToken = async (req, res) => {
 
 const resetPassword = async (req, res) => {
     try {
-        console.log(req.body);
-        console.log(req.body.password);
 
         const resetPassword = await UserService.resetPassword(req.body.email, req.body.password);
         res.status(200).json({
@@ -211,7 +202,6 @@ const resetPassword = async (req, res) => {
 const getAllPlayer = async (req, res) => {
     try {
         const players = await UserService.getAllPlayer();
-        console.log(players);
         if (players.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy người chơi nào.' });
         }
@@ -231,6 +221,52 @@ const searchPlayerByCriteria = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 }
+
+const updatePlayerInfo = async (req, res) => {
+    try {
+        console.log(req.body.achivements);
+        const userId = req.payload.id;
+        const {
+            rentCost,
+            info,
+            youtubeUrl,
+            facebookUrl,
+            roomVoice,
+            deviceStatus,
+            serviceType,
+            videoHightlight,
+            achivements
+        } = req.body
+        const device = JSON.parse(deviceStatus);
+        const service = JSON.parse(serviceType)
+        const achivement = JSON.parse(achivements)
+        console.log(achivement);
+        const updatePlayer = await UserService.updatePlayerInfo(userId, rentCost, info, youtubeUrl, facebookUrl, roomVoice,
+            device, service, videoHightlight, achivement)
+
+        res.status(200).json({
+            message: "Update successfully",
+            user: updatePlayer
+        })
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+const getPlayerById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        console.log(id);
+        const user = await UserService.getPlayerById(id);
+        // console.log(user);
+        const { _id, username, gender, followers, player, avatar, images, createdAt } = user;
+        const returnPlayer = { _id, username, gender, followers, player, avatar, images, createdAt }
+        console.log(returnPlayer);
+        res.status(200).json(returnPlayer)
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
 export default {
     register,
     login,
@@ -241,4 +277,6 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    updatePlayerInfo,
+    getPlayerById
 }

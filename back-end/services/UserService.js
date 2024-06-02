@@ -116,6 +116,44 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         throw new Error(error.toString());
     }
 }
+
+const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roomVoice, device, service, videoHightlight, achivement) => {
+    try {
+        console.log(achivement);
+        const updateData = {
+            'player.rentCost': rentCost,
+            'player.info': info,
+            'player.youtubeUrl': youtubeUrl,
+            'player.facebookUrl': facebookUrl,
+            'player.roomVoice': roomVoice,
+            'player.deviceStatus.cam': device.cam,
+            'player.deviceStatus.mic': device.mic,
+            'player.serviceType': service,
+            'player.videoHightlight': videoHightlight,
+            'player.achivements': achivement
+        };
+
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: id },
+            {
+                $set: updateData
+            },
+            { new: true, runValidators: true }
+        );
+        return updatedUser
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
+
+const getPlayerById = async (id) => {
+    try {
+        const player = await User.findById(id);
+        return player;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     register,
     findUserByEmail,
@@ -124,4 +162,6 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    updatePlayerInfo,
+    getPlayerById
 }

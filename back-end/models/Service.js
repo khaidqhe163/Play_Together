@@ -7,7 +7,12 @@ const serviceSchema = new Schema({
     image: {
         type: String,
         required: true
-    }
+    },
+    background: {
+        type: String,
+        required: true
+    },
+
 });
 const Service = mongoose.model("service", serviceSchema);
 export default Service; 
