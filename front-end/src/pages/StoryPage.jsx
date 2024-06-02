@@ -3,6 +3,8 @@ import ListIdol from '../layouts/ListIdol';
 import NavBar from '../layouts/NavBar';
 import ListStoryPage from "../components/ListStoryPage";
 import StoryModal from '../components/Modal/StoryModal';
+import api from '../utils/axiosConfig'
+import { Spin } from 'antd';
 
 export default function StoryPage() {
     const [stories, setStories] = useState([]);
@@ -33,8 +35,19 @@ export default function StoryPage() {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Spin spinning={loading} className='d-flex justify-content-center align-content-center h-100'></Spin>;
     }
+
+    const handleViewStory = async () => {
+        try {
+          const res = await api.post('/api/stories/viewStory/' + stories[currentStory]?._id)
+          if (res?.isError) return 
+        } catch (error) {
+          console.log(error);
+        } finally { 
+        }
+    }
+
 
     return (
         <div className="container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain">
@@ -52,7 +65,7 @@ export default function StoryPage() {
                 <div className="col-10" style={{ backgroundColor: '#20202b' }}>
                     <div className="row d-flex justify-content-center">
                         <div className="col-12 col-md-10 py-3">
-                            <ListStoryPage stories={stories} setOpenModalStory={setOpenModalStory} setCurrentStory={setCurrentStory}/>
+                            <ListStoryPage stories={stories} setOpenModalStory={setOpenModalStory} setCurrentStory={setCurrentStory} handleViewStory={handleViewStory}/>
                         </div>
                     </div>
                 </div>
@@ -64,6 +77,7 @@ export default function StoryPage() {
                     onCancel={() => setOpenModalStory(undefined)}
                     setCurrentStory={setCurrentStory}
                     stories={stories}
+                    onViewStory={handleViewStory}
                     // story={stories[currentStory]}
                 // onOk={getList}
                 />

@@ -8,6 +8,7 @@ import avatar3 from '../assets/avatar3.jpg';
 import { FaRegEye } from "react-icons/fa";
 import { GrLinkNext } from "react-icons/gr";
 import StoryModal from './Modal/StoryModal';
+import api from '../utils/axiosConfig.js';
 
 export default function ListStory() {
 
@@ -54,14 +55,6 @@ export default function ListStory() {
                     </div>
                 </div>
             </div>
-
-            {!!openModalStory && (
-                <StoryModal
-                    open={openModalStory}
-                    onCancel={() => setOpenModalStory(undefined)}
-                    // onOk={getList}
-                />
-            )}
         </>
     );
 }
