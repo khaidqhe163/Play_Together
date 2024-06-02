@@ -116,6 +116,33 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         throw new Error(error.toString());
     }
 }
+const findUserById = async (userId) => {
+    try {
+        const user = await User.findById(userId).exec(); 
+        return user;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const updateUser = async (userId, newAvatar, gender, dob, username) => {
+    try {
+        const updateNewUser = {
+            "avatar": newAvatar,
+            "username": username,
+            "gender": gender,
+            "dateOfBirth": dob
+        }
+        const updatedUser = await User.findOneAndUpdate({_id:userId},{$set:updateNewUser}, {new:true});
+        console.log(updatedUser);
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+
+
 export default {
     register,
     findUserByEmail,
@@ -124,4 +151,6 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    findUserById,
+    updateUser,
 }

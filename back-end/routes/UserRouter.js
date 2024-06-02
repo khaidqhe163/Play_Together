@@ -3,6 +3,7 @@ import { UserController, StoryController} from '../controllers/index.js';
 import middleware from '../middleware/jwt.js';
 import passport from 'passport';
 import jwt from '../middleware/jwt.js';
+import multer from 'multer';
 
 const UserRouter = express.Router();
 
@@ -41,5 +42,23 @@ UserRouter.post("/verify-password-token", UserController.verifyToken);
 
 UserRouter.get('/players', UserController.getAllPlayer);
 UserRouter.post('/search-player', UserController.searchPlayerByCriteria);
+
+UserRouter.get('/:userId', UserController.getUserById); 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/avatar/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, "6651f21e079075c8a3da9d02" + Date.now() + file.originalname);
+    }
+})
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 3
+    }
+})
+UserRouter.put('/update-profile',jwt.verifyAccessToken,upload.single("newAvatar"), UserController.updateUser);
+
 
 export default UserRouter

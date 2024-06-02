@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs'
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 import * as path from 'path'
+import fs from "fs"
+
 const register = async (req, res) => {
     try {
         const {
@@ -221,6 +223,38 @@ const searchPlayerByCriteria = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 }
+
+const getUserById = async (req, res) => {
+    try {
+        const userId = req.params.userId; 
+        const user = await UserService.findUserById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user); 
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+const updateUser = async (req, res) => {
+    try {
+        console.log(req.body);
+        const newAvatar = req.file.avatar;
+        const {avatar,gender,dob,username} = req.body;
+        const userId = req.payload.id;
+        const updatedInfo = req.body; 
+        const userdService =  await UserService.updateUser(userId, newAvatar, gender, dob, username);
+       
+        fs.unlinkSync(avatar);
+        res.status(200).json(userdService);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
 export default {
     register,
     login,
@@ -231,4 +265,6 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    getUserById,
+    updateUser,
 }
