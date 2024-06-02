@@ -6,7 +6,9 @@ import { baseUrl } from '../utils/service';
 
 const ImageGallery = ({ image, isOpen, closeModal, previousImage, nextImage }) => {
     console.log(isOpen);
-    let converted_path = image.replaceAll("\\", "/")
+    let converted_path;
+    if (image)
+        converted_path = image.replaceAll("\\", "/")
     const url = baseUrl + converted_path;
     return (
         <div style={{ zIndex: "10" }} onClick={closeModal}>
@@ -30,11 +32,11 @@ const ImageGallery = ({ image, isOpen, closeModal, previousImage, nextImage }) =
                     overlay: {
                         backgroundColor: 'rgba(0, 0, 0, 0.75)',
                     },
-                }}  
+                }}
             >
                 <div style={{ position: "absolute", top: "20px", right: "20px", cursor: "pointer" }} onClick={closeModal}><IoMdClose fontSize={30} /></div>
                 <div style={{ cursor: "pointer" }} onClick={previousImage} className='text-white'><GrPrevious fontSize={50} /></div>
-                <img src={url} style={{ maxWidth: '90%', maxHeight: '80vh', marginTop:"70px" }} onClick={(e) => e.stopPropagation()} />
+                <img src={url} style={{ maxWidth: '90%', maxHeight: '80vh', marginTop: "70px" }} onClick={(e) => e.stopPropagation()} />
                 <div style={{ cursor: "pointer" }} onClick={nextImage} className='text-white'><GrNext fontSize={50} /></div>
             </Modal>
         </div>
