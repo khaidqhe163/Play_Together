@@ -42,9 +42,9 @@ const getStoryDetail = async (storyId) => {
 
       let liked 
       if (!story.like.includes(userID)) {
-        liked = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { like: userID}} )
+        liked = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { like: userID}}, {new: true})
       } else {
-        liked = await Story.findByIdAndUpdate({ _id: storyID }, { $pull: { like: userID}} )
+        liked = await Story.findByIdAndUpdate({ _id: storyID }, { $pull: { like: userID}}, {new: true})
       }
 
       return liked

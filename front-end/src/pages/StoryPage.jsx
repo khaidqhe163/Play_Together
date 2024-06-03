@@ -18,21 +18,21 @@ export default function StoryPage() {
         }
     }, [currentStory])
 
-    useEffect(() => {
-        const fetchStories = async () => {
-            try {
-                const response = await fetch('http://localhost:3008/api/stories');
-                const data = await response.json();
-                setStories(data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching stories:", error);
-                setLoading(false);
-            }
-        };
+    const getListStories = async () => {
+        try {
+            const response = await fetch('http://localhost:3008/api/stories');
+            const data = await response.json();
+            setStories(data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching stories:", error);
+            setLoading(false);
+        }
+    };
 
-        fetchStories();
-    }, []);
+    useEffect(() => {
+        getListStories()
+    }, [])
 
     if (loading) {
         return <Spin spinning={loading} className='d-flex justify-content-center align-content-center h-100'></Spin>;
@@ -78,6 +78,7 @@ export default function StoryPage() {
                     setCurrentStory={setCurrentStory}
                     stories={stories}
                     onViewStory={handleViewStory}
+                    onOk={getListStories}
                     // story={stories[currentStory]}
                 // onOk={getList}
                 />

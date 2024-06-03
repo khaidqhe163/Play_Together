@@ -3,6 +3,6 @@ import { CommentController } from '../controllers/index.js';
 
 const CommentRouter = express.Router();
 
-CommentRouter.get('/:storyId', CommentController.getAllCommentsByStoryId);
+CommentRouter.get('/:storyID', CommentController.getAllCommentsByStoryId);
 
 export default CommentRouter;

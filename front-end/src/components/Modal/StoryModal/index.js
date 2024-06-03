@@ -9,7 +9,7 @@ import { baseUrl } from "../../../utils/service";
 import api from '../../../utils/axiosConfig.js';
 import { useSelector } from "react-redux";
 
-const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory }) => {
+const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onOk }) => {
     const [form] = Form.useForm();
     const user = useSelector((state) => state.user);
     const [likedStatus, setLikedStatus] = useState(open?.like?.some(i => i?._id === user?.value?._id))
@@ -62,6 +62,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory }) =
       try {
         const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
         if (res?.isError) return 
+        onOk()
         setLikedStatus(!likedStatus)
         setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
       } catch (error) {
@@ -72,14 +73,16 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory }) =
 
     const getListComments = async () => {
         try {
-            const res = await api.get('/api/comment/getAllCommentsByStoryId/' + open?._id)
-            if (res?.isError) return 
-            console.log("comment: ", res);
-            // setComments()
+            const res = await api.get('/api/comment/' + open?._id);
+            if (res?.isError) return;
+            setComments(res)
         } catch (error) {
             console.log(error);
         }
     }
+
+    console.log("comment", comments);
+    
 
     useEffect(() => {
       setLikedStatus(open?.like?.some(i => i === user?.value?._id));
@@ -126,6 +129,9 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory }) =
                             </Col>
                         </Row>
                     </Col>
+
+
+
                     <Col span={10}>
                         <div className="user d-flex flex-column justify-content-space-between">
                             <div className=" d-flex flex-column">
@@ -160,7 +166,34 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory }) =
                                 <div className="stuatus mt-20 ml-20">
                                     {open.text}
                                 </div>
+
                                 <Divider />
+
+                                <div className="comment pl-30">
+                                    {
+                                        comments.map((c, i) =>  (
+                                            <div key={i} className="d-flex flex-column mb-25">
+                                                <div className="d-flex">
+                                                    <div className="avatar-commnet mr-20">
+                                                        <Image
+                                                            alt="Avatar"
+                                                            preview={false}
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                            src={baseUrl + c?.commentor?.avatar}
+                                                        />
+                                                    </div>
+                                                    <div className="d-flex flex-column ">
+                                                        <div style={{ fontWeight: '700', fontSize: '12px'}}> <span> {c?.commentor?.username} </span></div>
+                                                        <div style={{ fontSize: '10px', color: '#A19F9F' }}> <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span> </div>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-5">
+                                                    <span className="ml-10"> {c?.content} </span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
                             </div>
                             <div className="comment">
                                 <Divider style={{ marginBottom: '15px' }} />

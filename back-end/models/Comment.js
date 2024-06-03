@@ -7,6 +7,8 @@ const commentSchema = new Schema({
     commentor: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     content: {type: String, required: true},
     reply: Schema.Types.ObjectId
+}, {
+    timestamps: true
 });
 
 const Comment = mongoose.model("comment", commentSchema);
