@@ -8,6 +8,7 @@ import axios from 'axios';
 import { baseUrl, formatDate, formatMoney } from '../utils/service';
 import { FaFacebook, FaYoutube } from 'react-icons/fa';
 import ImageGallery from '../components/ImageGallery';
+import { userInfor } from '../features/userSlice';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
@@ -61,7 +62,7 @@ function PlayerProfile() {
         }
     }
 
-    console.log(isOpen);
+    console.log(userInfor);
 
     return (
         <>
@@ -207,14 +208,15 @@ function PlayerProfile() {
                                 </div>
                                 <p style={{ whiteSpace: "pre-line" }} className='text-white'>{player.player.info}</p>
                                 {
-                                    player.player.videoHightlight && (
-                                        <iframe width="100%" height="315"
-                                            src={player.player.videoHightlight}
-                                            title="YouTube video player"
-                                            frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                                    )
+                                    // player.player.videoHightlight && (
+                                    //     <iframe width="560" height="315"
+                                    //         src={player.player.videoHightlight}
+                                    //         title="YouTube video player"
+                                    //         frameborder="0"
+                                    //         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    //         referrerpolicy="strict-origin-when-cross-origin"
+                                    //         allowfullscreen></iframe>
+                                    // )
                                 }
 
                                 <hr></hr>
