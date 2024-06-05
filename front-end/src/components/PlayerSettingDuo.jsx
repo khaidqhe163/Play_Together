@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux"; 
+import { userInfor } from "../features/userSlice"; 
 
 export default function PlayerSettingDuo() {
   const [isDuoEnabled, setIsDuoEnabled] = useState(false);
+  const userInfo = useSelector(userInfor); 
+
+  useEffect(() => {
+    if (userInfo && userInfo.player && userInfo.player.duoSettings) {
+      setIsDuoEnabled(userInfo.player.duoSettings); 
+    }
+  }, [userInfo]); 
 
   const toggleDuo = () => {
     setIsDuoEnabled(!isDuoEnabled);
