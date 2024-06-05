@@ -45,6 +45,7 @@ export default function Profile() {
             form.append('username', username);
             form.append('gender', gender);
             form.append('dob', dob);
+            form.append('avatar', avatar);
 
             const updateUser = await API.put('/api/user/update-profile', form, {
                 headers: {

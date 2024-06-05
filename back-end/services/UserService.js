@@ -192,12 +192,15 @@ const findUserById = async (userId) => {
 const updateUser = async (userId, newAvatar, gender, dob, username) => {
     try {
         const updateFields = {
-            avatar: newAvatar,
+            
             username: username,
             gender: gender,
             dateOfBirth: dob
         };
-        
+        if(newAvatar){
+            updateFields.avatar = newAvatar
+        }
+        console.log(updateFields);
         const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
         return updatedUser;
     } catch (error) {

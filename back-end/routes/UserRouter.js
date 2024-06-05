@@ -53,7 +53,7 @@ const storage = multer.diskStorage({
         cb(null, 'public/avatar/');
     },
     filename: function (req, file, cb) {
-        cb(null, `${file.originalname}`);
+        cb(null, req.payload.id + Date.now() + file.originalname);
     }
 });
 
@@ -63,6 +63,5 @@ const upload = multer({
 });
 UserRouter.put('/update-profile', jwt.verifyAccessToken, upload.single('newAvatar'), UserController.updateUser);
 UserRouter.put('/update-duo-setting', jwt.verifyAccessToken, UserController.updateDuoSetting);
-
 
 export default UserRouter
