@@ -4,10 +4,10 @@ import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
 
 var salt = bcrypt.genSaltSync(10);
-const register = async (email, username, dob, gender, password) => {
+const register = async (email, username, dateOfBirth, gender, password) => {
     try {
         const hashPassword = bcrypt.hashSync(password, salt)
-        await User.create({ email, username, dob, gender, password: hashPassword });
+        await User.create({ email, username, dateOfBirth, gender, password: hashPassword });
     } catch (error) {
         throw new Error(error.toString());
     }
@@ -218,19 +218,6 @@ const updateDuoSetting = async (userId, isDuoEnabled) => {
     }
 };
 
-const updateDuoSetting = async (userId, isDuoEnabled) => {
-    try {
-        const updateFields = {
-            'player.duoSettings': isDuoEnabled,
-        };
-
-        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
-        return updatedUser;
-    } catch (error) {
-        throw new Error(error.toString());
-    }
-};
-
 export default {
     register,
     findUserByEmail,
@@ -242,4 +229,8 @@ export default {
     findUserById,
     updateUser,
     updateDuoSetting,
+    getPlayerById,
+    getPlayerByServiceId,
+    updatePlayerInfo,
+    findByUserId
 }
