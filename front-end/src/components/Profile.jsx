@@ -45,6 +45,7 @@ export default function Profile() {
             form.append('username', username);
             form.append('gender', gender);
             form.append('dob', dob);
+            form.append('avatar', avatar);
 
             const updateUser = await API.put('/api/user/update-profile', form, {
                 headers: {
@@ -65,7 +66,7 @@ export default function Profile() {
                 <div className="mb-4">
                     {avatar ? (
                         <img
-                            src={`${baseUrl}/avatar/${avatar}`}
+                            src={`${baseUrl}${avatar}`}
                             ref={avatarInput}
                             alt="Avatar"
                             className="w-24 h-24 rounded-full border-2 border-gray-300"

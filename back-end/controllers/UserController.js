@@ -315,11 +315,14 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const newAvatar = req.file ? req.file.filename : undefined;
+        const newAvatar = req.file?.path ;
         const { gender, dob, username } = req.body;
 
         const updatedUser = await UserService.updateUser(userId, newAvatar, gender, dob, username);
-
+        if(newAvatar){
+            fs.unlinkSync(req.body.avatar)
+        }
+        console.log(req.body.avatar);
         res.status(200).json(updatedUser);
     } catch (error) {
         res.status(500).json({ message: error.toString() });
