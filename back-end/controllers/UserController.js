@@ -252,6 +252,19 @@ const updateUser = async (req, res) => {
         res.status(500).json({ message: error.toString() });
     }
 };
+
+const updateDuoSetting = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const { isDuoEnabled } = req.body;
+
+        const updatedUser = await UserService.updateDuoSetting(userId, isDuoEnabled);
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
 export default {
     register,
     login,
@@ -264,4 +277,5 @@ export default {
     searchPlayerByCriteria,
     getUserById,
     updateUser,
+    updateDuoSetting,
 }
