@@ -5,6 +5,11 @@ const bookingSchema = new Schema({
         ref: "user",
         required: true
     },
+    player: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true
+    },
     serviceLessor: {
         type: Schema.Types.ObjectId,
         ref: "service",

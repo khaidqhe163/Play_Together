@@ -18,7 +18,9 @@ const getStories = async (req, res) => {
 
 const createStory = async (req, res) => {
     try {
-        const userId =  "6651f21e079075c8a3da9d02";
+        console.log(req.headers);
+        const userId = req.payload.id;
+        console.log(req.body.video);
         let video;
         console.log(req.body);
         await getVideoDurationInSeconds(req.file.path).then((duration) => {
@@ -59,7 +61,47 @@ function generateThumbnail(videoPath, thumbnailPath, thumbnailName) {
             console.error('Error generating thumbnail: ' + err.message);
         });
 }
+
+const getStoryDetail = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const story = await StoryService.getStoryDetail(id);
+      res.status(200).json(story);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
+
+const likeOrUnlikeStory = async (req, res) => {
+    try {
+        const userID = req.payload.id 
+        const storyID = req.params.id
+        const story = await StoryService.likeOrUnlikeStory(userID, storyID);
+        res.status(200).json(story);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
+const viewStory = async (req, res) => {
+    try {
+        const userID = req.payload.id 
+        const storyID = req.params.id
+        const story = await StoryService.viewStory(userID, storyID);
+        res.status(200).json(story);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
 export default {
     getStories,
-    createStory
+    createStory,
+    getStoryDetail,
+    likeOrUnlikeStory,
+    viewStory,
 }
