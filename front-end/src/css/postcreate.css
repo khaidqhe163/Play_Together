@@ -7,7 +7,8 @@
 }
 
 button{
-    background-color: #6b47ff !important;
+    background-color: #6b47ff; 
+    /*Lấy tên class đi không đè màu lên chỗ button khác*/
 }
 .modal-header {
     background-color: #354052;
@@ -117,10 +118,15 @@ button{
     padding: 20px;
 }
 
+.user-info{
+    display: flex;
+    align-items: center;
+}
 
 .user-info img {
     width: 40px;
     height: 40px;
+    margin-right: 20px;
 }
 
 .post-caption textarea {

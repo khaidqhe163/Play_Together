@@ -116,6 +116,70 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         throw new Error(error.toString());
     }
 }
+const getPlayerByServiceId = async (serviceId) => {
+    try {
+
+        let players = await User.find({}).populate('player.serviceType').exec();
+
+        players = players.filter(user =>
+            user.player && user.player.serviceType && user.player.serviceType.some(service =>
+                service._id.equals(serviceId)
+            )
+        );
+
+        console.log(players);
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const findByUserId = async (id) => {
+    try {
+        const user = await User.findById(id);
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roomVoice, device, service, videoHightlight, achivement) => {
+    try {
+        console.log(achivement);
+        const updateData = {
+            'player.rentCost': rentCost,
+            'player.info': info,
+            'player.youtubeUrl': youtubeUrl,
+            'player.facebookUrl': facebookUrl,
+            'player.roomVoice': roomVoice,
+            'player.deviceStatus.cam': device.cam,
+            'player.deviceStatus.mic': device.mic,
+            'player.serviceType': service,
+            'player.videoHightlight': videoHightlight,
+            'player.achivements': achivement
+        };
+
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: id },
+            {
+                $set: updateData
+            },
+            { new: true, runValidators: true }
+        );
+        return updatedUser
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
+
+const getPlayerById = async (id) => {
+    try {
+        const player = await User.findById(id);
+        return player;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 const findUserById = async (userId) => {
     try {
         const user = await User.findById(userId).exec(); 
@@ -134,6 +198,19 @@ const updateUser = async (userId, newAvatar, gender, dob, username) => {
             dateOfBirth: dob
         };
         
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const updateDuoSetting = async (userId, isDuoEnabled) => {
+    try {
+        const updateFields = {
+            'player.duoSettings': isDuoEnabled,
+        };
+
         const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
         return updatedUser;
     } catch (error) {

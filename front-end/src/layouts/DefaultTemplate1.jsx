@@ -1,6 +1,6 @@
 import ListService from './ListService';
 import NavBar from './NavBar';
-
+import toast, { Toaster } from 'react-hot-toast';
 export default function DefaultTemplate({ children }) {
     return (
         <div className='container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain'>
@@ -9,11 +9,11 @@ export default function DefaultTemplate({ children }) {
                     <NavBar />
                 </div>
             </div>
-            <div className='row flex-grow-1'>
+            <div className='row flex-grow-1' style={{ height: "100vh", overflow: "auto" }}>
                 <div className='col-2 position-relative'>
                     <ListService />
                 </div>
-                <div className='col-10'>
+                <div className='col-10' >
                     <div className='row d-flex justify-content-center'>
                         <div className='col-10 py-3'>
                             {children}
