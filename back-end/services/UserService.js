@@ -127,21 +127,19 @@ const findUserById = async (userId) => {
 
 const updateUser = async (userId, newAvatar, gender, dob, username) => {
     try {
-        const updateNewUser = {
-            "avatar": newAvatar,
-            "username": username,
-            "gender": gender,
-            "dateOfBirth": dob
-        }
-        const updatedUser = await User.findOneAndUpdate({_id:userId},{$set:updateNewUser}, {new:true});
-        console.log(updatedUser);
+        const updateFields = {
+            avatar: newAvatar,
+            username: username,
+            gender: gender,
+            dateOfBirth: dob
+        };
+        
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
         return updatedUser;
     } catch (error) {
         throw new Error(error.toString());
     }
 };
-
-
 
 export default {
     register,
