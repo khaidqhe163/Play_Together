@@ -237,7 +237,6 @@ const getPlayerByServiceId = async (req, res) => {
 }
 const updatePlayerInfo = async (req, res) => {
     try {
-        console.log(req.body.achivements);
         const userId = req.payload.id;
         const {
             rentCost,
@@ -253,7 +252,6 @@ const updatePlayerInfo = async (req, res) => {
         const device = JSON.parse(deviceStatus);
         const service = JSON.parse(serviceType)
         const achivement = JSON.parse(achivements)
-        console.log(achivement);
         const updatePlayer = await UserService.updatePlayerInfo(userId, rentCost, info, youtubeUrl, facebookUrl, roomVoice,
             device, service, videoHightlight, achivement)
 
@@ -269,7 +267,6 @@ const changePassword = async (req, res) => {
     try {
         const id = req.payload.id;
         const { currentPassword, newPassword } = req.body;
-        console.log(req.body);
         const user = await UserService.findByUserId(id);
 
         const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -291,12 +288,9 @@ const changePassword = async (req, res) => {
 const getPlayerById = async (req, res) => {
     try {
         const id = req.params.id;
-        console.log(id);
         const user = await UserService.getPlayerById(id);
-        // console.log(user);
         const { _id, username, gender, followers, player, avatar, images, createdAt } = user;
         const returnPlayer = { _id, username, gender, followers, player, avatar, images, createdAt }
-        console.log(returnPlayer);
         res.status(200).json(returnPlayer)
     } catch (error) {
         res.status(500).json(error);
@@ -331,6 +325,19 @@ const updateUser = async (req, res) => {
         res.status(500).json({ message: error.toString() });
     }
 };
+
+const updateDuoSetting = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const { isDuoEnabled } = req.body;
+
+        const updatedUser = await UserService.updateDuoSetting(userId, isDuoEnabled);
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
 export default {
     register,
     login,
@@ -341,4 +348,11 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    getUserById,
+    updateUser,
+    updateDuoSetting,
+    getPlayerByServiceId,
+    updatePlayerInfo,
+    getPlayerById,
+    changePassword
 }
