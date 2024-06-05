@@ -5,7 +5,7 @@ import image2 from '../assets/carovalorant.jpg';
 import image3 from '../assets/carogtav.jpg';
 export default function ListCarousel() {
     return (
-        <div className="row mb-4">
+        <div className="row mb-30">
             <div className="col-md-12" >
                 <Carousel>
                     <Carousel.Item style={{ height: '400px' }}>

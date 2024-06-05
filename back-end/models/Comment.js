@@ -1,11 +1,14 @@
 import mongoose, { Schema } from "mongoose";
 
 const commentSchema = new Schema({
-    storyId: { type: Schema.Types.ObjectId, required: true },
-    userId: { type: Schema.Types.ObjectId, required: true },
+    storyId: { type: Schema.Types.ObjectId, ref: 'story', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     stars: { type: Number, min: 1, max: 5, default: 5 },
-    commentor: { type: Schema.Types.ObjectId, required: true },
+    commentor: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+    content: {type: String, required: true},
     reply: Schema.Types.ObjectId
+}, {
+    timestamps: true
 });
 
 const Comment = mongoose.model("comment", commentSchema);

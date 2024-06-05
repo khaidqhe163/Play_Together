@@ -1,14 +1,16 @@
 import '../App.css';
-
+import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { baseUrl } from '../utils/service.js'
+import { getService, setService } from '../features/serviceSlice.js';
 export default function ListService() {
-
+    const dispatch = useDispatch();
+    const service = useSelector(getService);
     const stickySidebar = {
         backgroundColor: "#20202b",
         width: "100%",
         position: "sticky",
-        top: "56px",
+        top: "0px",
         height: "calc(100vh - 70px)",
 
     };
@@ -37,7 +39,14 @@ export default function ListService() {
     }
     useEffect(() => {
         fetchApiService();
-    }, [])
+    }, []);
+    // console.log(`serviceId: ${service._id}`);
+    const handleClickService = (s) => {
+        console.log(s);
+        dispatch(setService(s));
+    };
+
+
 
     return (
         <div className='row d-flex flex-column py-2' style={stickySidebar}>
@@ -48,10 +57,10 @@ export default function ListService() {
             <div className='p-0 overflow-x-hidden scrollbar' style={{ height: "94%" }}>
                 <ul className="w-100 d-flex flex-column" style={listStyle}>
                     {listService.map(s => (
-                        <li className="list-item" key={s._id}>
+                        <li className={service && service._id === s._id ? "list-item bg-bgButton text-white cursor-default" : "list-item cursor-pointer active:scale-90 transition-all"} key={s._id} onClick={() => handleClickService(s)}>
                             <div className="media d-flex align-items-center">
                                 <div className="mediaL text-left" style={{ marginRight: "10px" }}>
-                                    <img className='rounded' src={baseUrl + s.image} width={"35px"} />
+                                    <img className='rounded' src={baseUrl + s.image} width={"35px"} alt='none' />
                                 </div>
                                 <div className='mediaM'>
                                     <p className='text-center my-auto'>{s.name}</p>

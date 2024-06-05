@@ -6,7 +6,13 @@ import { baseUrl } from '../utils/service.js';
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { TfiMoreAlt } from "react-icons/tfi";
+import ListPlayer from './ListPlayer.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { getService } from '../features/serviceSlice.js';
 export default function Search() {
+  const dispatch = useDispatch();
+  const service = useSelector(getService);
+  const serviceId = service?._id;
   const [showPopUpRange, setShowPopUpRange] = useState(false);
   const [formData, setFormData] = useState({
     gender: '',
@@ -63,10 +69,10 @@ export default function Search() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div className='row'>
+      <form onSubmit={handleSubmit} className='mt-0'>
+        <div className='row '>
           <div className='col-md-12'>
-            <div className='row'>
+            <div className='row my-3'>
               <div className='col-md-2'>
                 <select
                   name="gender"
@@ -158,52 +164,70 @@ export default function Search() {
       {hasSearched && (
         <>
           <h5 className='text-white my-4'>Kết quả tìm kiếm</h5>
-          {listSearch.length > 0?
+          {listSearch.length > 0 ?
             <div className='row'>
-            {listSearch.map(p => (
-              <div className='col-md-3 mb-4'>
-                <Link className='text-decoration-none'>
-                  <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
-                    <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
-                    <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>
-                      <p className='text-white m-0'>{p.player.rentCost.toLocaleString('en-US', {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 3,
-                      })} đ/h</p>
-                    </div>
-                    <div className="card-body">
-                      <h3 className="card-title text-lg text-white d-flex align-items-center">
-                        <Link className='text-decoration-none text-white'>{p.username}</Link>
-                        <IoIosCheckmarkCircle size={20} className='ml-1 text-bgButton' />
-                        <div class="player-status ready"> </div>
-                      </h3>
-                      {p.player.contentStatus ? <p className="card-text text-sm mb-0" style={{ color: "#ADADAD" }}>{p.player.contentStatus}</p> : <br />}
-                      <div className='d-flex align-items-center mt-3'>
-                        <div className='w-50 d-flex'>
-                          {p.player.serviceType.slice(0, 4).map((i, index) => (
-                            <>
-                              {index < 3 ? (
-                                <img src={baseUrl + i.image} className='w-6 h-6 rounded-circle mr-1' alt={`Image ${index}`} />
-                              ) : (
-                                <div className='rounded-full w-7 h-7 bg-slate-700 flex justify-center items-center opacity-50'><TfiMoreAlt className='text-center' color='white' size={20} /></div>
-                              )}
-                            </>
-                          ))}
+              {listSearch.map(p => (
+                <div className='col-md-3 mb-4'>
+                  <Link className='text-decoration-none'>
+                    <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
+                      <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
+                      <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>
+                        <p className='text-white m-0'>{p.player.rentCost.toLocaleString('en-US', {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 3,
+                        })} đ/h</p>
+                      </div>
+                      <div className="card-body">
+                        <h3 className="card-title text-lg text-white d-flex align-items-center">
+                          <Link className='text-decoration-none text-white'>{p.username}</Link>
+                          <IoIosCheckmarkCircle size={20} className='ml-1 text-bgButton' />
+                          <div class="player-status ready"> </div>
+                        </h3>
+                        {p.player.contentStatus ? <p className="card-text text-sm mb-0" style={{ color: "#ADADAD" }}>{p.player.contentStatus}</p> : <br />}
+                        <div className='d-flex align-items-center mt-3'>
+                          <div className='w-50 d-flex'>
+                            {p.player.serviceType.slice(0, 4).map((i, index) => (
+                              <>
+                                {index < 3 ? (
+                                  <img src={baseUrl + i.image} className='w-6 h-6 rounded-circle mr-1' alt={`Image ${index}`} />
+                                ) : (
+                                  <div className='rounded-full w-7 h-7 bg-slate-700 flex justify-center items-center opacity-50'><TfiMoreAlt className='text-center' color='white' size={20} /></div>
+                                )}
+                              </>
+                            ))}
 
-                        </div>
-                        <div className='w-50 d-flex align-items-center justify-content-end'>
-                          <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>4.8 <span>(355)</span></p>
+                          </div>
+                          <div className='w-50 d-flex align-items-center justify-content-end'>
+                            <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>4.8 <span>(355)</span></p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
+                  </Link>
+                </div>
+              ))}
 
-          </div>:<div className='row'><h5 className='text-textSecondary my-3'>Không tìm thấy kết quả phù hợp!</h5></div>}
+            </div> : <div className='row'><h5 className='text-textSecondary my-3'>Không tìm thấy kết quả phù hợp!</h5></div>}
         </>
       )}
+      {service && <>
+        <div className='row my-2'>
+          <div className='col-md-6 d-flex items-center'>
+            <div>
+              <img className='rounded w-10 h-10' src={baseUrl + service.image} alt='none' />
+            </div>
+            <div>
+              <h5 className="text-white ml-5">{service.name}</h5>
+            </div>
+          </div>
+        </div>
+        <ListPlayer url={`api/user/players-by-service/${serviceId}`} />
+      </>}
+      {!service && <>
+      <h5 className="text-white my-4">LIST PLAYERS</h5>
+      <ListPlayer />
+      </>}
+
     </>
 
   );

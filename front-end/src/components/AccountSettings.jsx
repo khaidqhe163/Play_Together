@@ -2,7 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleAccountDropdown, togglePlayerDropdown, selectDropdownState } from '../features/dropdownSlice';
-import { FaUser, FaGamepad, FaUserCircle, FaKey, FaHistory, FaCog, FaList, FaBook } from 'react-icons/fa'; // Importing icons
+import { FaUser, FaGamepad, FaUserCircle, FaKey, FaHistory, FaCog, FaList, FaBook } from 'react-icons/fa';
+import { BiSolidPhotoAlbum } from "react-icons/bi"; // Importing icons
 import '../App.css';
 
 export default function AccountSettings() {
@@ -87,6 +88,13 @@ export default function AccountSettings() {
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <FaCog style={{ marginRight: "5px" }} />
                                 <span>Tổng quan</span>
+                            </div>
+                        </NavLink>
+                        <br />
+                        <NavLink to="/player-album" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <BiSolidPhotoAlbum style={{ marginRight: "5px" }} />
+                                <span>Album ảnh của bạn</span>
                             </div>
                         </NavLink>
                         <br />
