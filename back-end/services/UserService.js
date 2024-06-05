@@ -116,6 +116,32 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         throw new Error(error.toString());
     }
 }
+const getPlayerByServiceId = async (serviceId) => {
+    try {
+
+        let players = await User.find({}).populate('player.serviceType').exec();
+
+        players = players.filter(user =>
+            user.player && user.player.serviceType && user.player.serviceType.some(service =>
+                service._id.equals(serviceId)
+            )
+        );
+
+        console.log(players);
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const findByUserId = async (id) => {
+    try {
+        const user = await User.findById(id);
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 
 const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roomVoice, device, service, videoHightlight, achivement) => {
     try {
@@ -145,6 +171,15 @@ const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roo
         throw new Error(error.toString());
     }
 }
+
+const getPlayerById = async (id) => {
+    try {
+        const player = await User.findById(id);
+        return player;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     register,
     findUserByEmail,
@@ -153,5 +188,8 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
-    updatePlayerInfo
+    getPlayerByServiceId,
+    findByUserId,
+    updatePlayerInfo,
+    getPlayerById
 }

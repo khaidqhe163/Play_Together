@@ -23,7 +23,7 @@ passport.use(new FacebookStrategy({
 },
     async function (accessToken, refreshToken, profile, cb) {
         console.log(profile);
-        // await UserService.addSocialAccount(profile);
+        await UserService.addSocialAccount(profile);
         return cb(null, profile);
     }
 ));

@@ -62,7 +62,7 @@ function StoryCreation({ show, close, stories, setStory }) {
                 }
             );
             console.log(story);
-            const updateStory = [story.data, ...stories];
+            const updateStory = [story.data.data, ...stories];
             console.log(updateStory);
             setStory(updateStory)
             close();

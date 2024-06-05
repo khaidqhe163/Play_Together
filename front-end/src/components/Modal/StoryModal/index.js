@@ -56,39 +56,39 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             console.log(error);
         }
     }
-    
+
 
     const handleLikedOrUnliked = async () => {
-      try {
-        const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
-        if (res?.isError) return 
-        onOk()
-        setLikedStatus(!likedStatus)
-        setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
-      } catch (error) {
-        console.log(error);
-      } finally { 
-      }
+        try {
+            const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
+            if (res?.isError) return
+            onOk()
+            setLikedStatus(!likedStatus)
+            setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
+        } catch (error) {
+            console.log(error);
+        } finally {
+        }
     }
 
     const getListComments = async () => {
         try {
             const res = await api.get('/api/comment/' + open?._id);
             if (res?.isError) return;
-            setComments(res)
+            setComments(res.data)
         } catch (error) {
             console.log(error);
         }
     }
 
     console.log("comment", comments);
-    
+
 
     useEffect(() => {
-      setLikedStatus(open?.like?.some(i => i === user?.value?._id));
-      setLikesCount(open?.like?.length);
-      handleViewStory()
-      getListComments()
+        setLikedStatus(open?.like?.some(i => i === user?.value?._id));
+        setLikesCount(open?.like?.length);
+        handleViewStory()
+        getListComments()
     }, [open, user, open?.author?._id]);
 
     return (
@@ -171,7 +171,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
 
                                 <div className="comment pl-30">
                                     {
-                                        comments.map((c, i) =>  (
+                                        comments && comments.map((c, i) => (
                                             <div key={i} className="d-flex flex-column mb-25">
                                                 <div className="d-flex">
                                                     <div className="avatar-commnet mr-20">
@@ -183,7 +183,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                                         />
                                                     </div>
                                                     <div className="d-flex flex-column ">
-                                                        <div style={{ fontWeight: '700', fontSize: '12px'}}> <span> {c?.commentor?.username} </span></div>
+                                                        <div style={{ fontWeight: '700', fontSize: '12px' }}> <span> {c?.commentor?.username} </span></div>
                                                         <div style={{ fontSize: '10px', color: '#A19F9F' }}> <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span> </div>
                                                     </div>
                                                 </div>
