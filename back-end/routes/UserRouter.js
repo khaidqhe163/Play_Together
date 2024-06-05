@@ -62,6 +62,7 @@ const upload = multer({
     limits: { fileSize: 1024 * 1024 * 3 }
 });
 UserRouter.put('/update-profile', jwt.verifyAccessToken, upload.single('newAvatar'), UserController.updateUser);
+UserRouter.put('/update-duo-setting', jwt.verifyAccessToken, UserController.updateDuoSetting);
 
 
 export default UserRouter

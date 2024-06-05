@@ -205,6 +205,32 @@ const updateUser = async (userId, newAvatar, gender, dob, username) => {
     }
 };
 
+const updateDuoSetting = async (userId, isDuoEnabled) => {
+    try {
+        const updateFields = {
+            'player.duoSettings': isDuoEnabled,
+        };
+
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const updateDuoSetting = async (userId, isDuoEnabled) => {
+    try {
+        const updateFields = {
+            'player.duoSettings': isDuoEnabled,
+        };
+
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
 export default {
     register,
     findUserByEmail,
@@ -213,4 +239,7 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    findUserById,
+    updateUser,
+    updateDuoSetting,
 }
