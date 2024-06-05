@@ -61,3 +61,7 @@
 .App{
   background-color: #1f1f22;
 }
+
+.numberMoney::placeholder{
+  color: #cccccc;
+}

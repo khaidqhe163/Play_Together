@@ -9,10 +9,13 @@ import StoryModal from '../components/Modal/StoryModal';
 import { userInfor } from '../features/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { baseUrl } from '../utils/service.js'
+import { MdOutlineAdd } from "react-icons/md";
+import RechargeModal from '../components/Modal/RechargeModal/RechageModal.jsx';
 
 export default function NavBar() {
     const [activeButton, setActiveButton] = useState(null);
-    const [openModalRanking, setOpenModalRanking] = useState()
+    const [openModalRanking, setOpenModalRanking] = useState();
+    const [openModalPayment, setOpenModalPayment] = useState(false);
     const userInfo = useSelector(userInfor);
     const fontF = {
         fontFamily: 'Arial, Helvetica, sans-serif',
@@ -23,6 +26,7 @@ export default function NavBar() {
     };
 
     const bgButton = { width: '50px', height: '50px', backgroundColor: "#333345", transition: "background-color 0.5s ease-in-out" };
+    const bgButtonMoney = { width: '100px', height: '50px', backgroundColor: "#333345", transition: "background-color 0.5s ease-in-out", borderRadius: "50px" };
     const bgButtonActive = { width: '50px', height: '50px', backgroundColor: "#8d68f2" };
 
     const handleButtonClick = (buttonName) => {
@@ -30,7 +34,7 @@ export default function NavBar() {
     };
 
     return (
-        <div className='row d-flex justify-content-center align-items-center py-2 navbar-wrapper' style={{ backgroundColor: "#20202b", height: "70px", zIndex: "100" , borderBottom: "1px solid black"}}>
+        <div className='row d-flex justify-content-center align-items-center py-2 navbar-wrapper' style={{ backgroundColor: "#20202b", height: "70px", zIndex: "100", borderBottom: "1px solid black" }}>
             <div className='col-sm-3 d-flex'>
                 <Link to={'/'}><IoGameControllerOutline color="white" size={35} /></Link>
             </div>
@@ -65,15 +69,18 @@ export default function NavBar() {
                             <FaRegBell color="white" size={35} />
                         </div>
                     </Link>
+                    <div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
+                        <MdOutlineAdd size={22} className='font-black'/><span className='font-bold'> 0 đ</span>
+                    </div>
                 </> : null
                 }
                 {!userInfo || userInfo === null ? <><Link to={'/login'} className="mx-2" style={fontF}>
-                    <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#333345" }}>
+                    <div className="d-inline-block p-10 rounded-pill" style={{ backgroundColor: "#333345" }}>
                         Đăng nhập
                     </div>
                 </Link>
                     <Link to={'/register'} className="mx-2" style={fontF}>
-                        <div className="d-inline-block p-2 rounded-pill" style={{ backgroundColor: "#8d68f2" }}>
+                        <div className="d-inline-block p-10 rounded-pill" style={{ backgroundColor: "#8d68f2" }}>
                             Đăng ký
                         </div>
                     </Link></> : <div className='mx-2'><img className='w-12 h-12 rounded-circle object-cover object-center' src={baseUrl + userInfo.avatar} /></div>}
@@ -87,6 +94,11 @@ export default function NavBar() {
                 // onOk={getList}
                 />
             )}
+            <RechargeModal
+                show={openModalPayment}
+                handleClose={() => setOpenModalPayment(false)}
+                
+            />
         </div>
     );
 };
