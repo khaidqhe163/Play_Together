@@ -1,4 +1,5 @@
 import Story from '../models/Story.js';
+import User from '../models/User.js';
 
 const getAllStories = async () => {
     try {
@@ -32,8 +33,48 @@ const getStoryDetail = async (storyId) => {
     }
   };
 
+  const likeOrUnlikeStory = async (userID, storyID) => {
+    try {
+      const user = await User.findOne({ _id: userID})
+      if(!user) return ({}, true, "User not available")
+
+      const story = await Story.findOne({ _id: storyID })
+
+      let liked 
+      if (!story.like.includes(userID)) {
+        liked = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { like: userID}}, {new: true})
+      } else {
+        liked = await Story.findByIdAndUpdate({ _id: storyID }, { $pull: { like: userID}}, {new: true})
+      }
+
+      return liked
+    } catch (error) {
+      throw new Error(error.toString());
+    }
+  }
+
+  const viewStory = async (userID, storyID) => {
+    try {
+      const user = await User.findOne({ _id: userID})
+      if(!user) return ({}, true, "User not available")
+
+      const story = await Story.findOne({ _id: storyID })
+
+      let viewed 
+      if (!story.view.includes(userID)) {
+        viewed = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { view: userID}} )
+      } 
+
+      return viewed
+    } catch (error) {
+      throw new Error(error.toString());
+    }
+  }
+
 export default {
     getAllStories,
     uploadVideo,
     getStoryDetail,
+    likeOrUnlikeStory,
+    viewStory,
 }
