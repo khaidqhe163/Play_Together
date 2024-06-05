@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
         cb(null, 'public/avatar/');
     },
     filename: function (req, file, cb) {
-        cb(null, `${req.payload.id}-${Date.now()}-${file.originalname}`);
+        cb(null, `${file.originalname}`);
     }
 });
 

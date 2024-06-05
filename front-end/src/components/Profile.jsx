@@ -65,7 +65,7 @@ export default function Profile() {
                 <div className="mb-4">
                     {avatar ? (
                         <img
-                            src={`${baseUrl}/avatar/${avatar}`}
+                            src={`${baseUrl}${avatar}`}
                             ref={avatarInput}
                             alt="Avatar"
                             className="w-24 h-24 rounded-full border-2 border-gray-300"
