@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import QrModal from './QRModal';
 
-const RechargeModal = ({ show, handleClose}) => {
+const RechargeModal = ({ show, handleClose }) => {
     const [showQR, setShowQR] = useState(false);
     const [amount, setAmount] = useState(0);
     const [amountShow, setAmountShow] = useState('');
@@ -33,6 +33,18 @@ const RechargeModal = ({ show, handleClose}) => {
         }
     };
 
+    const generateRandomCode = () => {
+        // Generate a random string with specified length
+        const length = 10;
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let newCode = "";
+        for (let i = 0; i < length; i++) {
+            newCode += characters.charAt(
+                Math.floor(Math.random() * characters.length)
+            );
+        }
+        return newCode;
+    };
 
     return (
         <>
@@ -63,7 +75,7 @@ const RechargeModal = ({ show, handleClose}) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <QrModal show={showQR} setShow={setShowQR} total={amount}/>
+            <QrModal show={showQR} setShow={setShowQR} total={amount} randomCode={generateRandomCode()} />
         </>
     );
 };

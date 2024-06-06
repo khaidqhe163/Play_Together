@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { baseUrl } from '../utils/service.js'
 import { MdOutlineAdd } from "react-icons/md";
 import RechargeModal from '../components/Modal/RechargeModal/RechageModal.jsx';
-
+import { Bounce, ToastContainer } from 'react-toastify';
 export default function NavBar() {
     const [activeButton, setActiveButton] = useState(null);
     const [openModalRanking, setOpenModalRanking] = useState();
@@ -99,6 +99,18 @@ export default function NavBar() {
                 handleClose={() => setOpenModalPayment(false)}
                 
             />
+            <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                        transition={Bounce} />
         </div>
     );
 };
