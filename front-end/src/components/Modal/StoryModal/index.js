@@ -6,10 +6,16 @@ import CustomModal from '../CustomModal'
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../../utils/service";
+import api from '../../../utils/axiosConfig.js';
+import { useSelector } from "react-redux";
 
-const StoryModal = ({ open, onCancel, setCurrentStory, stories }) => {
+const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onOk }) => {
     const [form] = Form.useForm();
-
+    const user = useSelector((state) => state.user);
+    const [likedStatus, setLikedStatus] = useState(open?.like?.some(i => i?._id === user?.value?._id))
+    const [likesCount, setLikesCount] = useState(0);
+    const [viewCount, setViewCount] = useState(open?.view?.some(i => i?._id === user?.value?._id));
+    const [comments, setComments] = useState([])
     const createdAt = dayjs(open.createdAt);
     const today = dayjs();
     const yesterday = today.subtract(1, 'day');
@@ -23,10 +29,6 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories }) => {
     } else {
         displayDate = createdAt.format('DD-MM-YYYY');
     }
-
-    useEffect(() => {
-
-    }, [setCurrentStory, open]);
 
     const handlePrevStory = () => {
         setCurrentStory((prev) => {
@@ -45,6 +47,49 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories }) => {
             return prev + 1;
         });
     };
+
+    const handleViewStory = async () => {
+        try {
+            await onViewStory();
+            setViewCount(!viewCount);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    const handleLikedOrUnliked = async () => {
+        try {
+            const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
+            if (res?.isError) return
+            onOk()
+            setLikedStatus(!likedStatus)
+            setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
+        } catch (error) {
+            console.log(error);
+        } finally {
+        }
+    }
+
+    const getListComments = async () => {
+        try {
+            const res = await api.get('/api/comment/' + open?._id);
+            if (res?.isError) return;
+            setComments(res.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    console.log("comment", comments);
+
+
+    useEffect(() => {
+        setLikedStatus(open?.like?.some(i => i === user?.value?._id));
+        setLikesCount(open?.like?.length);
+        handleViewStory()
+        getListComments()
+    }, [open, user, open?.author?._id]);
 
     return (
         <CustomModal
@@ -74,8 +119,8 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories }) => {
                                     <FontAwesomeIcon icon={faAngleRight} />
                                 </div>
                                 <div className="d-flex flex-column">
-                                    <div className="heart">
-                                        <FontAwesomeIcon icon={faHeart} />
+                                    <div className="heart" onClick={() => handleLikedOrUnliked()}>
+                                        <FontAwesomeIcon color={!!likedStatus ? 'red' : ''} icon={faHeart} />
                                     </div>
                                     <div className="gift mt-10">
                                         <FontAwesomeIcon icon={faGift} />
@@ -84,6 +129,9 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories }) => {
                             </Col>
                         </Row>
                     </Col>
+
+
+
                     <Col span={10}>
                         <div className="user d-flex flex-column justify-content-space-between">
                             <div className=" d-flex flex-column">
@@ -111,14 +159,41 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories }) => {
                                     </div>
                                 </div>
                                 <div className="option d-flex justify-content-space-evenly mt-20">
-                                    <div><FontAwesomeIcon icon={faEye} /> {open.view.length} </div>
+                                    <div><FontAwesomeIcon icon={faEye} /> {open?.view.length} </div>
                                     <div><FontAwesomeIcon icon={faCommentAlt} /> 0 </div>
-                                    <div><FontAwesomeIcon icon={faHeart} /> {open.like.length} </div>
+                                    <div><FontAwesomeIcon icon={faHeart} /> {likesCount} </div>
                                 </div>
                                 <div className="stuatus mt-20 ml-20">
                                     {open.text}
                                 </div>
+
                                 <Divider />
+
+                                <div className="comment pl-30">
+                                    {
+                                        comments && comments.map((c, i) => (
+                                            <div key={i} className="d-flex flex-column mb-25">
+                                                <div className="d-flex">
+                                                    <div className="avatar-commnet mr-20">
+                                                        <Image
+                                                            alt="Avatar"
+                                                            preview={false}
+                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                            src={baseUrl + c?.commentor?.avatar}
+                                                        />
+                                                    </div>
+                                                    <div className="d-flex flex-column ">
+                                                        <div style={{ fontWeight: '700', fontSize: '12px' }}> <span> {c?.commentor?.username} </span></div>
+                                                        <div style={{ fontSize: '10px', color: '#A19F9F' }}> <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span> </div>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-5">
+                                                    <span className="ml-10"> {c?.content} </span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
                             </div>
                             <div className="comment">
                                 <Divider style={{ marginBottom: '15px' }} />

@@ -4,10 +4,10 @@ import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
 
 var salt = bcrypt.genSaltSync(10);
-const register = async (email, username, dob, gender, password) => {
+const register = async (email, username, dateOfBirth, gender, password) => {
     try {
         const hashPassword = bcrypt.hashSync(password, salt)
-        await User.create({ email, username, dob, gender, password: hashPassword });
+        await User.create({ email, username, dateOfBirth, gender, password: hashPassword });
     } catch (error) {
         throw new Error(error.toString());
     }
@@ -180,6 +180,47 @@ const getPlayerById = async (id) => {
         throw new Error(error.toString());
     }
 }
+const findUserById = async (userId) => {
+    try {
+        const user = await User.findById(userId).exec(); 
+        return user;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const updateUser = async (userId, newAvatar, gender, dob, username) => {
+    try {
+        const updateFields = {
+            
+            username: username,
+            gender: gender,
+            dateOfBirth: dob
+        };
+        if(newAvatar){
+            updateFields.avatar = newAvatar
+        }
+        console.log(updateFields);
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const updateDuoSetting = async (userId, isDuoEnabled) => {
+    try {
+        const updateFields = {
+            'player.duoSettings': isDuoEnabled,
+        };
+
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
 export default {
     register,
     findUserByEmail,
@@ -188,8 +229,11 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    findUserById,
+    updateUser,
+    updateDuoSetting,
+    getPlayerById,
     getPlayerByServiceId,
-    findByUserId,
     updatePlayerInfo,
-    getPlayerById
+    findByUserId
 }

@@ -72,8 +72,36 @@ const getStoryDetail = async (req, res) => {
     }
   };
 
+const likeOrUnlikeStory = async (req, res) => {
+    try {
+        const userID = req.payload.id 
+        const storyID = req.params.id
+        const story = await StoryService.likeOrUnlikeStory(userID, storyID);
+        res.status(200).json(story);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
+const viewStory = async (req, res) => {
+    try {
+        const userID = req.payload.id 
+        const storyID = req.params.id
+        const story = await StoryService.viewStory(userID, storyID);
+        res.status(200).json(story);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
 export default {
     getStories,
     createStory,
     getStoryDetail,
+    likeOrUnlikeStory,
+    viewStory,
 }

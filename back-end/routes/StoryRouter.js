@@ -26,6 +26,8 @@ StoryRouter.post('/create-story', jwt.verifyAccessToken, upload.single("video"),
 
 StoryRouter.get('/:id', StoryController.getStoryDetail);
 
+StoryRouter.post('/likedOrUnlikedStory/:id', jwt.verifyAccessToken, StoryController.likeOrUnlikeStory)
 
+StoryRouter.post('/viewStory/:id', jwt.verifyAccessToken, StoryController.viewStory)
 
 export default StoryRouter;

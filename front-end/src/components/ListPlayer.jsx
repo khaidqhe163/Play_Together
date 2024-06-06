@@ -31,8 +31,8 @@ export default function ListPlayer(props) {
     return (
         <div className='row'>
             {players.length > 0 ? <>
-                {players.map(p => (
-                    <div className='col-md-3 my-3'>
+                {players.map((p, i) => (
+                    <div className='col-md-3 my-3' key={i}>
                         <Link className='text-decoration-none' to={`/player-profile/${p._id}`}>
                             <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
                                 <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
@@ -46,7 +46,7 @@ export default function ListPlayer(props) {
                                     <h3 className="card-title text-lg text-white d-flex align-items-center">
                                         <Link className='text-decoration-none text-white'>{p.username}</Link>
                                         <IoIosCheckmarkCircle size={20} className='ml-1 text-bgButton' />
-                                        <div class="player-status ready"> </div>
+                                        <div className="player-status ready"> </div>
                                     </h3>
                                     {p.player.contentStatus ? <p className="card-text text-sm mb-0" style={{ color: "#ADADAD" }}>{p.player.contentStatus}</p> : <br />}
                                     <div className='d-flex align-items-center mt-3'>

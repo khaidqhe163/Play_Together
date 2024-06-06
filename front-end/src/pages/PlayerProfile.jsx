@@ -5,10 +5,9 @@ import '../css/player-profile.css'
 import { FaMedal, FaHeart } from "react-icons/fa6";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { baseUrl, formatDate, formatMoney } from '../utils/service';
+import { baseUrl, formatDate, formatMoney, getId } from '../utils/service';
 import { FaFacebook, FaYoutube } from 'react-icons/fa';
 import ImageGallery from '../components/ImageGallery';
-import { userInfor } from '../features/userSlice';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
@@ -62,8 +61,6 @@ function PlayerProfile() {
         }
     }
 
-    console.log(userInfor);
-
     return (
         <>
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
@@ -82,12 +79,12 @@ function PlayerProfile() {
                                 <img id='player-avatar' src={baseUrl + player.avatar} />
                                 <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
                                     {
-                                        player.player.facebookUrl && player.player.facebookUrl !== ""
-                                        && (<a href={player.player.facebookUrl} target='_blank'><FaFacebook style={{ fontSize: "30px", color: "blue", marginRight: "10px" }} /></a>)
+                                        player.player?.facebookUrl !== ""
+                                        && (<a href={player.player?.facebookUrl} target='_blank'><FaFacebook style={{ fontSize: "30px", color: "blue", marginRight: "10px" }} /></a>)
                                     }
                                     {
-                                        player.player.youtubeUrl && player.player.youtubeUrl !== ""
-                                        && (<a href={player.player.youtubeUrl} target='_blank'><FaYoutube style={{ fontSize: "30px", color: "red" }} /></a>)
+                                        player.player?.youtubeUrl !== ""
+                                        && (<a href={player.player?.youtubeUrl} target='_blank'><FaYoutube style={{ fontSize: "30px", color: "red" }} /></a>)
                                     }
 
                                 </div>
@@ -95,7 +92,7 @@ function PlayerProfile() {
                                 <h5>THÀNH TÍCH</h5>
                                 <hr></hr>
                                 {
-                                    player.player.achivements.map((a) => {
+                                    player.player?.achivements.map((a) => {
                                         return (
                                             <div className='achivement'>
                                                 <div>
@@ -120,7 +117,7 @@ function PlayerProfile() {
                                     </Col>
                                     <Col md={3}>
                                         <p style={{ fontSize: "12px", fontWeight: "bold" }}>ĐÃ ĐƯỢC THUÊ</p>
-                                        <p style={{ color: "#7b47ff", fontWeight: "bold" }}>{player.player.totalHiredHour} giờ</p>
+                                        <p style={{ color: "#7b47ff", fontWeight: "bold" }}>{player.player?.totalHiredHour} giờ</p>
                                     </Col>
                                     <Col md={3}>
                                         <p style={{ fontSize: "12px", fontWeight: "bold" }}>TỶ LỆ HOÀN THÀNH</p>
@@ -130,10 +127,13 @@ function PlayerProfile() {
                                         <p style={{ fontSize: "12px", fontWeight: "bold" }}>TÌNH TRẠNG THIẾT BỊ</p>
                                         <p style={{ color: "#7b47ff", fontWeight: "bold", fontSize: "20px" }}>
                                             {
-                                                player.player.deviceStatus.mic && (<ion-icon name="mic"></ion-icon>)
+                                                player.player?.deviceStatus.mic && (<ion-icon name="mic"></ion-icon>)
                                             }
                                             {
-                                                player.player.deviceStatus.cam && (<ion-icon name="camera"></ion-icon>)
+                                                player.player?.deviceStatus.cam && (<ion-icon name="camera"></ion-icon>)
+                                            }
+                                            {
+                                                !player.player?.deviceStatus.cam && !player.player?.deviceStatus.mic && (<ion-icon name="ban-outline"></ion-icon>)
                                             }
                                         </p>
                                     </Col>
@@ -144,7 +144,7 @@ function PlayerProfile() {
                                         services && services.map((s) => {
                                             let converted_path = s.background.replaceAll("\\", "/")
                                             const url = baseUrl + converted_path;
-                                            if (player.player.serviceType.includes(s._id))
+                                            if (player.player?.serviceType.includes(s._id))
                                                 return (
                                                     <div className='service' style={{ backgroundImage: `url(${url})`, height: "50px", borderRadius: "10px", minWidth: "100px", marginBottom: "20px" }}>
                                                         <p style={{ textAlign: "center", lineHeight: "50px", fontSize: "13px", fontWeight: "bold" }}>{s.name}</p>
@@ -159,7 +159,7 @@ function PlayerProfile() {
                                 <h5>THÔNG TIN</h5>
                                 <div className='album-player'>
                                     {
-                                        player.player.images && player.player.images.map((i, index) => {
+                                        player.player?.images?.map((i, index) => {
                                             let converted_path = i.replaceAll("\\", "/")
                                             const url = baseUrl + converted_path;
                                             if (index <= 4) {
@@ -206,17 +206,16 @@ function PlayerProfile() {
                                         })
                                     }
                                 </div>
-                                <p style={{ whiteSpace: "pre-line" }} className='text-white'>{player.player.info}</p>
+                                <p style={{ whiteSpace: "pre-line" }} className='text-white'>{player.player?.info}</p>
                                 {
-                                    // player.player.videoHightlight && (
-                                    //     <iframe width="560" height="315"
-                                    //         src={player.player.videoHightlight}
-                                    //         title="YouTube video player"
-                                    //         frameborder="0"
-                                    //         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    //         referrerpolicy="strict-origin-when-cross-origin"
-                                    //         allowfullscreen></iframe>
-                                    // )
+                                    player.player?.videoHightlight && (
+                                        <iframe width="560" height="315"
+                                            src={getId(player.player?.videoHightlight)}
+                                            title="YouTube video player" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            referrerpolicy="strict-origin-when-cross-origin"
+                                            allowfullscreen></iframe>
+                                    )
                                 }
 
                                 <hr></hr>
@@ -224,7 +223,7 @@ function PlayerProfile() {
                             </Col>
                             <Col md={3} id='pp-right'>
                                 <div style={{ border: "2px solid white", borderRadius: "10px", padding: "5px" }}>
-                                    <h2>{formatMoney(player.player.rentCost)}/h</h2>
+                                    <h2>{formatMoney(player.player?.rentCost)}/h</h2>
                                     <div className='star-container'>
                                         <ion-icon name="star"></ion-icon>
                                         <ion-icon name="star"></ion-icon>
@@ -236,7 +235,7 @@ function PlayerProfile() {
                                     <Button style={{ width: "99%", margin: "auto", height: "60px", marginTop: "20px" }}>CHAT</Button>
                                 </div>
                             </Col>
-                            <ImageGallery image={player.player.images[currentImageIndex]} isOpen={isOpen} closeModal={closeModal} previousImage={previousImage} nextImage={nextImage} />
+                            <ImageGallery image={player.player?.images[currentImageIndex]} isOpen={isOpen} closeModal={closeModal} previousImage={previousImage} nextImage={nextImage} />
                         </Row>
                     )
                 }

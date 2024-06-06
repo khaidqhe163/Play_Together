@@ -3,6 +3,8 @@ import { baseUrl } from '../utils/service';
 import { FaRegEye } from "react-icons/fa";
 import { GrLinkNext } from "react-icons/gr";
 import StoryModal from './Modal/StoryModal';
+import api from '../utils/axiosConfig.js';
+import { Link } from 'react-router-dom';
 
 export default function ListStory() {
 
@@ -51,17 +53,21 @@ export default function ListStory() {
                         </div>
                     </div>
                 ))}
+
                 <div className="col-md-2 mb-4">
-                    <div className="card rounded-4 w-100 h-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
-                        <div className='mx-auto d-flex align-items-center justify-content-center w-100' style={{ height: "16em" }}>
-                            <div>
-                                <GrLinkNext className='b' size={50} />
+                    <Link to={"/stories"}>
+                        <div className="card rounded-4 w-100 h-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
+                            <div className='mx-auto d-flex align-items-center justify-content-center w-100' style={{ height: "16em" }}>
+                                <div>
+                                    <GrLinkNext className='b' size={50} />
+                                </div>
+                            </div>
+                            <div className="card-body py-2 d-flex align-items-center">
+                                <p className="card-text mx-auto">Xem thêm</p>
                             </div>
                         </div>
-                        <div className="card-body py-2 d-flex align-items-center">
-                            <p className="card-text mx-auto">Xem thêm</p>
-                        </div>
-                    </div>
+
+                    </Link>
                 </div>
             </div>
 
