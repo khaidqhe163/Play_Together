@@ -5,7 +5,7 @@ import { baseUrl } from '../../../utils/service';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { userInfor } from '../../../features/userSlice';
+import { setUserInformation, userInfor } from '../../../features/userSlice';
 import api from '../../../utils/axiosConfig';
 import { toast } from 'react-toastify';
 
@@ -77,7 +77,8 @@ const QrModal = (props) => {
     const savePayment = async () => {
         try {
             const res = await api.post(`${baseUrl}api/payment`, { total });
-            console.log(res.data);
+            console.log(res.data.restUser);
+            dispatch(setUserInformation(res.data.restUser));
             toast(res.data.message);
         } catch (error) {
             if (error.response.status === 400) {

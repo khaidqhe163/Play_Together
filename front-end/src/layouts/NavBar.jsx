@@ -26,7 +26,7 @@ export default function NavBar() {
     };
 
     const bgButton = { width: '50px', height: '50px', backgroundColor: "#333345", transition: "background-color 0.5s ease-in-out" };
-    const bgButtonMoney = { width: '100px', height: '50px', backgroundColor: "#333345", transition: "background-color 0.5s ease-in-out", borderRadius: "50px" };
+    const bgButtonMoney = { width: '150px', height: '50px', backgroundColor: "#333345", transition: "background-color 0.5s ease-in-out", borderRadius: "50px" };
     const bgButtonActive = { width: '50px', height: '50px', backgroundColor: "#8d68f2" };
 
     const handleButtonClick = (buttonName) => {
@@ -69,9 +69,9 @@ export default function NavBar() {
                             <FaRegBell color="white" size={35} />
                         </div>
                     </Link>
-                    <div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
-                        <MdOutlineAdd size={22} className='font-black'/><span className='font-bold'> 0 đ</span>
-                    </div>
+                    {userInfo !== null &&(<div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
+                        <MdOutlineAdd size={22} className='font-black'/><span className='font-bold'> {userInfo.accountBalance} đ</span>
+                    </div>)}
                 </> : null
                 }
                 {!userInfo || userInfo === null ? <><Link to={'/login'} className="mx-2" style={fontF}>
