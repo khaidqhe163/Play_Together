@@ -12,11 +12,13 @@ import { baseUrl } from '../utils/service.js'
 import { MdOutlineAdd } from "react-icons/md";
 import RechargeModal from '../components/Modal/RechargeModal/RechageModal.jsx';
 
+
 export default function NavBar() {
     const [activeButton, setActiveButton] = useState(null);
     const [openModalRanking, setOpenModalRanking] = useState();
     const [openModalPayment, setOpenModalPayment] = useState(false);
     const userInfo = useSelector(userInfor);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const fontF = {
         fontFamily: 'Arial, Helvetica, sans-serif',
         fontWeight: 500,
@@ -32,6 +34,11 @@ export default function NavBar() {
     const handleButtonClick = (buttonName) => {
         setActiveButton(buttonName);
     };
+
+    const handleDropdownToggle = () => {
+      setIsDropdownOpen(!isDropdownOpen);
+    };
+  
 
     return (
         <div className='row d-flex justify-content-center align-items-center py-2 navbar-wrapper' style={{ backgroundColor: "#20202b", height: "70px", zIndex: "100", borderBottom: "1px solid black" }}>
@@ -69,9 +76,55 @@ export default function NavBar() {
                             <FaRegBell color="white" size={35} />
                         </div>
                     </Link>
-                    {userInfo !== null &&(<div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
-                        <MdOutlineAdd size={22} className='font-black'/><span className='font-bold'> {userInfo.accountBalance} đ</span>
-                    </div>)}
+                    <div className="relative">
+              <img
+                className="w-12 h-12 rounded-circle object-cover object-center cursor-pointer"
+                src={baseUrl + userInfo.avatar}
+                onClick={handleDropdownToggle}
+                alt="user avatar"
+              />
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-lg shadow-lg z-50 text-white" style={{ backgroundColor: "#212529", }}>
+                  <Link to={`/player-profile/${userInfo._id}`} style={{ textDecoration: 'none' }}>
+                    <div className="px-4 py-3 flex justify-between items-center">
+                      <img
+                        className="w-12 h-12 mr-6 rounded-full object-cover object-center"
+                        src={baseUrl + userInfo.avatar}
+                        alt="user avatar"
+                      />
+                      <div className="ml-4 flex-grow">
+                        <span className="block text-sm text-white">
+                          {userInfo.username}
+                        </span>
+                        <span className="block text-sm text-gray-500 truncate">
+                          Xem trang player của bạn
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                  <ul className="py-2">
+                    <li>
+                      <Link
+                        to={"/profile"}
+                        className="block px-4 py-2 text-sm text-gray-300 hover:text-gray-400 "
+                        style={{ textDecoration: 'none' }}
+                      >
+                        Cài đặt tài khoản
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={"/logout"}
+                        className="block px-4 py-2 text-sm text-gray-300 hover:text-gray-400"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        Đăng xuất
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
                 </> : null
                 }
                 {!userInfo || userInfo === null ? <><Link to={'/login'} className="mx-2" style={fontF}>
