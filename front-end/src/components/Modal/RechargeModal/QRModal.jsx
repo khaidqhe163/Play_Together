@@ -88,19 +88,7 @@ const QrModal = (props) => {
         }
     }
 
-    // const saveOrder = async () => {
-    //     axios.post(`${baseUrl}/order`, postData)
-    //         .then(res => {
-    //             toast.success('Thanh toán thành công ❤️\nCảm ơn bạn')
-    //             setTimeout(() => {
-    //                 navigate("/");
-    //             }, 4000)
-    //         })
-    //         .catch(error => {
-    //             console.log('saveOrder error:', error);
-    //             toast.error('Có lỗi gì đó đã xảy ra!😭\nVui lòng liên hệ admin qua facebook/zalo/sdt')
-    //         })
-    // };
+
     const [showT, setShowT] = useState(false);
     useEffect(() => {
         if (isPaid) {
