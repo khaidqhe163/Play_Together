@@ -4,6 +4,8 @@ import userReducer from '../features/userSlice'
 import accessTokenReducer from '../features/accessTokenSlice'
 import refreshTokenReducer from '../features/refreshTokenSlice'
 import serviceReducer from '../features/serviceSlice'
+import socketSlice from '../features/socketSlice'
+import onlineUserSlice from '../features/onlineUserSlice'
 
 export default configureStore ({
     reducer: {
@@ -11,6 +13,8 @@ export default configureStore ({
         dropdown: dropdownReducer,
         accessToken: accessTokenReducer,
         refreshToken: refreshTokenReducer,
-        service: serviceReducer
+        service: serviceReducer,
+        socket: socketSlice,
+        onlineUser: onlineUserSlice
     }
 })

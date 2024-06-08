@@ -60,6 +60,7 @@
 
 .App{
   background-color: #1f1f22;
+  position: relative;;
 }
 
 .numberMoney::placeholder{
