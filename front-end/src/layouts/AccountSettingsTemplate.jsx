@@ -27,7 +27,7 @@ export default function AccountSettingsTemplate({ children }) {
                 <div className='col-3 position-relative p-0'>
                     <AccountSettings />
                 </div>
-                <div className='col-9' style={{ height: "630px", overflow: "auto" }}>
+                <div className='col-9' style={{ height: "750px", overflow: "auto" }}>
                     <div className='row d-flex justify-content-center'>
                         <div className='col-10 py-3'>
                             {children}
