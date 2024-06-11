@@ -1,0 +1,49 @@
+/* chatboxcommunity.css */
+.chat-community-container {
+    height: calc(100vh - 70px);
+    position: absolute;
+    top: 70px;
+    right: 0;
+    z-index: 2;
+}
+
+.openChatbtn {
+    width: 120px;
+    height: 30px;
+    background-color: #8d68f2;
+    transform: rotate(270deg);
+    white-space: nowrap;
+    display: inline-block;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    transform-origin: right bottom;
+    font-weight: bold;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.chatbox {
+    width: 450px;
+    height: 100%;
+    background: #1f1f22;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    transform: translateY(-50%);
+    animation: slide-in 0.5s forwards;
+    overflow: auto
+    
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

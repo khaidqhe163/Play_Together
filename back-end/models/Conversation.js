@@ -1,7 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
 const conversationSchema = new Schema({
-    member: [{ type: Schema.Types.ObjectId, required: true }],
+    type: Number,
+    member: [{ type: Schema.Types.ObjectId }],
 });
 
 const Conversation = mongoose.model("conversation", conversationSchema);
