@@ -4,4 +4,6 @@
 
 .ant-modal .ant-modal-content {
     z-index: 1000 !important;
+    padding: 0;
 }
+

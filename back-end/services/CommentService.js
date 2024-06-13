@@ -11,7 +11,17 @@ export const getAllCommentsByStoryId = async (storyID) => {
     }
 };
 
+const createComment = async (data) => {
+    try {
+        const comment = await Comment.create(data)
+        return comment
+    } catch (error) {
+        throw new Error("Error fetch comments: " + error.message);
+    }
+}
+
 
 export default {
     getAllCommentsByStoryId,
+    createComment,
 }

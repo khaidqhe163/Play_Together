@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight, faCommentAlt, faEye, faGift, faHeart, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import CustomModal from '../CustomModal'
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { baseUrl } from "../../../utils/service";
 import api from '../../../utils/axiosConfig.js';
 import { useSelector } from "react-redux";
@@ -16,12 +16,12 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
     const [likesCount, setLikesCount] = useState(0);
     const [viewCount, setViewCount] = useState(open?.view?.some(i => i?._id === user?.value?._id));
     const [comments, setComments] = useState([])
+    const inputRef = useRef(null)
     const createdAt = dayjs(open.createdAt);
     const today = dayjs();
     const yesterday = today.subtract(1, 'day');
 
     let displayDate;
-
     if (createdAt.isSame(today, 'day')) {
         displayDate = 'Hôm nay';
     } else if (createdAt.isSame(yesterday, 'day')) {
@@ -55,7 +55,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
         } catch (error) {
             console.log(error);
         }
-    }
+    } 
 
 
     const handleLikedOrUnliked = async () => {
@@ -69,6 +69,28 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             console.log(error);
         } finally {
         }
+    }
+
+    const handleCreateComment = async () => {
+        try {
+            const values = await form.validateFields()
+            const res = await api.post('/api/comment', {
+                storyId: open?._id,
+                userId: open?.author?._id,
+                commentor: user?.value?._id,
+                content: values.content
+            })
+            if(res?.isError) return
+            form.setFieldsValue({ content: '' })
+            inputRef.current.focus()
+            onOk()
+        } catch (error) {
+          console.log(error);  
+        } 
+    }
+
+    const handleReply = () => {
+        inputRef.current.focus()
     }
 
     const getListComments = async () => {
@@ -130,9 +152,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                         </Row>
                     </Col>
 
-
-
-                    <Col span={10}>
+                    <Col span={10} className="col-user">
                         <div className="user d-flex flex-column justify-content-space-between">
                             <div className=" d-flex flex-column">
                                 <div className="d-flex justify-content-space-between mt-40">
@@ -146,8 +166,8 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                             />
                                         </div>
                                         <div className="ml-20 d-flex flex-column">
-                                            <div style={{ fontWeight: '700' }}>{open?.author?.username}</div>
-                                            <div style={{ fontSize: '12px', color: '#A19F9F' }}> {displayDate} </div>
+                                            <div style={{ fontWeight: '700', color: 'hsl(0deg 0.78% 74.71%)'}}>{open?.author?.username}</div>
+                                            <div style={{ fontSize: '12px', color: '#A19F9F' }} className="created"> {displayDate} </div>
                                         </div>
                                     </div>
                                     <div className="thue mr-20">
@@ -158,51 +178,70 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                         </Button>
                                     </div>
                                 </div>
-                                <div className="option d-flex justify-content-space-evenly mt-20">
+                                <div className="option d-flex justify-content-space-evenly mt-20" style={{color: 'hsl(0deg 0.78% 74.71%)'}}>
                                     <div><FontAwesomeIcon icon={faEye} /> {open?.view.length} </div>
                                     <div><FontAwesomeIcon icon={faCommentAlt} /> 0 </div>
                                     <div><FontAwesomeIcon icon={faHeart} /> {likesCount} </div>
                                 </div>
-                                <div className="stuatus mt-20 ml-20">
+                                <div className="stuatus mt-20 ml-20" style={{color: 'hsl(0deg 0.78% 74.71%)'}}>
                                     {open.text}
                                 </div>
 
-                                <Divider />
+                                <Divider className="mt-10" style={{backgroundColor: 'white'}}/>
+                            </div>
 
-                                <div className="comment pl-30">
-                                    {
-                                        comments && comments.map((c, i) => (
-                                            <div key={i} className="d-flex flex-column mb-25">
-                                                <div className="d-flex">
-                                                    <div className="avatar-commnet mr-20">
-                                                        <Image
-                                                            alt="Avatar"
-                                                            preview={false}
-                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                            src={baseUrl + c?.commentor?.avatar}
-                                                        />
-                                                    </div>
-                                                    <div className="d-flex flex-column ">
-                                                        <div style={{ fontWeight: '700', fontSize: '12px' }}> <span> {c?.commentor?.username} </span></div>
-                                                        <div style={{ fontSize: '10px', color: '#A19F9F' }}> <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span> </div>
-                                                    </div>
-                                                </div>
-                                                <div className="mt-5">
-                                                    <span className="ml-10"> {c?.content} </span>
+                            <div className="comment pl-30" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                {
+                                    comments.map((c, i) =>  (
+                                        <div key={i} className="d-flex mb-15">
+                                            <div className="d-flex">
+                                                <div className="avatar-commnet mr-20 mt-15">
+                                                    <Image
+                                                        alt="Avatar"
+                                                        preview={false}
+                                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                        src={baseUrl + c?.commentor?.avatar}
+                                                    />
                                                 </div>
                                             </div>
-                                        ))
-                                    }
-                                </div>
+                                            <div className="d-flex flex-column ">
+                                                <div style={{ fontWeight: '700', fontSize: '12px'}}> <span style={{color: 'hsl(0deg 0.78% 74.71%)'}}> {c?.commentor?.username} </span></div>
+                                                <div className="created" style={{ fontSize: '10px', color: '#A19F9F' }}> 
+                                                    <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span> 
+                                                    {
+                                                        user?.value?._id ? (<span className="ml-10 reply_story_comment" onClick={handleReply}> Trả lời </span>) : (<></>)
+                                                    }
+                                                </div>
+                                                <div className="mt-5" style={{color: 'hsl(0deg 0.78% 74.71%)'}}> {c?.content} </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
                             </div>
+
                             <div className="comment">
-                                <Divider style={{ marginBottom: '15px' }} />
+                                <Divider style={{ marginBottom: '15px', backgroundColor: 'white', fontSize: '10px' }} />
                                 <div className="ml-20 mr-20 mb-20">
                                     <Form form={form}>
                                         <Form.Item
-                                            name="comment"
+                                            name="content"
+                                            rules={[
+                                                { required: true, message: "Hãy khen gì đó nhé." },
+                                            ]}
                                         >
-                                            <Input placeholder="Comment ..." suffix={<FontAwesomeIcon className="fs-18" style={{ cursor: 'pointer' }} icon={faPaperPlane} />} />
+                                            <Input 
+                                                ref={inputRef}
+                                                // focusable
+                                                // style={user?.value?._id ? {cursor: 'text'} : {cursor: 'help'}} 
+                                                disabled={!user?.value?._id ? true : false}
+                                                placeholder="Comment ..."
+                                                // name="content"
+                                                onPressEnter={handleCreateComment}
+                                                suffix={
+                                                    <FontAwesomeIcon className="fs-18" style={{ cursor: 'pointer' }} 
+                                                    icon={faPaperPlane} onClick={() => handleCreateComment()}/>
+                                                } 
+                                            />
                                         </Form.Item>
                                     </Form>
                                 </div>

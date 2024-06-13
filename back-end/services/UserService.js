@@ -172,6 +172,25 @@ const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roo
     }
 }
 
+const blockOrUnBlock = async (userID, authorID) => {
+    try {
+      const user = await User.findOne({ _id: userID})
+      if(!user) return ({}, true, "User not available")
+
+      const author = await User.findOne({ _id: authorID })
+
+      let blocked 
+      if (!author.blockedUsers.includes(userID)) {
+        blocked = await User.findByIdAndUpdate({ _id: authorID }, { $push: { blockedUsers: userID}}, {new: true})
+      } else {
+        blocked = await User.findByIdAndUpdate({ _id: authorID }, { $pull: { blockedUsers: userID}}, {new: true})
+      }
+
+      return blocked
+    } catch (error) {
+      throw new Error(error.toString());
+    }
+  }
 const getPlayerById = async (id) => {
     try {
         const player = await User.findById(id);
@@ -229,6 +248,8 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    updatePlayerInfo,
+    blockOrUnBlock,
     findUserById,
     updateUser,
     updateDuoSetting,
