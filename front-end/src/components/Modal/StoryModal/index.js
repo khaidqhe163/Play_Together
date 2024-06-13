@@ -169,7 +169,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
 
                                 <Divider />
 
-                                <div className="comment pl-30">
+                                <div className="comment pl-30" style={{maxHeight:"200px", overflow:"auto"}}>
                                     {
                                         comments && comments.map((c, i) => (
                                             <div key={i} className="d-flex flex-column mb-25">
