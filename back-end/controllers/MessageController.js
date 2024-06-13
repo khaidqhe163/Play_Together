@@ -24,7 +24,18 @@ const createMessage = async (req, res) => {
         res.status(500).json(error)
     }
 }
+
+const getMessageByConId = async (req, res) => {
+    try {
+        const conId = req.params.id;
+        const messages = await MessageService.getMessageByConId(conId);
+        res.status(200).json(messages)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 export default {
     getMessage,
-    createMessage
+    createMessage,
+    getMessageByConId
 }

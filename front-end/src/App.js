@@ -11,6 +11,7 @@ import route from './routes/Routes';
 import './App.css';
 import ChatCommunity from './components/Chat/ChatCommunity';
 import { io } from 'socket.io-client'
+import ChatBox from './components/Chat/ChatBox';
 function App() {
   const dispatch = useDispatch();
   const userInfo = useSelector(userInfor);
@@ -60,7 +61,7 @@ function App() {
     })
   }, [socketRedux])
 
-  console.log("onlineUser", onlineUserRedux);
+  console.log(window.location.pathname);
   return (
     <div className="App">
       <BrowserRouter>
@@ -77,7 +78,9 @@ function App() {
           }
         </Routes>
       </BrowserRouter>
-      <ChatCommunity />
+      {
+        userInfo !== null && <ChatBox />
+      }
     </div>
   );
 }
