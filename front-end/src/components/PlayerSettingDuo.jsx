@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux"; 
+import { userInfor } from "../features/userSlice"; 
+import axios from '../utils/axiosConfig'; // Ensure you have the correct axios instance
 
 export default function PlayerSettingDuo() {
   const [isDuoEnabled, setIsDuoEnabled] = useState(false);
+  const userInfo = useSelector(userInfor); 
+
+  useEffect(() => {
+    if (userInfo && userInfo.player && userInfo.player.duoSettings) {
+      setIsDuoEnabled(userInfo.player.duoSettings); 
+    }
+  }, [userInfo]); 
 
   const toggleDuo = () => {
     setIsDuoEnabled(!isDuoEnabled);
   };
 
-  const handleUpdate = () => {
-    console.log('Duo request setting updated:', isDuoEnabled);
+  const handleUpdate = async () => {
+    try {
+      const response = await axios.put('/api/user/update-duo-setting', { isDuoEnabled });
+      console.log('Duo setting updated:', response.data);
+    } catch (error) {
+      console.error('Error updating Duo setting:', error);
+    }
   };
 
   return (

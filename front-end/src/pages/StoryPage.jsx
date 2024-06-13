@@ -40,11 +40,11 @@ export default function StoryPage() {
 
     const handleViewStory = async () => {
         try {
-          const res = await api.post('/api/stories/viewStory/' + stories[currentStory]?._id)
-          if (res?.isError) return 
+            const res = await api.post('/api/stories/viewStory/' + stories[currentStory]?._id)
+            if (res?.isError) return
         } catch (error) {
-          console.log(error);
-        } finally { 
+            console.log(error);
+        } finally {
         }
     }
 
@@ -65,7 +65,7 @@ export default function StoryPage() {
                 <div className="col-10" style={{ backgroundColor: '#20202b' }}>
                     <div className="row d-flex justify-content-center">
                         <div className="col-12 col-md-10 py-3">
-                            <ListStoryPage stories={stories} setOpenModalStory={setOpenModalStory} setCurrentStory={setCurrentStory} handleViewStory={handleViewStory}/>
+                            <ListStoryPage stories={stories} setOpenModalStory={setOpenModalStory} setCurrentStory={setCurrentStory} handleViewStory={handleViewStory} />
                         </div>
                     </div>
                 </div>
@@ -79,11 +79,11 @@ export default function StoryPage() {
                     stories={stories}
                     onViewStory={handleViewStory}
                     onOk={getListStories}
-                    // story={stories[currentStory]}
+                // story={stories[currentStory]}
                 // onOk={getList}
                 />
             )}
         </div>
-       
+
     );
 };

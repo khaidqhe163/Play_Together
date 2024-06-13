@@ -4,10 +4,10 @@ import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
 
 var salt = bcrypt.genSaltSync(10);
-const register = async (email, username, dob, gender, password) => {
+const register = async (email, username, dateOfBirth, gender, password) => {
     try {
         const hashPassword = bcrypt.hashSync(password, salt)
-        await User.create({ email, username, dob, gender, password: hashPassword });
+        await User.create({ email, username, dateOfBirth, gender, password: hashPassword });
     } catch (error) {
         throw new Error(error.toString());
     }
@@ -116,6 +116,32 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         throw new Error(error.toString());
     }
 }
+const getPlayerByServiceId = async (serviceId) => {
+    try {
+
+        let players = await User.find({}).populate('player.serviceType').exec();
+
+        players = players.filter(user =>
+            user.player && user.player.serviceType && user.player.serviceType.some(service =>
+                service._id.equals(serviceId)
+            )
+        );
+
+        console.log(players);
+        return players;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const findByUserId = async (id) => {
+    try {
+        const user = await User.findById(id);
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 
 const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roomVoice, device, service, videoHightlight, achivement) => {
     try {
@@ -165,6 +191,54 @@ const blockOrUnBlock = async (userID, authorID) => {
       throw new Error(error.toString());
     }
   }
+const getPlayerById = async (id) => {
+    try {
+        const player = await User.findById(id);
+        return player;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
+const findUserById = async (userId) => {
+    try {
+        const user = await User.findById(userId).exec(); 
+        return user;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const updateUser = async (userId, newAvatar, gender, dob, username) => {
+    try {
+        const updateFields = {
+            
+            username: username,
+            gender: gender,
+            dateOfBirth: dob
+        };
+        if(newAvatar){
+            updateFields.avatar = newAvatar
+        }
+        console.log(updateFields);
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
+const updateDuoSetting = async (userId, isDuoEnabled) => {
+    try {
+        const updateFields = {
+            'player.duoSettings': isDuoEnabled,
+        };
+
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
 
 export default {
     register,
@@ -176,4 +250,11 @@ export default {
     searchPlayerByCriteria,
     updatePlayerInfo,
     blockOrUnBlock,
+    findUserById,
+    updateUser,
+    updateDuoSetting,
+    getPlayerById,
+    getPlayerByServiceId,
+    updatePlayerInfo,
+    findByUserId
 }

@@ -1,9 +1,12 @@
 import { UserService } from "../services/index.js"
 import jwt from '../middleware/jwt.js';
 import bcrypt from 'bcryptjs'
+// import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 import * as path from 'path'
+import fs from "fs"
+
 const register = async (req, res) => {
     try {
         const {
@@ -221,10 +224,19 @@ const searchPlayerByCriteria = async (req, res) => {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
     }
 }
+const getPlayerByServiceId = async (req, res) => {
+    try {
+        const serviceId = req.params.serviceId;
+        const players = await UserService.getPlayerByServiceId(serviceId);
+        res.status(200).json(players);
 
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
+    }
+}
 const updatePlayerInfo = async (req, res) => {
     try {
-        console.log(req.body.achivements);
         const userId = req.payload.id;
         const {
             rentCost,
@@ -240,10 +252,9 @@ const updatePlayerInfo = async (req, res) => {
         const device = JSON.parse(deviceStatus);
         const service = JSON.parse(serviceType)
         const achivement = JSON.parse(achivements)
-        console.log(achivement);
         const updatePlayer = await UserService.updatePlayerInfo(userId, rentCost, info, youtubeUrl, facebookUrl, roomVoice,
             device, service, videoHightlight, achivement)
-            
+
         res.status(200).json({
             message: "Update successfully",
             user: updatePlayer
@@ -267,6 +278,84 @@ const blockOrUnBlock = async (req, res) => {
 }
 
 
+const changePassword = async (req, res) => {
+    try {
+        const id = req.payload.id;
+        const { currentPassword, newPassword } = req.body;
+        const user = await UserService.findByUserId(id);
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: "Mật khẩu không đúng!" });
+        }
+        var salt = bcrypt.genSaltSync(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        await user.save();
+
+        return res.status(200).json({ message: "Đổi mật khẩu thành công!" });
+    } catch (error) {
+        console.error("Change password error:", error);
+        return res.status(500).json({ error: "Có lỗi trong việc đổi mật khẩu!" });
+    }
+};
+const getPlayerById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await UserService.getPlayerById(id);
+        const { _id, username, gender, followers, player, avatar, images, createdAt } = user;
+        const returnPlayer = { _id, username, gender, followers, player, avatar, images, createdAt }
+        res.status(200).json(returnPlayer)
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+const getUserById = async (req, res) => {
+    try {
+        const userId = req.params.userId; 
+        const user = await UserService.findUserById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user); 
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+const updateUser = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const newAvatar = req.file?.path ;
+        const { gender, dob, username } = req.body;
+
+        const updatedUser = await UserService.updateUser(userId, newAvatar, gender, dob, username);
+        if(newAvatar){
+            fs.unlinkSync(req.body.avatar)
+        }
+        console.log(req.body.avatar);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+const updateDuoSetting = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const { isDuoEnabled } = req.body;
+
+        const updatedUser = await UserService.updateDuoSetting(userId, isDuoEnabled);
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
 export default {
     register,
     login,
@@ -279,4 +368,11 @@ export default {
     searchPlayerByCriteria,
     updatePlayerInfo,
     blockOrUnBlock,
+    getUserById,
+    updateUser,
+    updateDuoSetting,
+    getPlayerByServiceId,
+    updatePlayerInfo,
+    getPlayerById,
+    changePassword
 }

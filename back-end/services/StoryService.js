@@ -3,7 +3,7 @@ import User from '../models/User.js';
 
 const getAllStories = async () => {
     try {
-        const stories = await Story.find().populate("author").exec();
+        const stories = await Story.find().populate("author", "_id username avatar").exec();
         return stories;
     } catch (error) {
         throw new Error(error.toString());

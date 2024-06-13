@@ -56,3 +56,13 @@
   color: white !important;
   opacity: 0.5 !important;
 }
+
+
+.App{
+  background-color: #1f1f22;
+  position: relative;;
+}
+
+.numberMoney::placeholder{
+  color: #cccccc;
+}

@@ -57,17 +57,18 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
         }
     } 
 
+
     const handleLikedOrUnliked = async () => {
-      try {
-        const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
-        if (res?.isError) return 
-        onOk()
-        setLikedStatus(!likedStatus)
-        setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
-      } catch (error) {
-        console.log(error);
-      } finally { 
-      }
+        try {
+            const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
+            if (res?.isError) return
+            onOk()
+            setLikedStatus(!likedStatus)
+            setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
+        } catch (error) {
+            console.log(error);
+        } finally {
+        }
     }
 
     const handleCreateComment = async () => {
@@ -96,17 +97,20 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
         try {
             const res = await api.get('/api/comment/' + open?._id);
             if (res?.isError) return;
-            setComments(res)
+            setComments(res.data)
         } catch (error) {
             console.log(error);
         }
     }
 
+    console.log("comment", comments);
+
+
     useEffect(() => {
-      setLikedStatus(open?.like?.some(i => i === user?.value?._id));
-      setLikesCount(open?.like?.length);
-      handleViewStory()
-      getListComments()
+        setLikedStatus(open?.like?.some(i => i === user?.value?._id));
+        setLikesCount(open?.like?.length);
+        handleViewStory()
+        getListComments()
     }, [open, user, open?.author?._id]);
 
     return (
