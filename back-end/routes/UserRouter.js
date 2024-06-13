@@ -43,5 +43,7 @@ UserRouter.get('/players', UserController.getAllPlayer);
 UserRouter.post('/search-player', UserController.searchPlayerByCriteria);
 UserRouter.post('/update-player-info', jwt.verifyAccessToken, UserController.updatePlayerInfo)
 
+UserRouter.post('/blockOrUnBlockUser/:id', jwt.verifyAccessToken, UserController.blockOrUnBlock)
+
 
 export default UserRouter

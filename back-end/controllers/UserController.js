@@ -252,6 +252,21 @@ const updatePlayerInfo = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
+const blockOrUnBlock = async (req, res) => {
+    try {
+        const authorID = req.payload.id 
+        const userID = req.params.id
+        const blockedUser = await UserService.blockOrUnBlock(userID, authorID);
+        res.status(200).json(blockedUser);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
+
 export default {
     register,
     login,
@@ -262,5 +277,6 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
-    updatePlayerInfo
+    updatePlayerInfo,
+    blockOrUnBlock,
 }
