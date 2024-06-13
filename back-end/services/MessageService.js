@@ -18,7 +18,17 @@ const createMessage = async (messageType, conversationId, senderId, text) => {
         throw new Error(error.toString());
     }
 }
+
+const getMessageByConId = async (id) => {
+    try {
+        const messages = await Message.find({ conversationId: id })
+        return messages
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     getMessage,
-    createMessage
+    createMessage,
+    getMessageByConId
 }
