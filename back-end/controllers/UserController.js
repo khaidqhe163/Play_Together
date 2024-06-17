@@ -263,6 +263,21 @@ const updatePlayerInfo = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
+const blockOrUnBlock = async (req, res) => {
+    try {
+        const authorID = req.payload.id
+        const userID = req.params.id
+        const blockedUser = await UserService.blockOrUnBlock(userID, authorID);
+        res.status(200).json(blockedUser);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
+
 const changePassword = async (req, res) => {
     try {
         const id = req.payload.id;
@@ -289,8 +304,8 @@ const getPlayerById = async (req, res) => {
     try {
         const id = req.params.id;
         const user = await UserService.getPlayerById(id);
-        const { _id, username, gender, followers, player, avatar, images, createdAt } = user;
-        const returnPlayer = { _id, username, gender, followers, player, avatar, images, createdAt }
+        const { _id, username, gender, followers, player, avatar, images, dateOfBirth, createdAt } = user;
+        const returnPlayer = { _id, username, gender, followers, player, avatar, images, dateOfBirth, createdAt }
         res.status(200).json(returnPlayer)
     } catch (error) {
         res.status(500).json(error);
@@ -299,14 +314,14 @@ const getPlayerById = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const userId = req.params.userId; 
+        const userId = req.params.userId;
         const user = await UserService.findUserById(userId);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json(user); 
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.toString() });
     }
@@ -315,11 +330,11 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const newAvatar = req.file?.path ;
+        const newAvatar = req.file?.path;
         const { gender, dob, username } = req.body;
 
         const updatedUser = await UserService.updateUser(userId, newAvatar, gender, dob, username);
-        if(newAvatar){
+        if (newAvatar) {
             fs.unlinkSync(req.body.avatar)
         }
         console.log(req.body.avatar);
@@ -351,6 +366,8 @@ export default {
     resetPassword,
     getAllPlayer,
     searchPlayerByCriteria,
+    updatePlayerInfo,
+    blockOrUnBlock,
     getUserById,
     updateUser,
     updateDuoSetting,

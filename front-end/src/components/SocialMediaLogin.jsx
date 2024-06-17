@@ -33,7 +33,7 @@ function SocialMediaLogin() {
     }
     return (
         <div className='login-success-container'>
-            <div class="loader"></div>
+            <div className="loader"></div>
         </div>
     )
 }
