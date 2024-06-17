@@ -104,7 +104,7 @@ export default function PlayerSchedule() {
                 <button
                     key={i}
                     type="button"
-                    className={`btn btn-outline-light mx-1 my-1 ${schedule.date === format(currentDay, 'yyyy-MM-dd') ? 'active text-white' : ''}`}
+                    className={`btn btn-outline-light mx-1 my-1 ${schedule.date === format(currentDay, 'yyyy-MM-dd') ? 'active-message text-white' : ''}`}
                     onClick={() => handleDateChange(currentDay)}
                     disabled={isDisabled}
                 >
