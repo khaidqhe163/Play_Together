@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Stack } from 'react-bootstrap'
-import '../../css/chatboxcommunity.css'
 import InputEmoji from 'react-input-emoji'
 import { LuSend } from "react-icons/lu";
 import api from '../../utils/axiosConfig.js'
@@ -52,7 +51,9 @@ function ChatBoxComunity() {
     }, [socketRedux, conversation])
 
     useEffect(() => {
-        setMessages([...messages, newMessage])
+        console.log(newMessage);
+        if (newMessage?.senderId !== userInfo._id)
+            setMessages([...messages, newMessage?.message])
     }, [newMessage])
     useEffect(() => {
         chatbox.current.scrollTop = chatbox.current.scrollHeight;
@@ -65,9 +66,12 @@ function ChatBoxComunity() {
                 text: textMessage
             }
             const mes = await api.post("/api/message", message);
-            console.log(mes.data);
             setMessages([...messages, mes.data])
-            socketRedux.emit("sendGlobalMessage", mes.data)
+            const socketMes = {
+                message: mes.data,
+                senderId: userInfo._id
+            }
+            socketRedux.emit("sendGlobalMessage", socketMes)
             setTextMessage("")
         } catch (error) {
             console.log(error);
@@ -88,12 +92,13 @@ function ChatBoxComunity() {
                                     className='rounded-circle'
                                     alt='error'></img>
                                 <div className='text-white' style={{
-                                    background: "#434343",
+                                    background: "#323241",
                                     borderRadius: "10px",
                                     padding: "5px",
-                                    width: "360px",
-                                    fontSize: "13px",
-                                    fontWeight: "500"
+                                    width: "85%",
+                                    fontSize: "15px",
+                                    fontWeight: "500",
+                                    borderTopLeftRadius: "0px"
                                 }}>
                                     <span style={{ color: "#4dadfe" }}>{m?.senderId.username}: </span> {m?.text}
                                 </div>
@@ -105,8 +110,9 @@ function ChatBoxComunity() {
             <Stack direction='horizontal' gap={3} className='chat-input'>
                 <InputEmoji value={textMessage}
                     onChange={setTextMessage}
-                    fontFamily='munito'
-                    borderColor='rgba(72, 122, 232, 0.2)' />
+                    fontFamily='sans-serif'
+                    borderColor='rgba(72, 122, 232, 0.2)'
+                />
                 <button className='send-btn' style={{
                     background: "#8d68f2",
                     color: "white",
