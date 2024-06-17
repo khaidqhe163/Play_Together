@@ -3,23 +3,43 @@ import { FaBan, FaCamera, FaStar } from 'react-icons/fa'
 import { TbPointFilled } from "react-icons/tb";
 import PiRight from './PiRight';
 import { IoIosMic } from 'react-icons/io';
-import { getId } from '../../utils/service';
+import { baseUrl, getId } from '../../utils/service';
+import axios from 'axios'
 function Services({ player }) {
     const [linkYoutube, setLinkYoutube] = useState("")
+    const [services, setService] = useState();
     useEffect(() => {
         console.log(linkYoutube);
         if (player?.player?.videoHightlight) {
             const url = getId(player.player.videoHightlight);
             setLinkYoutube(url);
         }
+        getService();
     }, [player])
+    const getService = async () => {
+        try {
+            const services = await axios.get("http://localhost:3008/api/service");
+            const userService = services.data.filter((s) => {
+                return player.player.serviceType.includes(s._id);
+            })
+            setService(userService);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <div className='player-infor-container'>
             <div className='pi-left pi'>
-                <div className='service-item'>
-                    <img src='/lmht.jpg' style={{ width: "60px" }} />
-                    <p style={{ margin: "0", marginLeft: "5px" }}>Lien Minh Huyen Thoai</p>
-                </div>
+                {
+                    services?.map((s) => {
+                        return (
+                            <div className='service-item mb-10'>
+                                <img src={baseUrl + s.image} style={{ width: "60px" }} />
+                                <p style={{ margin: "0", marginLeft: "5px" }}>{s.name}</p>
+                            </div>
+                        )
+                    })
+                }
             </div>
             <div className='pi-middle pi'>
                 <h3>Service</h3>

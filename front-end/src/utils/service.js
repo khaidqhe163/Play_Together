@@ -7,6 +7,7 @@ export const formatDate = (date) => {
 }
 
 export const formatMoney = (money) => {
+    if (!money) return ""
     let USDollar = new Intl.NumberFormat('en-VN', {
         style: 'currency',
         currency: 'VND',
