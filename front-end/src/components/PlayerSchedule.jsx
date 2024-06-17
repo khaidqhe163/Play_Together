@@ -7,7 +7,7 @@ export default function PlayerSchedule() {
     const today = new Date();
 
     const [schedule, setSchedule] = useState({
-        date: '',
+        date: format(today, 'yyyy-MM-dd'),
         startTime: '',
         endTime: ''
     });
@@ -137,6 +137,7 @@ export default function PlayerSchedule() {
                                 name="startTime"
                                 value={schedule.startTime}
                                 onChange={handleChange}
+                                required
                             >
                                 <option value="">Chọn giờ bắt đầu</option>
                                 {timeOptions.map((option, index) => (
@@ -152,6 +153,7 @@ export default function PlayerSchedule() {
                                 name="endTime"
                                 value={schedule.endTime}
                                 onChange={handleChange}
+                                required
                             >
                                 <option value="">Chọn giờ kết thúc</option>
                                 {timeOptions.map((option, index) => (
