@@ -16,7 +16,6 @@ const QrModal = (props) => {
         randomCode,
         postData,
         ...rest } = props;
-    console.log(`show: ${show}`);
     const bank = {
         BANK_ID: "MBBank",
         ACCOUNT_NO: "7500120072002",
@@ -25,8 +24,6 @@ const QrModal = (props) => {
         DESCRIPTION: randomCode,
         ACCOUNT_NAME: 'TRAN%20MANH%20HUNG'
     };
-
-    console.log(bank);
     const api_get = "https://oauth.casso.vn/v2/transactions?sort=DESC";
     const CASSO_API_KEY = "AK_CS.197d9940236711efa25ac5d284bd6c82.EZwBQL0GI0zjnlBcWB4FTKWvKoxeRWr1fElSoyMWVwWDbjvxDvcvnaUijEEYVDI9bnXHW3Rh"
 
@@ -77,15 +74,14 @@ const QrModal = (props) => {
     const savePayment = async () => {
         try {
             const res = await api.post(`${baseUrl}api/payment`, { total });
-            console.log(res.data.restUser);
             dispatch(setUserInformation(res.data.restUser));
             toast(res.data.message);
         } catch (error) {
             if (error.response.status === 400) {
                 toast(error.response.data.error);
-              } else {
+            } else {
                 toast('Có lỗi trong việc đổi mật khẩu!');
-              }
+            }
         }
     }
 
@@ -93,11 +89,9 @@ const QrModal = (props) => {
     const [showT, setShowT] = useState(false);
     useEffect(() => {
         if (isPaid) {
-            setShowT(true); 
+            setShowT(true);
         }
     }, [isPaid]);
-
-    console.log(showT);
     return (
         <div>
             {isPaid ? <Thank show={showT} handleClose={() => { setShowT(false); setIsPaid(false); }} setIsPaid={setIsPaid} /> : <Modal show={show} style={{ minWidth: '100%' }}>

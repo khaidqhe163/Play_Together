@@ -181,7 +181,7 @@ export default function Search() {
                         <h3 className="card-title text-lg text-white d-flex align-items-center">
                           <Link className='text-decoration-none text-white'>{p.username}</Link>
                           <IoIosCheckmarkCircle size={20} className='ml-1 text-bgButton' />
-                          <div class="player-status ready"> </div>
+                          <div className="player-status ready"> </div>
                         </h3>
                         {p.player.contentStatus ? <p className="card-text text-sm mb-0" style={{ color: "#ADADAD" }}>{p.player.contentStatus}</p> : <br />}
                         <div className='d-flex align-items-center mt-3'>
