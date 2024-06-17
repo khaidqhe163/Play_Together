@@ -5,6 +5,11 @@ const getListSchedule = async (playerId) => {
     const schedules = await Schedule.find({ playerId });
     return schedules;
 };
+const getListScheduleByDay = async (playerId, date) => {
+    const schedules = await Schedule.find({ playerId, date});
+    return schedules;
+};
+
 
 const createSchedule = async ({ playerId, date, startTime, endTime }) => {
     const schedules = [];
@@ -46,10 +51,17 @@ const checkDuplicateSchedule = async (playerId, date, startTime, endTime) => {
 
     return false;
 };
+const deleteScheduleById = async (id) => {
+    const schedule = await Schedule.findByIdAndDelete(id);
+    return schedule;
+};
+
 
 
 export default {
     createSchedule,
     checkDuplicateSchedule,
-    getListSchedule
+    getListSchedule,
+    getListScheduleByDay,
+    deleteScheduleById,
 };

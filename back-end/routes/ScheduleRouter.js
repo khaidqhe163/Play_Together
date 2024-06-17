@@ -4,7 +4,8 @@ import jwt from '../middleware/jwt.js';
 
 const ScheduleRouter = express.Router();
 
-ScheduleRouter.get('/', jwt.verifyAccessToken, ScheduleController.getListSchedule);
+ScheduleRouter.get('/', jwt.verifyAccessToken, ScheduleController.getListScheduleByDay);
 ScheduleRouter.post('/', jwt.verifyAccessToken, ScheduleController.createSchedule);
+ScheduleRouter.delete('/:id', jwt.verifyAccessToken, ScheduleController.deleteScheduleById);
 
 export default ScheduleRouter;

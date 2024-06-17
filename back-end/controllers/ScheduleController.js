@@ -25,7 +25,32 @@ const getListSchedule = async (req, res) => {
         });
     }
 }
+const getListScheduleByDay = async (req, res) => {
+    try {
+        const playerId = req.payload.id;
+        const {date} = req.query;
+        const schedules = await ScheduleService.getListScheduleByDay(playerId,date);
+        res.status(200).json(schedules);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+const deleteScheduleById = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const schedule = await ScheduleService.deleteScheduleById(id);
+        res.status(200).json(schedule);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
 export default {
     createSchedule,
-    getListSchedule
+    getListSchedule,
+    getListScheduleByDay,
+    deleteScheduleById,
 }
