@@ -42,6 +42,8 @@ const checkDuplicateSchedule = async (playerId, date, startTime, endTime) => {
         }
     }
 
+    if(startTime>=endTime) return true;
+
     return false;
 };
 
