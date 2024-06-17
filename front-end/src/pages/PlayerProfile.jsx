@@ -10,23 +10,37 @@ import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl, formatMoney } from '../utils/service';
 import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateBlockedUsers } from '../features/userSlice';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
     const [subnav, setSubnav] = useState(2);
     const [age, setAge] = useState("");
     const [openModalBlock, setOpenModalBlock] = useState(false)
-    const [blocked, setBlocked] = useState(false)
+    const author = useSelector((state) => state.user);
+    const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
+    const dispatch = useDispatch();
 
+    console.log("author:", author);
 
     useEffect(() => {
         getPlayerInformation();
     }, [])
 
+    useEffect(() => {
+        setBlocked(author?.value?.blockedUsers?.includes(id))
+    }, [author, id])
+
+    const handleBlockStatusChange = (blockedStatus) => {
+        dispatch(updateBlockedUsers({ userId: id, blocked: blockedStatus }))
+        setBlocked(blockedStatus)
+        setOpenModalBlock(false)
+    };
+
     const getPlayerInformation = async () => {
         try {
             const player = (await axios.get("http://localhost:3008/api/user/player-information/" + id)).data;
-            console.log(player);
             setPlayer(player);
             const dob = new Date(player.dateOfBirth);
             const currentTime = new Date();
@@ -36,7 +50,6 @@ function PlayerProfile() {
         }
     }
 
-    console.log(player);
     return (
         <>
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
@@ -75,7 +88,7 @@ function PlayerProfile() {
                         </Col>
                         <Col md={6} className='profile-header-right'>
                             <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Theo dõi</button>
-                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{!blocked ? 'Chặn' : 'Bỏ chặn'}</button>
+                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
                             <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Báo cáo</button>
                         </Col>
                     </Row>
@@ -108,7 +121,7 @@ function PlayerProfile() {
                     open={openModalBlock}
                     onCancel={() => setOpenModalBlock(false)}
                     blocked={blocked}
-                    setBlocked={setBlocked}
+                    setBlocked={handleBlockStatusChange}
                     // onOk={onOk}
                 />
             )}
