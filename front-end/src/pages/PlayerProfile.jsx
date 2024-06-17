@@ -8,7 +8,6 @@ import { IoMdMale } from "react-icons/io";
 import Services from '../components/PlayerProfile/Services';
 import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl } from '../utils/service';
-import BlockUserModal from '../components/Modal/BlockUserModal';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
@@ -77,7 +76,7 @@ function PlayerProfile() {
         console.log("age", age);
         return age
     }
-    console.log("player", player);
+    console.log(player);
     return (
         <>
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
@@ -108,6 +107,9 @@ function PlayerProfile() {
                                         </div>
                                         <p style={{ margin: "0", marginLeft: "10px" }}>Online</p>
                                     </div>
+                                    <div id='account-status'>
+                                        <p style={{ margin: "0", marginLeft: "10px" }}>{formatMoney(player?.player?.rentCost)}</p>
+                                    </div>
                                 </div>
                             </div>
                         </Col>
@@ -135,6 +137,9 @@ function PlayerProfile() {
                 }
                 {
                     subnav === 2 && <Services player={player} />
+                }
+                {
+                    subnav === 3 && <Album player={player} />
                 }
             </div>
             
