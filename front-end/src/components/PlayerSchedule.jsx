@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
-import { format } from 'date-fns';
-export default function PlayerSchedule() {
+import { format, startOfWeek, addDays } from 'date-fns';
 
+export default function PlayerSchedule() {
     const today = new Date();
 
     const [schedule, setSchedule] = useState({
@@ -11,7 +11,7 @@ export default function PlayerSchedule() {
         startTime: '',
         endTime: ''
     });
-    const [scheduleUpdate, SetScheduleUpdate] = useState([]);
+    const [scheduleUpdate, setScheduleUpdate] = useState([]);
     const [schedules, setSchedules] = useState([]);
 
     const handleChange = (e) => {
@@ -21,6 +21,14 @@ export default function PlayerSchedule() {
             [name]: value
         }));
     };
+
+    const handleDateChange = (date) => {
+        setSchedule((prevSchedule) => ({
+            ...prevSchedule,
+            date: format(date, 'yyyy-MM-dd')
+        }));
+    };
+
     const fetchData = async () => {
         try {
             const s = await api.get("/api/schedule");
@@ -30,9 +38,10 @@ export default function PlayerSchedule() {
             toast('Có lỗi trong việc lấy lịch!');
         }
     };
+
     useEffect(() => {
         fetchData();
-    }, [scheduleUpdate])
+    }, [scheduleUpdate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,7 +49,7 @@ export default function PlayerSchedule() {
             const s = await api.post("/api/schedule", schedule);
             if (s.status === 201) {
                 toast(s.data.message);
-                SetScheduleUpdate(s.data.schedules);
+                setScheduleUpdate(s.data.schedules);
             }
         } catch (error) {
             console.log(error);
@@ -50,8 +59,6 @@ export default function PlayerSchedule() {
                 toast('Có lỗi trong việc thiết lập thời gian Duo!');
             }
         }
-        console.log("Hello");
-
     };
 
     const generateTimeOptions = () => {
@@ -68,8 +75,29 @@ export default function PlayerSchedule() {
     const formatTime = (time) => {
         const hours = Math.floor(time);
         const minutes = (time - hours) * 60;
-        const formattedMinutes = minutes == 0 ? `0${minutes}` : minutes;
+        const formattedMinutes = minutes === 0 ? `0${minutes}` : minutes;
         return `${hours}:${formattedMinutes}`;
+    };
+
+    const renderWeekButtons = () => {
+        const startOfWeekDate = startOfWeek(today, { weekStartsOn: 1 }); // Week starts on Monday
+        const buttons = [];
+
+        for (let i = 0; i < 7; i++) {
+            const currentDay = addDays(startOfWeekDate, i);
+            buttons.push(
+                <button
+                    key={i}
+                    type="button"
+                    className={`btn btn-outline-light mx-1 ${schedule.date === format(currentDay, 'yyyy-MM-dd') ? 'active' : ''}`}
+                    onClick={() => handleDateChange(currentDay)}
+                >
+                    {format(currentDay, 'dd-MM')}
+                </button>
+            );
+        }
+        console.log(buttons);
+        return buttons;
     };
 
     return (
@@ -80,15 +108,10 @@ export default function PlayerSchedule() {
             <div className='col-10 mx-auto'>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="date" className="form-label">Ngày duo</label>
-                        <input
-                            type="date"
-                            className="form-control"
-                            id="date"
-                            name="date"
-                            value={schedule.date}
-                            onChange={handleChange}
-                        />
+                        <label className="form-label">Ngày duo</label>
+                        <div className="d-flex">
+                            {renderWeekButtons()}
+                        </div>
                     </div>
                     <div className="row mb-3">
                         <div className="col">
@@ -139,11 +162,13 @@ export default function PlayerSchedule() {
                     </thead>
                     <tbody>
                         {schedules.map((s, index) => (
-                            new Date(s.date) > today && <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
-                                <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
-                                <td className="px-6 py-4">{formatTime(s.start)} </td>
-                                <td className="px-6 py-4">{formatTime(s.end)} </td>
-                            </tr>
+                            new Date(s.date) > today && (
+                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
+                                    <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
+                                    <td className="px-6 py-4">{formatTime(s.start)} </td>
+                                    <td className="px-6 py-4">{formatTime(s.end)} </td>
+                                </tr>
+                            )
                         ))}
                     </tbody>
                 </table>
