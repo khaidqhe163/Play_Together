@@ -8,6 +8,7 @@ import { IoMdMale } from "react-icons/io";
 import Services from '../components/PlayerProfile/Services';
 import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl } from '../utils/service';
+import BlockUserModal from '../components/Modal/BlockUserModal';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
@@ -16,6 +17,8 @@ function PlayerProfile() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [subnav, setSubnav] = useState(2);
     const [age, setAge] = useState("");
+    const [openModalBlock, setOpenModalBlock] = useState(false)
+    const [blocked, setBlocked] = useState(false)
     const openModal = (index) => {
         setCurrentImageIndex(index);
         setIsOpen(true);
@@ -74,7 +77,7 @@ function PlayerProfile() {
         console.log("age", age);
         return age
     }
-    console.log(player);
+    console.log("player", player);
     return (
         <>
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
@@ -92,7 +95,7 @@ function PlayerProfile() {
                     <Row style={{ height: "256px", backgroundImage: "url('/profilebackground.png')", backgroundSize: "160%", backgroundPosition: "center", backgroundColor: "black" }}
                         className='profile-header'>
                         <Col md={6} className='profile-header-left'>
-                            <img src={baseUrl + player?.avatar} id='player-avatar' />
+                            <img src={baseUrl + player?.avatar} id='player-avatar' alt="#"/>
                             <div style={{ marginLeft: "20px" }}>
                                 <p style={{ color: "white", fontSize: "40px", fontWeight: "bold" }}>{player?.username}</p>
                                 <div style={{ display: "flex" }} className='header-info'>
@@ -109,9 +112,9 @@ function PlayerProfile() {
                             </div>
                         </Col>
                         <Col md={6} className='profile-header-right'>
-                            <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Follow</button>
-                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }}>Block</button>
-                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Report</button>
+                            <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Theo dõi</button>
+                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{!blocked ? 'Chặn' : 'Bỏ chặn'}</button>
+                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Báo cáo</button>
                         </Col>
                     </Row>
                     <Row>
@@ -134,6 +137,16 @@ function PlayerProfile() {
                     subnav === 2 && <Services player={player} />
                 }
             </div>
+            
+            {!!openModalBlock && (
+                <BlockUserModal
+                    open={openModalBlock}
+                    onCancel={() => setOpenModalBlock(false)}
+                    blocked={blocked}
+                    setBlocked={setBlocked}
+                    // onOk={onOk}
+                />
+            )}
         </>
     )
 }
