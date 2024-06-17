@@ -7,4 +7,5 @@ MessageRouter.get("/:id", MessageController.getMessage);
 
 MessageRouter.post("/", jwt.verifyAccessToken ,MessageController.createMessage)
 
+MessageRouter.get("/:id", MessageController.getMessageByConId)
 export default MessageRouter

@@ -10,6 +10,26 @@ const getConverByType = async (type) => {
     }
 }
 
+const createConversation = async (type, members) => {
+    try {
+        const members = req.body.members;
+        const conversation = await Conversation.create({ type, members });
+        return conversation;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getConversation = async (member1, member2) => {
+    try {
+        const conversation = await Conversation.findOne({ members: { $all: [member1, member2] } });
+        return conversation;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
 export default {
-    getConverByType
+    getConverByType,
+    createConversation,
+    getConversation
 }

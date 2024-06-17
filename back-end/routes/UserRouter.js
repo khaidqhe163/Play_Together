@@ -47,6 +47,8 @@ UserRouter.get('/player-information/:id', UserController.getPlayerById);
 UserRouter.get('/players-by-service/:serviceId', UserController.getPlayerByServiceId);
 UserRouter.put('/change-password', jwt.verifyAccessToken, UserController.changePassword);
 
+UserRouter.post('/blockOrUnBlockUser/:id', jwt.verifyAccessToken, UserController.blockOrUnBlock)
+
 UserRouter.get('/:userId', UserController.getUserById); 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
