@@ -7,42 +7,20 @@ import axios from 'axios';
 import { IoMdMale } from "react-icons/io";
 import Services from '../components/PlayerProfile/Services';
 import Achivement from '../components/PlayerProfile/Achivement';
-import { baseUrl } from '../utils/service';
+import { baseUrl, formatMoney } from '../utils/service';
+import BlockUserModal from '../components/Modal/BlockUserModal';
+import Album from '../components/PlayerProfile/Album';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
-    const [services, setService] = useState();
-    const [isOpen, setIsOpen] = useState(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [subnav, setSubnav] = useState(2);
     const [age, setAge] = useState("");
     const [openModalBlock, setOpenModalBlock] = useState(false)
     const [blocked, setBlocked] = useState(false)
-    const openModal = (index) => {
-        setCurrentImageIndex(index);
-        setIsOpen(true);
-    };
 
-    const closeModal = () => {
-        console.log("click here");
-        setIsOpen(false);
-    };
-    const previousImage = (e) => {
-        e.stopPropagation()
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === 0 ? player.player.images.length - 1 : prevIndex - 1
-        );
-    };
 
-    const nextImage = (e) => {
-        e.stopPropagation()
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === player.player.images.length - 1 ? 0 : prevIndex + 1
-        );
-    };
     useEffect(() => {
         getPlayerInformation();
-        getService();
     }, [])
 
     const getPlayerInformation = async () => {
@@ -58,24 +36,6 @@ function PlayerProfile() {
         }
     }
 
-    const getService = async () => {
-        try {
-            const services = await axios.get("http://localhost:3008/api/service");
-            setService(services.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const getAge = (date) => {
-        console.log(player.dateOfBirth);
-        const dob = new Date(date);
-        const currentTime = new Date();
-        console.log(dob);
-        let age = currentTime.getFullYear() - dob.getFullYear();
-        console.log("age", age);
-        return age
-    }
     console.log(player);
     return (
         <>
