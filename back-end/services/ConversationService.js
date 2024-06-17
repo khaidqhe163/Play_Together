@@ -28,8 +28,19 @@ const getConversation = async (member1, member2) => {
         throw new Error(error)
     }
 }
+
+const getConversationByUserId = async (id) => {
+    try {
+        const conversations = await Conversation.find({ members: id }).populate('members', ["username", "avatar"]);
+        console.log(conversations);
+        return conversations
+    } catch (error) {
+        throw new Error(error)
+    }
+}
 export default {
     getConverByType,
     createConversation,
-    getConversation
+    getConversation,
+    getConversationByUserId
 }

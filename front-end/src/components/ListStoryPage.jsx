@@ -17,15 +17,15 @@ export default function ListStoryPage({ stories, setOpenModalStory, setCurrentSt
     return (
         <>
             <div className="row">
-                {stories.map((story, index) => (
+                {stories?.map((story, index) => (
                     <div className="col-6 col-md-4 col-lg-2 mb-4" key={story._id}
                         onClick={() => setCurrentStory(index)}
                     >
                         <div className="card rounded-4 text-white hover-card" style={styles.card}>
                             <img src={baseUrl + story.thumbnail} className="card-img-top rounded-top-4" style={styles.cardImage} alt="story" />
                             <div className="overlay-info" style={styles.overlayInfo}>
-                                <img className='rounded-circle' src={baseUrl + story.author.avatar} style={styles.avatar} alt='author' />
-                                <p className="mb-0" style={styles.name}>{story.author.username}</p>
+                                <img className='rounded-circle' src={baseUrl + story.author?.avatar} style={styles.avatar} alt='author' />
+                                <p className="mb-0" style={styles.name}>{story.author?.username}</p>
                             </div>
                         </div>
                     </div>

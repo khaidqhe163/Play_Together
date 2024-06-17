@@ -37,8 +37,18 @@ const getConversation = async (req, res) => {
         res.status(500).json(error);
     }
 }
+
+const getConversationByUserId = async (req, res) => {
+    try {
+        const conversations = await ConversationService.getConversationByUserId(req.payload.id);
+        res.status(200).json(conversations);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
 export default {
     getConverByType,
     createConversation,
-    getConversation
+    getConversation,
+    getConversationByUserId
 }

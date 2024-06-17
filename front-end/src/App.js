@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,16 +9,14 @@ import { onlineUser, setOnlineUser } from './features/onlineUserSlice';
 import { socket, setSocket } from './features/socketSlice';
 import route from './routes/Routes';
 import './App.css';
-import ChatCommunity from './components/Chat/ChatCommunity';
 import { io } from 'socket.io-client'
 import ChatBox from './components/Chat/ChatBox';
+import { SocketProvider } from './context/SocketContext';
 function App() {
   const dispatch = useDispatch();
   const userInfo = useSelector(userInfor);
-  const socketRedux = useSelector(socket);
-  const onlineUserRedux = useSelector(onlineUser);
-  // const [socket, setSocket] = useState(null);
-  // const [onlineUsers, setOnlineUsers] = useState(null);
+  // const socketRedux = useSelector(socket);
+  // const onlineUserRedux = useSelector(onlineUser);
   useEffect(() => {
     const autoLogin = async () => {
       try {
@@ -42,47 +40,55 @@ function App() {
     autoLogin();
   }, [])
 
-  useEffect(() => {
-    if (userInfo !== null) {
-      const newSocket = io("http://localhost:5000")
-      dispatch(setSocket(newSocket))
-      return () => {
-        newSocket.disconnect()
-      }
-    }
-  }, [userInfo])
+  // useEffect(() => {
+  //   if (userInfo !== null) {
+  //     const newSocket = io("http://localhost:5000")
+  //     dispatch(setSocket(newSocket))
+  //     return () => {
+  //       newSocket.disconnect()
+  //     }
+  //   }
+  // }, [userInfo])
 
-  useEffect(() => {
-    console.log(socketRedux);
-    if (socketRedux === null) return
-    socketRedux.emit("addNewUser", userInfo?._id)
-    socketRedux.on("getOnlineUsers", (res) => {
-      dispatch(setOnlineUser(res))
-    })
-  }, [socketRedux])
+  // useEffect(() => {
+  //   console.log(socketRedux);
+  //   if (socketRedux === null) return;
+  //   socketRedux.emit("addNewUser", userInfo?._id)
+  //   socketRedux.on("getOnlineUsers", (res) => {
+  //     dispatch(setOnlineUser(res))
+  //   })
+  // }, [socketRedux])
 
-  console.log(window.location.pathname);
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          {
-            route.routes.map((route) => (
-              <Route key={route.path}
-                path={route.path}
-                element={
-                  <route.element />
-                }
-              />
-            ))
-          }
-        </Routes>
-      </BrowserRouter>
-      {
-        userInfo !== null && <ChatBox />
-      }
+      <SocketProvider user={userInfo}>
+        <BrowserRouter>
+          <MainRoutes userInfo={userInfo} />
+        </BrowserRouter>
+      </SocketProvider>
     </div>
   );
 }
 
+
+function MainRoutes({ userInfo }) {
+  const location = useLocation();
+  const hideSidebarPaths = ['/login', '/register'];
+  const shouldHideSidebar = hideSidebarPaths.includes(location.pathname);
+
+  return (
+    <>
+      <Routes>
+        {route.routes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={<route.element />}
+          />
+        ))}
+      </Routes>
+      {!shouldHideSidebar && userInfo !== null && <ChatBox />}
+    </>
+  );
+}
 export default App;

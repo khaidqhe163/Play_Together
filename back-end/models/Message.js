@@ -5,7 +5,7 @@ const message = new Schema({
     conversationId: { type: mongoose.Schema.Types.ObjectId, ref: 'conversation' },
     senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     text: String,
-    isRead: { type: Boolean }
+    isRead: { type: Boolean, default: false }
 }, {
     timestamps: true,
 })
