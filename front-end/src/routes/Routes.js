@@ -16,6 +16,7 @@ import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
 import Home from "../components/Home"
 import ImageGallery from "../components/ImageGallery"
+import AdminLogin from "../pages/Admin/AdminLogin"
 const routes = [
     {
         path: '/',
@@ -80,6 +81,10 @@ const routes = [
     {
         path: '/player-guide',
         element: PlayerGuidePage
+    },
+    {
+        path: '/admin/login',
+        element: AdminLogin
     }
 ]
 export default {
