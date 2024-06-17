@@ -12,7 +12,6 @@ export default function PlayerSchedule() {
         endTime: ''
     });
     const [scheduleUpdate, setScheduleUpdate] = useState([]);
-    const [schedules, setSchedules] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,10 +28,10 @@ export default function PlayerSchedule() {
         }));
     };
 
-    const fetchData = async () => {
+    const fetchData = async (selectedDate) => {
         try {
-            const s = await api.get("/api/schedule");
-            setSchedules(s.data);
+            const s = await api.get(`/api/schedule?date=${selectedDate}`);
+            setScheduleUpdate(s.data);
         } catch (error) {
             console.log(error);
             toast('Có lỗi trong việc lấy lịch!');
@@ -40,8 +39,8 @@ export default function PlayerSchedule() {
     };
 
     useEffect(() => {
-        fetchData();
-    }, [scheduleUpdate]);
+        fetchData(schedule.date); 
+    }, [schedule.date]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,7 +48,7 @@ export default function PlayerSchedule() {
             const s = await api.post("/api/schedule", schedule);
             if (s.status === 201) {
                 toast(s.data.message);
-                setScheduleUpdate(s.data.schedules);
+                fetchData(schedule.date);
             }
         } catch (error) {
             console.log(error);
@@ -58,6 +57,19 @@ export default function PlayerSchedule() {
             } else {
                 toast('Có lỗi trong việc thiết lập thời gian Duo!');
             }
+        }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await api.delete(`/api/schedule/${id}`);
+            if (response.status === 200) {
+                toast('Xoá lịch thành công!');
+                fetchData(schedule.date);
+            }
+        } catch (error) {
+            console.log(error);
+            toast('Có lỗi trong việc xoá lịch!');
         }
     };
 
@@ -85,18 +97,21 @@ export default function PlayerSchedule() {
 
         for (let i = 0; i < 7; i++) {
             const currentDay = addDays(startOfWeekDate, i);
+            const dayCurrent = currentDay.getDate();
+            const dayToday = today.getDate();
+            const isDisabled = dayCurrent < dayToday;
             buttons.push(
                 <button
                     key={i}
                     type="button"
-                    className={`btn btn-outline-light mx-1 ${schedule.date === format(currentDay, 'yyyy-MM-dd') ? 'active' : ''}`}
+                    className={`btn btn-outline-light mx-1 my-1 ${schedule.date === format(currentDay, 'yyyy-MM-dd') ? 'active text-white' : ''}`}
                     onClick={() => handleDateChange(currentDay)}
+                    disabled={isDisabled}
                 >
                     {format(currentDay, 'dd-MM')}
                 </button>
             );
         }
-        console.log(buttons);
         return buttons;
     };
 
@@ -158,17 +173,24 @@ export default function PlayerSchedule() {
                             <th className="px-6 py-3">Date</th>
                             <th className="px-6 py-3">Giờ bắt đầu</th>
                             <th className="px-6 py-3">Giờ kết thúc</th>
+                            <th className="px-6 py-3"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {schedules.map((s, index) => (
-                            new Date(s.date) > today && (
-                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
-                                    <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
-                                    <td className="px-6 py-4">{formatTime(s.start)} </td>
-                                    <td className="px-6 py-4">{formatTime(s.end)} </td>
-                                </tr>
-                            )
+                        {scheduleUpdate.map((s, index) => (
+                            <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
+                                <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
+                                <td className="px-6 py-4">{formatTime(s.start)} </td>
+                                <td className="px-6 py-4">{formatTime(s.end)} </td>
+                                <td className="px-6 py-4">
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={() => handleDelete(s._id)}
+                                    >
+                                        Xoá
+                                    </button>
+                                </td>
+                            </tr>
                         ))}
                     </tbody>
                 </table>
