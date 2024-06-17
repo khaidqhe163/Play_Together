@@ -6,7 +6,7 @@ const commentSchema = new Schema({
     stars: { type: Number, min: 1, max: 5, default: 5 },
     commentor: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     content: {type: String, required: true},
-    reply: Schema.Types.ObjectId
+    reply: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
 }, {
     timestamps: true
 });
