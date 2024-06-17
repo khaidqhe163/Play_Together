@@ -1,76 +1,192 @@
-.player-profile {
+#player-avatar {
+    border-radius: 50%;
+    height: 160px;
+    width: 160px;
+}
+
+.profile-header-left {
+    padding-left: 90px !important;
+    display: flex;
+    align-items: center;
+}
+
+#gender-age {
+    display: flex;
+    color: white;
+    align-items: center;
+}
+
+.header-info div {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #17171d;
+}
+
+#account-status {
+    color: white;
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.profile-header-right {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-right: 100px !important;
+}
+
+.profile-header-right button {
+    height: 48px;
+    color: white;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+#se-nav {
+    background-color: black;
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    font-weight: bold;
+    color: rgb(185, 185, 185);
+    padding-left: 70px !important;
+}
+
+#se-nav div {
+    margin: 10px 20px;
+    cursor: pointer;
+}
+
+.se-nav-active {
+    position: relative;
     color: white;
 }
 
-
-#pp-left {
-    text-align: center
+.se-nav-active::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    width: 24px;
+    height: 4px;
+    margin-left: -12px;
+    background-color: #7b47ff;
 }
 
-#pp-left p {
-    font-size: 12px;
+.player-infor-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+
+}
+
+.pi {
+    background-color: #20202b;
+    border-radius: 15px;
+}
+
+.pi-left {
+    width: 23%;
+    padding: 20px 10px;
+    text-align: center;
+    align-self: flex-start;
+}
+
+.service-item {
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    width: 95%;
+    padding: 20px;
+    background-color: #333345;
+    margin: auto;
+    border-radius: 15px;
+}
+
+.pi-middle {
+    width: 45%;
+    padding: 20px;
+    max-height: 600px;
+    overflow: auto;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+}
+
+.pi-middle h5 {
+    font-weight: bold;
+    color: white;
+}
+
+.pi-middle h3 {
+    font-weight: bold;
+    color: white;
+}
+
+.pi-right {
+    width: 23%;
+    align-self: flex-start;
+    text-align: center;
+    padding: 20px 10px
+}
+
+.pi-right button {
+    width: 90%;
+    height: 50px;
+    margin-top: 10px;
+    color: #7b47ff;
+    font-size: 20px;
+    border-radius: 30px;
+    background-color: #20202b;
+    border: 1px solid #7b47ff;
+}
+
+.pi-right button:last-child {
+    color: white;
+    background-color: #7b47ff;
+}
+
+.profile-amount div {
+    width: 30%;
+    background-color: #333345;
+    font-size: 16px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    color: #adadbf;
     margin-top: 20px;
 }
 
-#pp-left h5 {
+.amounts {
     font-weight: bold;
-    text-align: left;
-    color: #7b47ff;
+    font-size: 25px;
+    color: white;
+    margin: 0;
 }
 
-hr {
-    background-color: white;
-}
-
-.player-profile .row {
-    padding-top: 40px;
-}
-
-#player-avatar {
-    height: 250px;
-    width: 250px;
-    margin: auto;
+.social-media button {
+    width: 48px;
+    height: 48px;
     border-radius: 10px;
+    background-color: #333345;
+    color: white;
+    font-size: 25px;
+    margin-right: 20px;
+    margin-top: 10px;
 }
 
-.achivement div{
-    display: flex;
-    align-items: center;
-    text-align: left;
-}
-
-.achivement-content{
-    margin-left: 5px;
-    font-weight: bold;
-    width: 80%;
-    font-size: 15px !important;
-}
-
-.achivement-date{
-    text-align: right;
-    margin-top: 0 !important;
-}
-
-.achivement-icon{
-    font-size: 20px;
-    width: 40px;
-}
-
-.service-container {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.service{
-    margin-right: 10px;
-    padding: 0px 10px;
-}
-
-.album-player{
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.star-container{
-    color: #ff9948;
+.devices-status button {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background-color: #333345;
+    color: white;
+    font-size: 25px;
+    margin-right: 20px;
 }

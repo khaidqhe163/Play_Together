@@ -18,9 +18,9 @@ function ChatBox() {
                 <button onClick={() => setShow(true)} id="btn-back"><IoArrowBack /></button>
             </div>
             {
-                arr.map((a) => {
+                arr.map((a, index) => {
                     return (
-                        <div className="receiver" style={{ backgroundImage: `url(${'http://localhost:3008/public/avatar/avatar2.jpg'})` }}>
+                        <div key={index} className="receiver" style={{ backgroundImage: `url(${'http://localhost:3008/public/avatar/avatar2.jpg'})` }}>
                             <span className='unread-message um-position'>2</span>
                             <span className='online-user'></span>
                         </div>
