@@ -1,0 +1,19 @@
+:where(.css-dev-only-do-not-override-17seli4).ant-table-wrapper .ant-table-pagination.ant-pagination {
+    margin: 3px 0;
+}
+
+:where(.css-dev-only-do-not-override-17seli4).ant-pagination .ant-pagination-item {
+    width: 20px;
+    height: 30px;
+    background: rgb(47, 47, 47);
+    border: none;
+}
+
+:where(.css-dev-only-do-not-override-17seli4).ant-pagination .ant-pagination-item a{
+    font-weight: 700;
+    color: white;
+}
+
+:where(.css-dev-only-do-not-override-17seli4).ant-table-wrapper .ant-table {
+    background: rgb(182, 181, 181);
+}
