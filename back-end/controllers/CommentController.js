@@ -31,7 +31,37 @@ const createComment = async (req, res) => {
     }
 }
 
+const deleteComment = async (req, res) => {
+    const { commentId } = req.params
+    try {
+        const result = await CommentService.deleteComment(commentId)
+        return res.status(200).json({
+            message: 'Comment deleted successfully',
+            data: result,
+        });
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+}
+
+const updateComment = async (req, res) => {
+    const { commentId } = req.params
+    const updateData = req.body
+
+    try {
+        const updatedComment = await CommentService.updateComment(updateData, commentId)
+        if (!updatedComment) {
+            return res.status(404).json({ message: 'Comment not found' })
+        }
+        res.status(200).json(updatedComment)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+};
+
 export default {
     getAllCommentsByStoryId,
     createComment,
+    deleteComment,
+    updateComment,
 }
