@@ -58,6 +58,7 @@ export default function NavBar() {
   };
 
   return (
+    
     <div
       className="row d-flex justify-content-center align-items-center py-2 navbar-wrapper"
       style={{
@@ -67,6 +68,8 @@ export default function NavBar() {
         borderBottom: "1px solid black",
       }}
     >
+    
+    
       <div className="col-sm-3 d-flex">
         <Link to={"/"}>
           <IoGameControllerOutline color="white" size={35} />

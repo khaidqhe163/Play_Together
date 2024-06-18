@@ -13,6 +13,8 @@ import Album from '../components/PlayerProfile/Album';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
 import CanvasHire from '../components/CanvasHire';
+import { Bounce, ToastContainer } from 'react-toastify';
+
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
@@ -23,8 +25,6 @@ function PlayerProfile() {
     const author = useSelector((state) => state.user);
     const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
     const dispatch = useDispatch();
-
-    console.log("author:", author);
 
     useEffect(() => {
         getPlayerInformation();
@@ -51,12 +51,23 @@ function PlayerProfile() {
             console.log(error);
         }
     }
-    console.log(player);
     return (
         <>
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
                 <div className="row bg-white shadow-sm" style={{ position: "fixed", zIndex: "1", width: "100vw" }}>
                     <div className="col-12">
+                        <ToastContainer
+                            position="top-right"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            theme="dark"
+                            transition={Bounce} />
                         <NavBar />
                     </div>
                 </div>
@@ -66,10 +77,11 @@ function PlayerProfile() {
                 height: "calc(100vh - 56px)"
             }}>
                 <Container fluid>
+
                     <Row style={{ height: "256px", backgroundImage: "url('/profilebackground.png')", backgroundSize: "160%", backgroundPosition: "center", backgroundColor: "black" }}
                         className='profile-header'>
                         <Col md={6} className='profile-header-left'>
-                            <img src={baseUrl + player?.avatar} id='player-avatar' alt="#"/>
+                            <img src={baseUrl + player?.avatar} id='player-avatar' alt="#" />
                             <div style={{ marginLeft: "20px" }}>
                                 <p style={{ color: "white", fontSize: "40px", fontWeight: "bold" }}>{player?.username}</p>
                                 <div style={{ display: "flex" }} className='header-info'>
@@ -108,26 +120,26 @@ function PlayerProfile() {
                     </Row>
                 </Container>
                 {
-                    subnav === 1 && <Achivement player={player} setOpenHire={()=>{setOpenHire(true)}}/>
+                    subnav === 1 && <Achivement player={player} setOpenHire={() => { setOpenHire(true) }} />
                 }
                 {
-                    subnav === 2 && <Services player={player} setOpenHire={()=>{setOpenHire(true)}}/>
+                    subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} />
                 }
                 {
                     subnav === 3 && <Album player={player} />
                 }
             </div>
-            
+
             {!!openModalBlock && (
                 <BlockUserModal
                     open={openModalBlock}
                     onCancel={() => setOpenModalBlock(false)}
                     blocked={blocked}
                     setBlocked={handleBlockStatusChange}
-                    // onOk={onOk}
+                // onOk={onOk}
                 />
             )}
-            <CanvasHire showHire = {openHire} handleClose={()=>setOpenHire(false)} player={player} />
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} />
         </>
     )
 }
