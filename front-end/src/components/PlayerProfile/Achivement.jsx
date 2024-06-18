@@ -5,7 +5,7 @@ import { FaFacebook, FaYoutube } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import PiRight from './PiRight';
 import { formatDate } from '../../utils/service';
-function Achivement({ player }) {
+function Achivement({ player, setOpenHire }) {
     const renderTooltip = (props, content) => (
         <Tooltip id="button-tooltip" {...props}>
             {content}
@@ -86,7 +86,7 @@ function Achivement({ player }) {
 
                 </div>
             </div>
-            <PiRight />
+            <PiRight setOpenHire={setOpenHire}/>
         </div >
     )
 }

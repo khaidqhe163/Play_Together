@@ -12,12 +12,14 @@ import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
+import CanvasHire from '../components/CanvasHire';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
     const [subnav, setSubnav] = useState(2);
     const [age, setAge] = useState("");
-    const [openModalBlock, setOpenModalBlock] = useState(false)
+    const [openModalBlock, setOpenModalBlock] = useState(false);
+    const [openHire, setOpenHire] = useState(false);
     const author = useSelector((state) => state.user);
     const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
     const dispatch = useDispatch();
@@ -49,7 +51,7 @@ function PlayerProfile() {
             console.log(error);
         }
     }
-
+    console.log(player);
     return (
         <>
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
@@ -106,10 +108,10 @@ function PlayerProfile() {
                     </Row>
                 </Container>
                 {
-                    subnav === 1 && <Achivement player={player} />
+                    subnav === 1 && <Achivement player={player} setOpenHire={()=>{setOpenHire(true)}}/>
                 }
                 {
-                    subnav === 2 && <Services player={player} />
+                    subnav === 2 && <Services player={player} setOpenHire={()=>{setOpenHire(true)}}/>
                 }
                 {
                     subnav === 3 && <Album player={player} />
@@ -125,6 +127,7 @@ function PlayerProfile() {
                     // onOk={onOk}
                 />
             )}
+            <CanvasHire showHire = {openHire} handleClose={()=>setOpenHire(false)} player={player} />
         </>
     )
 }

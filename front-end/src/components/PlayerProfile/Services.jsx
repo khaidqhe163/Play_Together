@@ -5,7 +5,7 @@ import PiRight from './PiRight';
 import { IoIosMic } from 'react-icons/io';
 import { baseUrl, getId } from '../../utils/service';
 import axios from 'axios'
-function Services({ player }) {
+function Services({ player, setOpenHire}) {
     const [linkYoutube, setLinkYoutube] = useState("")
     const [services, setService] = useState();
     useEffect(() => {
@@ -89,7 +89,7 @@ function Services({ player }) {
                     </div>
                 </div>
             </div>
-            <PiRight />
+            <PiRight setOpenHire={setOpenHire}/>
         </div>
     )
 }
