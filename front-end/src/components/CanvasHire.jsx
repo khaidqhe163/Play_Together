@@ -3,17 +3,16 @@ import { Button, Col, Container, Offcanvas, Row, Stack } from 'react-bootstrap';
 import '../css/canvas-hire.css';
 import { GrLinkNext, GrSubtractCircle, GrAddCircle } from 'react-icons/gr';
 import { baseUrl } from "../utils/service.js";
-import { useSelector } from "react-redux";
-import { userInfor } from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserInformation, userInfor } from "../features/userSlice";
 import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
-import { Bounce, ToastContainer } from 'react-toastify';
 
 
 export default function CanvasHire({ showHire, handleClose, player }) {
+    const dispatch = useDispatch();
     const userInfo = useSelector(userInfor);
     console.log(player);
-    console.log(8);
     const [bookingDetails, setBookingDetails] = useState({
         userId: userInfo?._id || '',
         playerId: '',
@@ -45,10 +44,12 @@ export default function CanvasHire({ showHire, handleClose, player }) {
     const handleConfirm = async (e) => {
         e.preventDefault();
         try {
+            if (userInfo.accountBalance < bookingDetails.price) return toast("Số tiền của bạn hiện không đủ để thanh toán! ❌💰");
             const s = await api.post("/api/booking", bookingDetails);
             if (s.status === 201) {
+                dispatch(setUserInformation(s.data.restUser));
                 toast(s.data.message);
-                setTimeout(handleClose,2000);
+                setTimeout(handleClose, 2000);
             }
         } catch (error) {
             console.log(error);
@@ -61,40 +62,27 @@ export default function CanvasHire({ showHire, handleClose, player }) {
         }
     };
     return (
-        <>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-                transition={Bounce} />
             <Offcanvas show={showHire} onHide={handleClose} placement='end'>
                 <Offcanvas.Body>
-                    <form onSubmit={handleConfirm}>
+                    <form onSubmit={handleConfirm} className='mt-0'>
                         <Container fluid className='hire-screen'>
                             <div className='row'>
                                 <div className='col-md-12 p-20'>
-                                    <div className='row mb-16'>
+                                    <div className='row mb-32'>
                                         <div className='col-md-12 d-flex items-center'>
-                                            <button className='' onClick={handleClose} id="btn-back1"><GrLinkNext /></button>
+                                            <button type='button' onClick={handleClose} id="btn-back1"><GrLinkNext /></button>
                                             <h2 className='text-white'>Xác nhận thuê</h2>
                                         </div>
                                     </div>
                                     <div className='row'>
                                         <div className='col-md-4'>
-                                            <img src={baseUrl + player?.avatar} className='w-full h-80 object-cover object-center rounded-md' alt="#" />
+                                            <img src={baseUrl + `public/service/socialadd.webp`} className='w-full h-auto object-cover object-center rounded-md' alt="#" />
                                         </div>
                                         <div className='col-md-8'>
 
                                             <table className='text-white fw-medium w-5/6 mx-auto styled-table'>
                                                 <tbody className='tbhire'>
-                                                    <tr><td className='td-label'>Tên player:</td><td className='td-value'>{player?.username}</td></tr>
+                                                    <tr className=''><td className='td-label'>Tên player:</td><td className='td-value'>{player?.username}</td></tr>
                                                     <tr><td className='td-label'>Chi phí:</td><td className='td-value'>{(player?.player?.rentCost || 0).toLocaleString('en-US', {
                                                         minimumFractionDigits: 0,
                                                         maximumFractionDigits: 3,
@@ -143,6 +131,14 @@ export default function CanvasHire({ showHire, handleClose, player }) {
                                             <hr style={{ color: "gray" }} />
                                         </div>
                                     </div>
+                                    <div className='row mb-12'>
+                                        <div className='col-md-8 text-textDetail'>
+                                            <p className=''>Đơn vị giá</p>
+                                        </div>
+                                        <div className='col-md-4 text-textDetail'>
+                                            <p>{bookingDetails.unit}</p>
+                                        </div>
+                                    </div>
                                     <div className='row'>
                                         <div className='col-md-8 text-white'>
                                             <h4>Thành tiền</h4>
@@ -161,8 +157,8 @@ export default function CanvasHire({ showHire, handleClose, player }) {
                                     </div>
                                     <div className='row'>
                                         <div className='col-md-12 d-flex justify-end'>
-                                            <button className='btn btn-danger btn-lg w-20 mt-2' onClick={handleClose}>Huỷ</button>
-                                            <button className='btn btn-success btn-lg w-32 mt-2 mx-2' type='submit'>Xác nhận</button>
+                                            <button className='w-36 mt-2 mx-2 fw-medium cancel bg-bgSecondButton text-white px-4 py-2 rounded-xl' type='button' onClick={handleClose}>Huỷ</button>
+                                            <button className='w-32 mt-2 mx-2 fw-medium cancel text-white rounded-xl hover:bg-bgButtonHover' type='submit'>Xác nhận</button>
                                         </div>
 
                                     </div>
@@ -172,6 +168,5 @@ export default function CanvasHire({ showHire, handleClose, player }) {
                     </form>
                 </Offcanvas.Body>
             </Offcanvas>
-        </>
     )
 }

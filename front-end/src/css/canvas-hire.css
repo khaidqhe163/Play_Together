@@ -55,7 +55,7 @@ input[type="number"] {
 }
 
 .styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid gray;
 }
 
 .styled-table tbody tr:last-of-type {
@@ -68,11 +68,12 @@ input[type="number"] {
 }
 
 .td-label {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .td-value {
     text-align: right;
+    font-weight: 400;
 }
 
 .styled-table input {
@@ -82,4 +83,13 @@ input[type="number"] {
     border: 1px solid #dddddd;
     outline: none;
     width: 50px;
+}
+
+.cancel{
+    transition: all 0.2s ease-in-out;
+    font-size: larger
+}
+
+.cancel:hover{
+    transform: scale(1.1);
 }

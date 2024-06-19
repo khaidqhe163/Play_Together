@@ -53,21 +53,22 @@ function PlayerProfile() {
     }
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce} />
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
                 <div className="row bg-white shadow-sm" style={{ position: "fixed", zIndex: "1", width: "100vw" }}>
                     <div className="col-12">
-                        <ToastContainer
-                            position="top-right"
-                            autoClose={5000}
-                            hideProgressBar={false}
-                            newestOnTop={false}
-                            closeOnClick
-                            rtl={false}
-                            pauseOnFocusLoss
-                            draggable
-                            pauseOnHover
-                            theme="dark"
-                            transition={Bounce} />
+
                         <NavBar />
                     </div>
                 </div>
