@@ -20,6 +20,7 @@ const bookingSchema = new Schema({
     },
     unit: {
         type: Number,
+        default: 0,
     },
     bookingStatus: {
         type: Boolean,

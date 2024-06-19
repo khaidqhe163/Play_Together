@@ -3,9 +3,6 @@ import api from '../../../utils/axiosConfig.js';
 import CustomModal from "../CustomModal";
 
 const BlockUserModal = ({open, onCancel, blocked, setBlocked}) => {
-    console.log("blocked", blocked);
-    console.log("setBlocked", setBlocked);
-    
     const footer = () => (
         <div className="d-flex justify-content-center">
             <Button
@@ -40,7 +37,7 @@ const BlockUserModal = ({open, onCancel, blocked, setBlocked}) => {
     
     return (  
         <CustomModal
-        open={!!open}
+            open={!!open}
             onCancel={onCancel}
             width={450}
             footer={footer}

@@ -86,7 +86,7 @@ function Achivement({ player, setOpenHire }) {
 
                 </div>
             </div>
-            <PiRight setOpenHire={setOpenHire}/>
+            <PiRight id={player?._id} setOpenHire={setOpenHire} />
         </div >
     )
 }

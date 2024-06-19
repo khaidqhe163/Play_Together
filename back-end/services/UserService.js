@@ -240,6 +240,30 @@ const updateDuoSetting = async (userId, isDuoEnabled) => {
     }
 };
 
+
+const getAllUsers = async () => {
+    try {
+        const users = await User.find({})
+        return users
+    } catch {
+        throw new Error(error.toString());
+    }
+}
+
+const banUser = async  ( userId ) => {
+    try {
+        const user = await User.findById( userId)
+        if (!user) {
+            throw new Error("User not found")
+        }
+        user.status = !user.status
+        await user.save()
+        return user
+    } catch {
+        throw new Error(error.toString());
+    }
+}
+
 export default {
     register,
     findUserByEmail,
@@ -256,5 +280,7 @@ export default {
     getPlayerById,
     getPlayerByServiceId,
     updatePlayerInfo,
-    findByUserId
+    findByUserId,
+    getAllUsers,
+    banUser,
 }

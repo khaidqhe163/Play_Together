@@ -37,6 +37,19 @@ const getListScheduleByDay = async (req, res) => {
         });
     }
 }
+
+const getListScheduleByDayOfPlayer = async (req, res) => {
+    try {
+        const {date, pid} = req.query;
+        const schedules = await ScheduleService.getListScheduleByDay(pid,date);
+        res.status(200).json(schedules);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
 const deleteScheduleById = async (req, res) => {
     try {
         const {id} = req.params;
@@ -53,4 +66,5 @@ export default {
     getListSchedule,
     getListScheduleByDay,
     deleteScheduleById,
+    getListScheduleByDayOfPlayer,
 }
