@@ -356,6 +356,26 @@ const updateDuoSetting = async (req, res) => {
         res.status(500).json({ message: error.toString() });
     }
 };
+
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await UserService.getAllUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const banUser = async (req, res) => {
+    try {
+        const userId = req.params.userId
+        const user = await UserService.banUser(userId)
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+} 
+
 export default {
     register,
     login,
@@ -374,5 +394,7 @@ export default {
     getPlayerByServiceId,
     updatePlayerInfo,
     getPlayerById,
-    changePassword
+    changePassword,
+    getAllUsers,
+    banUser,
 }

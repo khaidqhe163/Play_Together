@@ -75,6 +75,10 @@ const UserSchema = new Schema({
     },
     player: {
         type: PlayerSchema
+    },
+    status: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
