@@ -86,7 +86,7 @@ function Achivement({ player }) {
 
                 </div>
             </div>
-            <PiRight />
+            <PiRight id={player?._id}/>
         </div >
     )
 }

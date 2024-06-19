@@ -90,6 +90,7 @@
 .offcanvas-body {
     background-color: #20202b;
     padding: 0 !important;
+    box-sizing: border-box;
 }
 
 
@@ -161,10 +162,16 @@
     padding: 15px 10px;
 }
 
-.receiver-boxchat:hover{
+.receiver-boxchat:hover {
     background-color: #333345;
     border-radius: 20px;
 }
+
+.chat-active {
+    background-color: #333345;
+    border-radius: 20px;
+}
+
 .receiver-avatar {
     background-size: cover;
     width: 48px;
@@ -177,6 +184,9 @@
     font-weight: bold;
     font-size: 18px;
     margin: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .receiver-info {
@@ -198,6 +208,48 @@
     text-align: right;
 }
 
-.box-chat{
+.box-chat {
     height: 100%;
+    position: relative;
+    padding: 0 !important;
+}
+
+.chatbox {
+    width: 100%;
+    margin-top: 20px;
+    height: 85%;
+    overflow: auto;
+    padding: 0px 20px;
+}
+
+.react-emoji {
+    width: 90% !important;
+}
+
+.chat-input {
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+}
+
+.chat-box-header {
+    width: 100%;
+}
+
+.chat-options {
+    position: relative;
+}
+
+.chat-options:hover {
+    background-color: #333345;
+}
+
+.message-setting {
+    background-color: #323241;
+    width: 250px;
+    height: 100px;
+    position: absolute;
+    bottom: -120px;
+    right: 0;
+    border-radius: 15px;
 }
