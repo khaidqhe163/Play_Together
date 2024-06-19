@@ -16,6 +16,12 @@ import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
 import Home from "../components/Home"
 import ImageGallery from "../components/ImageGallery"
+import HomePageAdmin from "../pages/Admin"
+import ManagerUser from "../pages/Admin/ManagerUser/Users"
+import Dashboard from "../pages/Admin/Dashboard"
+import ManagerStory from "../pages/Admin/ManagerStory"
+import UserBanned from "../pages/Admin/ManagerUser/UserBanned"
+import Players from "../pages/Admin/ManagerUser/Players"
 const routes = [
     {
         path: '/',
@@ -80,6 +86,26 @@ const routes = [
     {
         path: '/player-guide',
         element: PlayerGuidePage
+    },
+    {
+        path: '/admin/dashboard',
+        element: Dashboard
+    },
+    {
+        path: '/admin/users',
+        element: ManagerUser
+    },
+    {
+        path: '/admin/users/banned',
+        element: UserBanned
+    },
+    {
+        path: '/admin/users/players',
+        element: Players
+    },
+    {
+        path: '/admin/stories',
+        element: ManagerStory
     }
 ]
 export default {
