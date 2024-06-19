@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { SocketContext } from '../../context/SocketContext'
 import api from '../../utils/axiosConfig'
-function PiRight({ id }) {
+function PiRight({ id, setOpenHire }) {
     const { setOpenChatCanvas, setReceiverId, newChat, setNewChat } = useContext(SocketContext)
     const handleOpenChat = async () => {
         try {
