@@ -154,10 +154,10 @@ function ChatBox() {
                             <Col md={4} className='list-receiver'>
                                 <button onClick={() => { setOpenChatCanvas(false); setReceiverId(null) }} id="btn-back"><GrLinkNext /></button>
                                 <div className='chat-type mt-20'>
-                                    <div className={`mr-10 ${messageType === 1 ? "active" : ""}`}
+                                    <div className={`mr-10 ${messageType === 1 ? "active-message" : ""}`}
                                         onClick={() => setMessageType(1)}
                                     >Community</div>
-                                    <div className={`${messageType === 2 ? "active" : ""} personal-message`}
+                                    <div className={`${messageType === 2 ? "active-message" : ""} personal-message`}
                                         onClick={() => setMessageType(2)}>Messages
                                         {
                                             totalUnread !== 0 && <span className='unread-message um-position'>{totalUnread}</span>

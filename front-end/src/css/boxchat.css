@@ -120,7 +120,7 @@
     cursor: pointer;
 }
 
-.active {
+.active-message {
     background-color: #6e41df !important;
     border: white solid 0.5px;
 }
