@@ -15,6 +15,7 @@ import PlayerSettingDuoPage from "../pages/PlayerSettingDuoPage"
 import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
 import PlayerAlbumPage from "../pages/PlayerAlbumPage"
+import PlayerSchedulePage from "../pages/PlayerSchedulePage"
 import Home from "../components/Home"
 import ImageGallery from "../components/ImageGallery"
 import AdminLogin from "../pages/Admin/AdminLogin"
@@ -91,6 +92,11 @@ const routes = [
     {
         path: '/admin/login',
         element: AdminLogin
+    }
+    ,
+    {
+        path: '/player-schedule',
+        element: PlayerSchedulePage
     }
 ]
 export default {

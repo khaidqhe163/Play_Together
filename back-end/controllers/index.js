@@ -6,6 +6,7 @@ import PaymentController from './PaymentController.js';
 import CommentController from './CommentController.js';
 import MessageController from './MessageController.js'
 import ConversationController from './ConversationController.js';
+import ScheduleController from './ScheduleController.js';
 export {
     UserController,
     StoryController,
@@ -14,5 +15,6 @@ export {
     PaymentController,
     CommentController,
     MessageController,
-    ConversationController
+    ConversationController,
+    ScheduleController
 }

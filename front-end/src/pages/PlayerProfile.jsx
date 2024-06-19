@@ -8,47 +8,40 @@ import { IoMdMale } from "react-icons/io";
 import Services from '../components/PlayerProfile/Services';
 import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl, formatMoney } from '../utils/service';
+import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
 import Feeds from '../components/PlayerProfile/Feeds';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateBlockedUsers } from '../features/userSlice';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
-    const [services, setService] = useState();
-    const [isOpen, setIsOpen] = useState(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [subnav, setSubnav] = useState(2);
     const [age, setAge] = useState("");
-    const openModal = (index) => {
-        setCurrentImageIndex(index);
-        setIsOpen(true);
-    };
+    const [openModalBlock, setOpenModalBlock] = useState(false)
+    const author = useSelector((state) => state.user);
+    const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
+    const dispatch = useDispatch();
 
-    const closeModal = () => {
-        console.log("click here");
-        setIsOpen(false);
-    };
-    const previousImage = (e) => {
-        e.stopPropagation()
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === 0 ? player.player.images.length - 1 : prevIndex - 1
-        );
-    };
+    console.log("author:", author);
 
-    const nextImage = (e) => {
-        e.stopPropagation()
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === player.player.images.length - 1 ? 0 : prevIndex + 1
-        );
-    };
     useEffect(() => {
         getPlayerInformation();
-        getService();
     }, [])
+
+    useEffect(() => {
+        setBlocked(author?.value?.blockedUsers?.includes(id))
+    }, [author, id])
+
+    const handleBlockStatusChange = (blockedStatus) => {
+        dispatch(updateBlockedUsers({ userId: id, blocked: blockedStatus }))
+        setBlocked(blockedStatus)
+        setOpenModalBlock(false)
+    };
 
     const getPlayerInformation = async () => {
         try {
             const player = (await axios.get("http://localhost:3008/api/user/player-information/" + id)).data;
-            console.log(player);
             setPlayer(player);
             const dob = new Date(player.dateOfBirth);
             const currentTime = new Date();
@@ -58,14 +51,6 @@ function PlayerProfile() {
         }
     }
 
-    const getService = async () => {
-        try {
-            const services = await axios.get("http://localhost:3008/api/service");
-            setService(services.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
     return (
         <>
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
@@ -83,7 +68,7 @@ function PlayerProfile() {
                     <Row style={{ height: "256px", backgroundImage: "url('/profilebackground.png')", backgroundSize: "160%", backgroundPosition: "center", backgroundColor: "black" }}
                         className='profile-header'>
                         <Col md={6} className='profile-header-left'>
-                            <img src={baseUrl + player?.avatar} id='player-avatar' />
+                            <img src={baseUrl + player?.avatar} id='player-avatar' alt="#"/>
                             <div style={{ marginLeft: "20px" }}>
                                 <p style={{ color: "white", fontSize: "40px", fontWeight: "bold" }}>{player?.username}</p>
                                 <div style={{ display: "flex" }} className='header-info'>
@@ -103,9 +88,9 @@ function PlayerProfile() {
                             </div>
                         </Col>
                         <Col md={6} className='profile-header-right'>
-                            <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Follow</button>
-                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }}>Block</button>
-                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Report</button>
+                            <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Theo dõi</button>
+                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
+                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Báo cáo</button>
                         </Col>
                     </Row>
                     <Row>
@@ -134,6 +119,16 @@ function PlayerProfile() {
                     subnav === 4 && <Feeds/>
                 }
             </div>
+            
+            {!!openModalBlock && (
+                <BlockUserModal
+                    open={openModalBlock}
+                    onCancel={() => setOpenModalBlock(false)}
+                    blocked={blocked}
+                    setBlocked={handleBlockStatusChange}
+                    // onOk={onOk}
+                />
+            )}
         </>
     )
 }
