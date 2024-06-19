@@ -5,7 +5,11 @@ export const SocketContext = createContext();
 
 export const SocketProvider = ({ user, children }) => {
     const [socket, setSocket] = useState(null);
-    const [onlineUsers, setOnlineUsers] = useState([null]);
+    const [onlineUsers, setOnlineUsers] = useState(null);
+    const [openChatCanvas, setOpenChatCanvas] = useState(false);
+    const handleClose = () => setOpenChatCanvas(false);
+    const [receiverId, setReceiverId] = useState(null);
+    const [newChat, setNewChat] = useState(null);
     useEffect(() => {
         const newSocket = io("http://localhost:5000")
         setSocket(newSocket)
@@ -19,9 +23,19 @@ export const SocketProvider = ({ user, children }) => {
         socket.on("getOnlineUsers", (res) => {
             setOnlineUsers(res)
         })
-    }, [socket])
+    }, [socket, user])
     return (
-        <SocketContext.Provider value={{ socket, onlineUsers }}>
+        <SocketContext.Provider value={{
+            socket,
+            onlineUsers,
+            openChatCanvas,
+            handleClose,
+            setOpenChatCanvas,
+            receiverId,
+            setReceiverId,
+            newChat,
+            setNewChat
+        }}>
             {children}
         </SocketContext.Provider>
     );

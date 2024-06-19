@@ -5,7 +5,6 @@ import { LuSend } from "react-icons/lu";
 import api from '../../utils/axiosConfig.js'
 import axios from 'axios';
 import { baseUrl } from '../../utils/service.js'
-import { socket, setSocket } from '../../features/socketSlice.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { userInfor } from '../../features/userSlice.js';
 import '../../css/boxchat.css'
@@ -23,7 +22,6 @@ function ChatBoxComunity() {
         const handleGetConversation = async () => {
             try {
                 const con = await axios.get("http://localhost:3008/api/conversation/1");
-                console.log(con.data);
                 setConversation(con.data);
             } catch (error) {
                 console.log(error);
@@ -36,8 +34,7 @@ function ChatBoxComunity() {
     useEffect(() => {
         const handleGetMessage = async () => {
             try {
-                const mes = await axios.get("http://localhost:3008/api/message/" + conversation._id);
-                console.log(mes.data);
+                const mes = await axios.get("http://localhost:3008/api/message/" + conversation?._id);
                 setMessages(mes.data);
             } catch (error) {
                 console.log(error);
@@ -47,7 +44,6 @@ function ChatBoxComunity() {
     }, [conversation])
 
     useEffect(() => {
-        console.log("zoday");
         if (socket === null) return;
         socket.on("getNewMessage", (res) => {
             setNewMessage(res)
@@ -55,8 +51,7 @@ function ChatBoxComunity() {
     }, [socket, conversation])
 
     useEffect(() => {
-        console.log(newMessage);
-        if (newMessage?.senderId !== userInfo._id)
+        if (newMessage?.senderId !== userInfo?._id && conversation?._id === newMessage?.message?.conversationId)
             setMessages([...messages, newMessage?.message])
     }, [newMessage])
     useEffect(() => {
@@ -81,13 +76,14 @@ function ChatBoxComunity() {
             console.log(error);
         }
     }
+    console.log("hello2");
     return (
         <Stack direction='vertical' className='chatbox' gap={2}>
             <Stack direction='vertical' gap={3} ref={chatbox} style={{ overflow: "auto" }}>
                 {
-                    messages?.map((m) => {
+                    messages?.map((m, index) => {
                         return (
-                            <div className="d-flex" style={{ width: "100%" }}>
+                            <div className="d-flex" style={{ width: "100%" }} key={index}>
                                 <img src={baseUrl + m?.senderId.avatar} style={{
                                     width: "40px",
                                     height: "40px",
@@ -117,6 +113,7 @@ function ChatBoxComunity() {
                     fontFamily='sans-serif'
                     borderColor='rgba(72, 122, 232, 0.2)'
                     style={{ width: "70%" }}
+                    onEnter={handleSendMessage}
                 />
                 <button className='send-btn' style={{
                     background: "#8d68f2",
