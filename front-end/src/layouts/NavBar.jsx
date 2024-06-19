@@ -15,12 +15,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { baseUrl } from "../utils/service.js";
 import { MdOutlineAdd } from "react-icons/md";
 import RechargeModal from "../components/Modal/RechargeModal/RechageModal.jsx";
+import { getNav, setActiveButton } from "../features/navSlice.js";
 
 export default function NavBar() {
-  const [activeButton, setActiveButton] = useState(null);
+  // const [activeButton, setActiveButton] = useState(null);
+  const dispatch = useDispatch();
   const [openModalRanking, setOpenModalRanking] = useState();
   const [openModalPayment, setOpenModalPayment] = useState(false);
   const userInfo = useSelector(userInfor);
+  const activeButton = useSelector(getNav);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const fontF = {
     fontFamily: "Arial, Helvetica, sans-serif",
@@ -50,7 +53,7 @@ export default function NavBar() {
   };
 
   const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName);
+    dispatch(setActiveButton(buttonName));
   };
 
   const handleDropdownToggle = () => {
