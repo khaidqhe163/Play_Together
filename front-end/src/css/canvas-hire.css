@@ -1,5 +1,9 @@
 
 .offcanvas {
+    width: 75% !important;
+}
+
+#off{
     width: 50% !important;
 }
 
@@ -92,4 +96,9 @@ input[type="number"] {
 
 .cancel:hover{
     transform: scale(1.1);
+}
+
+.active-date {
+    background-color: #6e41df !important;
+    border: white solid 0.5px;
 }

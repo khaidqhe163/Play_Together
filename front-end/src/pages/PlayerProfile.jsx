@@ -19,6 +19,7 @@ function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
     const [subnav, setSubnav] = useState(2);
+    const [snav, setSnav] = useState(1);
     const [age, setAge] = useState("");
     const [openModalBlock, setOpenModalBlock] = useState(false);
     const [openHire, setOpenHire] = useState(false);
@@ -140,7 +141,9 @@ function PlayerProfile() {
                 // onOk={onOk}
                 />
             )}
-            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} />
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
+            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
+
         </>
     )
 }
