@@ -14,6 +14,7 @@ import PlayerHistoryPage from "../pages/PlayerHistoryPage"
 import PlayerSettingDuoPage from "../pages/PlayerSettingDuoPage"
 import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
+import PlayerAlbumPage from "../pages/PlayerAlbumPage"
 import Home from "../components/Home"
 import ImageGallery from "../components/ImageGallery"
 import AdminLogin from "../pages/Admin/AdminLogin"
@@ -81,6 +82,11 @@ const routes = [
     {
         path: '/player-guide',
         element: PlayerGuidePage
+    },
+    ,
+    {
+        path: '/player-album',
+        element: PlayerAlbumPage
     },
     {
         path: '/admin/login',

@@ -30,4 +30,7 @@ StoryRouter.post('/likedOrUnlikedStory/:id', jwt.verifyAccessToken, StoryControl
 
 StoryRouter.post('/viewStory/:id', jwt.verifyAccessToken, StoryController.viewStory)
 
+StoryRouter.get('/user/:userId', StoryController.getUserStories);
+
+
 export default StoryRouter;

@@ -98,10 +98,23 @@ const viewStory = async (req, res) => {
     }
 }
 
+// In StoryController.js
+const getUserStories = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const stories = await StoryService.getStoriesByUser(userId);
+        res.status(200).json(stories);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+}
+
 export default {
     getStories,
     createStory,
     getStoryDetail,
     likeOrUnlikeStory,
     viewStory,
+    getUserStories, // Add this line
 }
+

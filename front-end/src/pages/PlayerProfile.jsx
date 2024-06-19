@@ -9,6 +9,7 @@ import Services from '../components/PlayerProfile/Services';
 import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl, formatMoney } from '../utils/service';
 import Album from '../components/PlayerProfile/Album';
+import Feeds from '../components/PlayerProfile/Feeds';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
@@ -128,6 +129,9 @@ function PlayerProfile() {
                 }
                 {
                     subnav === 3 && <Album player={player} />
+                }
+                {
+                    subnav === 4 && <Feeds/>
                 }
             </div>
         </>
