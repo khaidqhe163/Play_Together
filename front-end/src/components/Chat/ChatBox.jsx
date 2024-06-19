@@ -139,7 +139,7 @@ function ChatBox() {
                                 a?.unread !== 0 && <span className='unread-message um-position'>{a?.unread}</span>
                             }
                             {
-                                onlineUsers.some((o) => {
+                                onlineUsers?.some((o) => {
                                     return o.userId === avatar?._id;
                                 }) && <span className='online-user'></span>
                             }
