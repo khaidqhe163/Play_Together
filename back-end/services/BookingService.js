@@ -7,8 +7,28 @@ const getAllBooking = async () => {
     } catch (error) {
         throw new Error(error);
     }
+};
+
+const getLatestBooking = async (playerId) => {
+    try {
+        const latestBooking = await Booking.findOne({playerId}).sort({ createdAt: -1 }).exec();
+        return latestBooking;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const createBooking = async (booking) => {
+    try {
+        const aBooking = await Booking.create(booking);
+        return aBooking;
+    } catch (error) {
+        throw new Error(error);
+    }
 }
 
-export default{
+export default {
     getAllBooking,
+    getLatestBooking,
+    createBooking,
 }
