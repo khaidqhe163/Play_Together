@@ -247,9 +247,29 @@
 .message-setting {
     background-color: #323241;
     width: 250px;
-    height: 100px;
     position: absolute;
-    bottom: -120px;
+    top: 60px;
     right: 0;
     border-radius: 15px;
+    z-index: 10;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 10px;
+}
+
+.list-m-setting{
+    width: 90%;
+    padding: 0;
+    margin: auto;
+}
+
+.list-m-setting li {
+    width: 100%;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 10px;
+
+}
+
+.list-m-setting li:hover{
+    background-color: #44445c;
 }

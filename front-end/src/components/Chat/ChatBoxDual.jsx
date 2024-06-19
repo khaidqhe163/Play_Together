@@ -100,8 +100,12 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                 }} onClick={() => setMessageSetting(!messageSetting)}>
                     <PiDotsThreeBold style={{ color: "white", fontSize: "30px", margin: "auto" }} />
                     {messageSetting && (
-                        <div className='message-setting'>
-
+                        <div className='message-setting' onClick={(e) => e.stopPropagation()}>
+                            <ul className='list-m-setting'>
+                                <li>Block</li>
+                                <li>Report</li>
+                                <li>Delete</li>
+                            </ul>
                         </div>
                     )}
                 </div>
