@@ -14,6 +14,7 @@ import PlayerHistoryPage from "../pages/PlayerHistoryPage"
 import PlayerSettingDuoPage from "../pages/PlayerSettingDuoPage"
 import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
+import PlayerSchedulePage from "../pages/PlayerSchedulePage"
 import Home from "../components/Home"
 import ImageGallery from "../components/ImageGallery"
 import HomePageAdmin from "../pages/Admin"
@@ -106,6 +107,11 @@ const routes = [
     {
         path: '/admin/stories',
         element: ManagerStory
+    }
+    ,
+    {
+        path: '/player-schedule',
+        element: PlayerSchedulePage
     }
 ]
 export default {

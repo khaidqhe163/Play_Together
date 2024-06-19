@@ -63,13 +63,16 @@ function Services({ player }) {
                         !player?.player?.deviceStatus.cam && !player?.player?.deviceStatus.mic && <button><FaBan style={{ margin: 'auto' }} /></button>
                     }
                 </div>
-                <iframe width="95%" height="315"
-                    src={linkYoutube}
-                    title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
-                    style={{ margin: "auto", marginTop: "20px" }}></iframe>
+                {
+                    player?.player?.videoHightlight &&
+                    <iframe width="95%" height="315"
+                        src={linkYoutube}
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                        style={{ margin: "auto", marginTop: "20px" }}></iframe>
+                }
                 <hr style={{ color: "white" }}></hr>
                 <div className='review'>
                     <div className='review-items'>
@@ -89,7 +92,7 @@ function Services({ player }) {
                     </div>
                 </div>
             </div>
-            <PiRight />
+            <PiRight id={player?._id} />
         </div>
     )
 }
