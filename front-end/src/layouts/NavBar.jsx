@@ -27,6 +27,7 @@ export default function NavBar() {
   const activeButton = useSelector(getNav);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const nav = useNavigate();
+  const [notifyBox, setNotifyBox] = useState(false);
   const fontF = {
     fontFamily: "Arial, Helvetica, sans-serif",
     fontWeight: 500,
@@ -140,8 +141,32 @@ export default function NavBar() {
               </div>
             </Link>
             <Link to={"/"} className="btn mx-2 rounded-circle" style={bgButton}>
-              <div className="d-flex justify-content-center align-items-center">
-                <FaRegBell color="white" size={35} />
+              <div className="d-flex justify-content-center align-items-center" style={{ position: "relative" }}>
+                <FaRegBell color="white" size={35} onClick={() => setNotifyBox(!notifyBox)} />
+                {
+                  notifyBox && (
+                    <div style={{
+                      width: "500px",
+                      maxHeight: "600px",
+                      position: "absolute",
+                      backgroundColor: "#20202b",
+                      right: "0px",
+                      top: "50px",
+                      boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
+                      borderRadius: "15px",
+                      textAlign: "left",
+                    }}>
+                      <p className="text-white pl-30 mt-10">Thông báo</p>
+                      <hr style={{ color: "white" }}></hr>
+                      <div className="p-10 d-flex notification">
+                        <img src="/avatar2.jpg" alt="error" style={{ width: "48px", height: "48px", borderRadius: "50%" }} />
+                        <p className="text-white mb-0 ml-5">
+                          <strong>Lê Văn Châu</strong> đã nhắc đến bạn ở một bình luận trong
+                        </p>
+                      </div>
+                    </div>
+                  )
+                }
               </div>
             </Link>
             {userInfo !== null && (<div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
@@ -221,13 +246,15 @@ export default function NavBar() {
         )}
       </div>
 
-      {!!openModalRanking && (
-        <RankingModal
-          open={openModalRanking}
-          onCancel={() => setOpenModalRanking(undefined)}
-        // onOk={getList}
-        />
-      )}
+      {
+        !!openModalRanking && (
+          <RankingModal
+            open={openModalRanking}
+            onCancel={() => setOpenModalRanking(undefined)}
+          // onOk={getList}
+          />
+        )
+      }
       <RechargeModal
         show={openModalPayment}
         handleClose={() => setOpenModalPayment(false)}
@@ -244,6 +271,6 @@ export default function NavBar() {
         pauseOnHover
         theme="dark"
         transition={Bounce} />
-    </div>
+    </div >
   );
 }
