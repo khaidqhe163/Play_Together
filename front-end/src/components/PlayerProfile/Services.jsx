@@ -5,7 +5,7 @@ import PiRight from './PiRight';
 import { IoIosMic } from 'react-icons/io';
 import { baseUrl, getId } from '../../utils/service';
 import axios from 'axios'
-function Services({ player }) {
+function Services({ player, setOpenHire}) {
     const [linkYoutube, setLinkYoutube] = useState("")
     const [services, setService] = useState();
     useEffect(() => {
@@ -42,14 +42,14 @@ function Services({ player }) {
                 }
             </div>
             <div className='pi-middle pi'>
-                <h3>Service</h3>
+                <h3>Dịch vụ</h3>
                 <div style={{ color: "white", display: "flex", alignItems: "center", fontSize: "20px", fontWeight: "bold" }}>
                     <FaStar style={{ color: "#f39e22", marginRight: "5px" }} />
                     <p style={{ margin: "0" }}>5.0</p>
                     <TbPointFilled />
-                    <p style={{ margin: "0" }}>744 Served</p>
+                    <p style={{ margin: "0" }}>744 lần được thuê</p>
                     <TbPointFilled />
-                    <p style={{ margin: "0" }}>88 Reviews</p>
+                    <p style={{ margin: "0" }}>88 đánh giá</p>
                 </div>
                 <h5 className='mt-20'>Tình trạng thiết bị</h5>
                 <div className='devices-status'>
@@ -63,13 +63,16 @@ function Services({ player }) {
                         !player?.player?.deviceStatus.cam && !player?.player?.deviceStatus.mic && <button><FaBan style={{ margin: 'auto' }} /></button>
                     }
                 </div>
-                <iframe width="95%" height="315"
-                    src={linkYoutube}
-                    title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
-                    style={{ margin: "auto", marginTop: "20px" }}></iframe>
+                {
+                    player?.player?.videoHightlight &&
+                    <iframe width="95%" height="315"
+                        src={linkYoutube}
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                        style={{ margin: "auto", marginTop: "20px" }}></iframe>
+                }
                 <hr style={{ color: "white" }}></hr>
                 <div className='review'>
                     <div className='review-items'>
@@ -89,7 +92,7 @@ function Services({ player }) {
                     </div>
                 </div>
             </div>
-            <PiRight />
+            <PiRight id={player?._id} setOpenHire={setOpenHire}/>
         </div>
     )
 }

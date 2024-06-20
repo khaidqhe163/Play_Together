@@ -66,3 +66,16 @@
 .numberMoney::placeholder{
   color: #cccccc;
 }
+
+.bInactive{
+  width: "550px";
+  height: "50px";
+  background-color: "#333345";
+  transition: "background-color 0.5s ease-in-out"
+}
+
+.bActive {
+  width: "550px";
+  height: "50px";
+  background-color: "#8d68f2"
+};

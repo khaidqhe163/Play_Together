@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
 import User from "./User.js"
-const playment = new Schema({
+const payment = new Schema({
     userId: { 
         type: Schema.Types.ObjectId, 
         ref: User
@@ -14,6 +14,6 @@ const playment = new Schema({
     timestamps: true
 })
 
-const Playment = mongoose.model('playment', playment)
+const Payment = mongoose.model('payment', payment)
 
-export default Playment
+export default Payment

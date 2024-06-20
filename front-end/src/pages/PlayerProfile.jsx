@@ -8,46 +8,42 @@ import { IoMdMale } from "react-icons/io";
 import Services from '../components/PlayerProfile/Services';
 import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl, formatMoney } from '../utils/service';
+import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateBlockedUsers } from '../features/userSlice';
+import CanvasHire from '../components/CanvasHire';
+import { Bounce, ToastContainer } from 'react-toastify';
+
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
-    const [services, setService] = useState();
-    const [isOpen, setIsOpen] = useState(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [subnav, setSubnav] = useState(2);
+    const [snav, setSnav] = useState(1);
     const [age, setAge] = useState("");
-    const openModal = (index) => {
-        setCurrentImageIndex(index);
-        setIsOpen(true);
-    };
+    const [openModalBlock, setOpenModalBlock] = useState(false);
+    const [openHire, setOpenHire] = useState(false);
+    const author = useSelector((state) => state.user);
+    const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
+    const dispatch = useDispatch();
 
-    const closeModal = () => {
-        console.log("click here");
-        setIsOpen(false);
-    };
-    const previousImage = (e) => {
-        e.stopPropagation()
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === 0 ? player.player.images.length - 1 : prevIndex - 1
-        );
-    };
-
-    const nextImage = (e) => {
-        e.stopPropagation()
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === player.player.images.length - 1 ? 0 : prevIndex + 1
-        );
-    };
     useEffect(() => {
         getPlayerInformation();
-        getService();
     }, [])
+
+    useEffect(() => {
+        setBlocked(author?.value?.blockedUsers?.includes(id))
+    }, [author, id])
+
+    const handleBlockStatusChange = (blockedStatus) => {
+        dispatch(updateBlockedUsers({ userId: id, blocked: blockedStatus }))
+        setBlocked(blockedStatus)
+        setOpenModalBlock(false)
+    };
 
     const getPlayerInformation = async () => {
         try {
             const player = (await axios.get("http://localhost:3008/api/user/player-information/" + id)).data;
-            console.log(player);
             setPlayer(player);
             const dob = new Date(player.dateOfBirth);
             const currentTime = new Date();
@@ -56,20 +52,24 @@ function PlayerProfile() {
             console.log(error);
         }
     }
-
-    const getService = async () => {
-        try {
-            const services = await axios.get("http://localhost:3008/api/service");
-            setService(services.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce} />
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
                 <div className="row bg-white shadow-sm" style={{ position: "fixed", zIndex: "1", width: "100vw" }}>
                     <div className="col-12">
+
                         <NavBar />
                     </div>
                 </div>
@@ -79,10 +79,11 @@ function PlayerProfile() {
                 height: "calc(100vh - 56px)"
             }}>
                 <Container fluid>
+
                     <Row style={{ height: "256px", backgroundImage: "url('/profilebackground.png')", backgroundSize: "160%", backgroundPosition: "center", backgroundColor: "black" }}
                         className='profile-header'>
                         <Col md={6} className='profile-header-left'>
-                            <img src={baseUrl + player?.avatar} id='player-avatar' />
+                            <img src={baseUrl + player?.avatar} id='player-avatar' alt="#" />
                             <div style={{ marginLeft: "20px" }}>
                                 <p style={{ color: "white", fontSize: "40px", fontWeight: "bold" }}>{player?.username}</p>
                                 <div style={{ display: "flex" }} className='header-info'>
@@ -102,34 +103,47 @@ function PlayerProfile() {
                             </div>
                         </Col>
                         <Col md={6} className='profile-header-right'>
-                            <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Follow</button>
-                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }}>Block</button>
-                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Report</button>
+                            <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Theo dõi</button>
+                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
+                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Báo cáo</button>
                         </Col>
                     </Row>
                     <Row>
                         <Col md={12} id='se-nav'>
                             <div className={subnav === 1 && `se-nav-active`}
-                                onClick={() => setSubnav(1)}>Achievements</div>
+                                onClick={() => setSubnav(1)}>Thành tựu</div>
                             <div className={subnav === 2 && `se-nav-active`}
-                                onClick={() => setSubnav(2)}>Services</div>
+                                onClick={() => setSubnav(2)}>Dịch vụ</div>
                             <div className={subnav === 3 && `se-nav-active`}
-                                onClick={() => setSubnav(3)}>Album</div>
+                                onClick={() => setSubnav(3)}>Thư viện</div>
                             <div className={subnav === 4 && `se-nav-active`}
-                                onClick={() => setSubnav(4)}>Feeds</div>
+                                onClick={() => setSubnav(4)}>Video</div>
                         </Col>
                     </Row>
                 </Container>
                 {
-                    subnav === 1 && <Achivement player={player} />
+                    subnav === 1 && <Achivement player={player} setOpenHire={() => { setOpenHire(true) }} />
                 }
                 {
-                    subnav === 2 && <Services player={player} />
+                    subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} />
                 }
                 {
                     subnav === 3 && <Album player={player} />
                 }
             </div>
+
+            {!!openModalBlock && (
+                <BlockUserModal
+                    open={openModalBlock}
+                    onCancel={() => setOpenModalBlock(false)}
+                    blocked={blocked}
+                    setBlocked={handleBlockStatusChange}
+                // onOk={onOk}
+                />
+            )}
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
+            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
+
         </>
     )
 }

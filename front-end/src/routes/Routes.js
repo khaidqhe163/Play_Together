@@ -14,9 +14,16 @@ import PlayerHistoryPage from "../pages/PlayerHistoryPage"
 import PlayerSettingDuoPage from "../pages/PlayerSettingDuoPage"
 import PlayerBlockListPage from "../pages/PlayerBlockListPage"
 import PlayerGuidePage from "../pages/PlayerGuidePage"
+import PlayerSchedulePage from "../pages/PlayerSchedulePage"
 import Home from "../components/Home"
 import ImageGallery from "../components/ImageGallery"
 import AdminLogin from "../pages/Admin/AdminLogin"
+import HomePageAdmin from "../pages/Admin"
+import ManagerUser from "../pages/Admin/ManagerUser/Users"
+import Dashboard from "../pages/Admin/Dashboard"
+import ManagerStory from "../pages/Admin/ManagerStory"
+import UserBanned from "../pages/Admin/ManagerUser/UserBanned"
+import Players from "../pages/Admin/ManagerUser/Players"
 const routes = [
     {
         path: '/',
@@ -85,6 +92,31 @@ const routes = [
     {
         path: '/admin/login',
         element: AdminLogin
+    },
+    {
+        path: '/admin/dashboard',
+        element: Dashboard
+    },
+    {
+        path: '/admin/users',
+        element: ManagerUser
+    },
+    {
+        path: '/admin/users/banned',
+        element: UserBanned
+    },
+    {
+        path: '/admin/users/players',
+        element: Players
+    },
+    {
+        path: '/admin/stories',
+        element: ManagerStory
+    }
+    ,
+    {
+        path: '/player-schedule',
+        element: PlayerSchedulePage
     }
 ]
 export default {

@@ -5,7 +5,7 @@ import { FaFacebook, FaYoutube } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import PiRight from './PiRight';
 import { formatDate } from '../../utils/service';
-function Achivement({ player }) {
+function Achivement({ player, setOpenHire }) {
     const renderTooltip = (props, content) => (
         <Tooltip id="button-tooltip" {...props}>
             {content}
@@ -14,7 +14,7 @@ function Achivement({ player }) {
     return (
         <div className='player-infor-container'>
             <div className='pi-left pi'>
-                <h5 style={{ color: "white", fontWeight: "bold", textAlign: "left", marginLeft: "10px" }}>Achivements</h5>
+                <h5 style={{ color: "white", fontWeight: "bold", textAlign: "left", marginLeft: "10px" }}>Thành tựu</h5>
                 {
                     player?.player?.achivements?.map((a) => {
                         return (
@@ -40,7 +40,7 @@ function Achivement({ player }) {
                 }
             </div >
             <div className='pi-middle pi'>
-                <h5>Details</h5>
+                <h5>Chi tiết</h5>
                 <div className='d-flex profile-amount justify-content-around'>
                     <div>
                         <p>Người đăng ký</p>
@@ -55,9 +55,9 @@ function Achivement({ player }) {
                         <p className='amounts'>298</p>
                     </div>
                 </div>
-                <h5 className='mt-20'>Bio</h5>
+                <h5 className='mt-20'>Giới thiệu</h5>
                 <p style={{ color: "#adadbf", whiteSpace: "pre-line" }}>{player?.player?.info}</p>
-                <h5 className='mt-20'>Social Media</h5>
+                <h5 className='mt-20'>Mạng xã hội</h5>
                 <div className='social-media'>
                     {
                         player.player?.facebookUrl !== "" && (
@@ -86,7 +86,7 @@ function Achivement({ player }) {
 
                 </div>
             </div>
-            <PiRight />
+            <PiRight id={player?._id} setOpenHire={setOpenHire} />
         </div >
     )
 }
