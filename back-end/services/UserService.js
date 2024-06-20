@@ -264,6 +264,34 @@ const banUser = async  ( userId ) => {
     }
 }
 
+// UserService.js
+
+const followPlayer = async (userId, playerId) => {
+  try {
+      const user = await User.findByIdAndUpdate(
+          userId,
+          { $addToSet: { followers: playerId } }, 
+          { new: true }
+      );
+      return user;
+  } catch (error) {
+      throw new Error(error.toString());
+  }
+};
+
+const unfollowPlayer = async (userId, playerId) => {
+  try {
+      const user = await User.findByIdAndUpdate(
+          userId,
+          { $pull: { followers: playerId } }, 
+          { new: true }
+      );
+      return user;
+  } catch (error) {
+      throw new Error(error.toString());
+  }
+};
+
 export default {
     register,
     findUserByEmail,
@@ -283,4 +311,6 @@ export default {
     findByUserId,
     getAllUsers,
     banUser,
+    followPlayer,
+    unfollowPlayer
 }

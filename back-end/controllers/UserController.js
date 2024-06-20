@@ -376,6 +376,28 @@ const banUser = async (req, res) => {
     }
 } 
 
+const followPlayer = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const playerId = req.params.playerId; // Assuming you pass playerId as a parameter
+        const updatedUser = await UserService.followPlayer(userId, playerId);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+const unfollowPlayer = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const playerId = req.params.playerId; // Assuming you pass playerId as a parameter
+        const updatedUser = await UserService.unfollowPlayer(userId, playerId);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
 export default {
     register,
     login,
@@ -397,4 +419,6 @@ export default {
     changePassword,
     getAllUsers,
     banUser,
+    followPlayer,
+    unfollowPlayer
 }

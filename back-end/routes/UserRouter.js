@@ -69,4 +69,6 @@ UserRouter.put('/update-duo-setting', jwt.verifyAccessToken, UserController.upda
 UserRouter.post('/users', UserController.getAllUsers);
 UserRouter.put('/ban/:userId', UserController.banUser)
 
+UserRouter.post('/follow-player/:playerId', jwt.verifyAccessToken, UserController.followPlayer);
+UserRouter.post('/unfollow-player/:playerId', jwt.verifyAccessToken, UserController.unfollowPlayer);
 export default UserRouter
