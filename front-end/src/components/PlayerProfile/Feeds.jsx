@@ -22,7 +22,7 @@ const Feeds = () => {
         };
 
         fetchStories();
-    }, [id]);
+    }, [id]);   
 
     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
     if (error) return <p className="text-center text-red-500">{error}</p>;

@@ -1,62 +1,44 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function PlayerAlbum() {
-    const [selectedImages, setSelectedImages] = useState([]);
+const PlayerAlbum = () => {
+    const [images, setImages] = useState([]);
+    const [uploadStatus, setUploadStatus] = useState(null);
 
-    const handleImageChange = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImages(prevImages => [...prevImages, reader.result]);
-            };
-            reader.readAsDataURL(file);
+    const handleImageChange = (e) => {
+        setImages(e.target.files);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        for (let i = 0; i < images.length; i++) {
+            formData.append('images', images[i]);
+        }
+        try {
+            const response = await axios.post('http://localhost:3008/api/user/album', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            setUploadStatus('Upload successful');
+            console.log(response.data); // handle response from server if needed
+        } catch (error) {
+            console.error('Error uploading images:', error);
+            setUploadStatus('Upload failed');
         }
     };
 
-    const handleDeleteImage = (index) => {
-        setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index));
-    };
-
     return (
-        <>
-            <h1 className='text-white'>Album</h1>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-            {selectedImages.length > 0 && (
-                <div>
-                    <h2 className='text-white'>Selected Images:</h2>
-                    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {selectedImages.map((image, index) => (
-                            <div key={index} style={{ position: 'relative', margin: '10px' }}>
-                                <img src={image} alt={`Selected ${index}`} style={{ maxWidth: '100%', height: 'auto' }} />
-                                <button
-                                    onClick={() => handleDeleteImage(index)}
-                                    style={{
-                                        position: 'absolute',
-                                        top: '5px',
-                                        right: '5px',
-                                        background: 'red',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '50%',
-                                        width: '25px',
-                                        height: '25px',
-                                        cursor: 'pointer',
-                                        fontSize: '16px',
-                                        lineHeight: '25px',
-                                        textAlign: 'center',
-                                        padding: '0',
-                                    }}
-                                >
-                                    &times;
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </>
+        <div>
+            <h2>Upload Images</h2>
+            <form onSubmit={handleSubmit}>
+                <input type="file" multiple onChange={handleImageChange} />
+                <button type="submit">Upload</button>
+            </form>
+            {uploadStatus && <p>{uploadStatus}</p>}
+        </div>
     );
-}
+};
 
 export default PlayerAlbum;

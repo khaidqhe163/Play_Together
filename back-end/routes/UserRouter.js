@@ -66,4 +66,21 @@ const upload = multer({
 UserRouter.put('/update-profile', jwt.verifyAccessToken, upload.single('newAvatar'), UserController.updateUser);
 UserRouter.put('/update-duo-setting', jwt.verifyAccessToken, UserController.updateDuoSetting);
 
+const storageAlbum = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/album/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, "test" + Date.now() + file.originalname);
+    }
+});
+
+const uploadAlbum = multer({
+    storage: storageAlbum,
+    limits: { fileSize: 1024 * 1024 * 3 }
+});
+
+UserRouter.post('/album', uploadAlbum.array('images', 10), UserController.addImagesToAlbum);
+UserRouter.get('/album/:userId', UserController.getImagesFromAlbum);
+
 export default UserRouter
