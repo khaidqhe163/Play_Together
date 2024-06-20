@@ -71,7 +71,7 @@ const storageAlbum = multer.diskStorage({
         cb(null, 'public/album/');
     },
     filename: function (req, file, cb) {
-        cb(null, "test" + Date.now() + file.originalname);
+        cb(null, req.payload.id + Date.now() + file.originalname);
     }
 });
 
@@ -80,7 +80,6 @@ const uploadAlbum = multer({
     limits: { fileSize: 1024 * 1024 * 3 }
 });
 
-UserRouter.post('/album', uploadAlbum.array('images', 10), UserController.addImagesToAlbum);
-UserRouter.get('/album/:userId', UserController.getImagesFromAlbum);
+UserRouter.post('/album', jwt.verifyAccessToken,uploadAlbum.array('images', 10), UserController.addImagesToAlbum);
 
 export default UserRouter

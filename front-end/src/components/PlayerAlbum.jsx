@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/axiosConfig';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PlayerAlbum = () => {
     const [images, setImages] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
     const [uploadStatus, setUploadStatus] = useState(null);
 
     const handleImageChange = (e) => {
-        setImages(e.target.files);
+        const files = Array.from(e.target.files);
+        setImages(files);
+        const previews = files.map((file) => URL.createObjectURL(file));
+        setImagePreviews(previews);
     };
 
     const handleSubmit = async (e) => {
@@ -16,27 +22,36 @@ const PlayerAlbum = () => {
             formData.append('images', images[i]);
         }
         try {
-            const response = await axios.post('http://localhost:3008/api/user/album', formData, {
+            const response = await api.post('http://localhost:3008/api/user/album', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            setUploadStatus('Upload successful');
+            toast.success('Đăng ảnh thành công');
             console.log(response.data); // handle response from server if needed
         } catch (error) {
             console.error('Error uploading images:', error);
-            setUploadStatus('Upload failed');
+            toast.error('Đăng ảnh thất bại');
         }
     };
 
     return (
-        <div>
-            <h2>Upload Images</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="file" multiple onChange={handleImageChange} />
-                <button type="submit">Upload</button>
+        <div className="container">
+            <h1 className='text-white mb-4'>Album của tôi</h1>
+            <form onSubmit={handleSubmit} className="">
+                <input type="file" multiple onChange={handleImageChange} className="mb-4" />
+                <div className="grid grid-cols-3 gap-4">
+                    {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative">
+                            <img src={preview} alt={`Image ${index}`} className="rounded-lg w-full h-auto" />
+                        </div>
+                    ))}
+                </div>
+                <button type="submit" className="bg-[#7b47ff] text-white font-bold py-2 px-4 rounded mt-4" >
+                    Đăng
+                </button>
             </form>
-            {uploadStatus && <p>{uploadStatus}</p>}
+            {uploadStatus && <p className="text-center mt-4">{uploadStatus}</p>}
         </div>
     );
 };
