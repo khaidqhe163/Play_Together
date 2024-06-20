@@ -37,7 +37,11 @@ const PlayerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: Service,
     }],
-    achivements: [achivementSchema]
+    achivements: [achivementSchema],
+    onlySchedule: {
+        type: Boolean,
+        default: false
+    }
 })
 
 
