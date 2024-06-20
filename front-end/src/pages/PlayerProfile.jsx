@@ -111,13 +111,13 @@ function PlayerProfile() {
                     <Row>
                         <Col md={12} id='se-nav'>
                             <div className={subnav === 1 && `se-nav-active`}
-                                onClick={() => setSubnav(1)}>Achievements</div>
+                                onClick={() => setSubnav(1)}>Thành tựu</div>
                             <div className={subnav === 2 && `se-nav-active`}
-                                onClick={() => setSubnav(2)}>Services</div>
+                                onClick={() => setSubnav(2)}>Dịch vụ</div>
                             <div className={subnav === 3 && `se-nav-active`}
-                                onClick={() => setSubnav(3)}>Album</div>
+                                onClick={() => setSubnav(3)}>Thư viện</div>
                             <div className={subnav === 4 && `se-nav-active`}
-                                onClick={() => setSubnav(4)}>Feeds</div>
+                                onClick={() => setSubnav(4)}>Video</div>
                         </Col>
                     </Row>
                 </Container>

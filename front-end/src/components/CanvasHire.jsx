@@ -182,9 +182,9 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                 <Row className='mb-20'>
                                     <Col md={12} id='snav' className='bg-bgSecondary'>
                                         <div className={snav === 1 && `snav-active`}
-                                            onClick={() => setSnav(1)}>Achievements</div>
+                                            onClick={() => setSnav(1)}>Đặt trực tiếp</div>
                                         <div className={snav === 2 && `snav-active`}
-                                            onClick={() => setSnav(2)}>Services</div>
+                                            onClick={() => setSnav(2)}>Đặt lịch</div>
 
                                     </Col>
                                 </Row>

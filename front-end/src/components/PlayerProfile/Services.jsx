@@ -42,14 +42,14 @@ function Services({ player, setOpenHire}) {
                 }
             </div>
             <div className='pi-middle pi'>
-                <h3>Service</h3>
+                <h3>Dịch vụ</h3>
                 <div style={{ color: "white", display: "flex", alignItems: "center", fontSize: "20px", fontWeight: "bold" }}>
                     <FaStar style={{ color: "#f39e22", marginRight: "5px" }} />
                     <p style={{ margin: "0" }}>5.0</p>
                     <TbPointFilled />
-                    <p style={{ margin: "0" }}>744 Served</p>
+                    <p style={{ margin: "0" }}>744 lần được thuê</p>
                     <TbPointFilled />
-                    <p style={{ margin: "0" }}>88 Reviews</p>
+                    <p style={{ margin: "0" }}>88 đánh giá</p>
                 </div>
                 <h5 className='mt-20'>Tình trạng thiết bị</h5>
                 <div className='devices-status'>
