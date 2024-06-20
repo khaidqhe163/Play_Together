@@ -232,7 +232,7 @@ export default function NavBar() {
         show={openModalPayment}
         handleClose={() => setOpenModalPayment(false)}
       />
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -243,7 +243,7 @@ export default function NavBar() {
         draggable
         pauseOnHover
         theme="dark"
-        transition={Bounce} />
+        transition={Bounce} /> */}
     </div>
   );
 }

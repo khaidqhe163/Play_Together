@@ -32,7 +32,7 @@ function PlayerProfile() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const checkOnline = onlineUsers.some(o => o.userId === id);
+        const checkOnline = onlineUsers?.some(o => o.userId === id);
         setPlayerOnline(checkOnline)
     }, [onlineUsers]);
 
