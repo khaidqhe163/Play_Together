@@ -68,5 +68,5 @@ UserRouter.put('/update-duo-setting', jwt.verifyAccessToken, UserController.upda
 
 UserRouter.post('/users', UserController.getAllUsers);
 UserRouter.put('/ban/:userId', UserController.banUser)
-
+UserRouter.post('/logout', UserController.logout)
 export default UserRouter
