@@ -1,0 +1,104 @@
+
+.offcanvas {
+    width: 75% !important;
+}
+
+#off{
+    width: 50% !important;
+}
+
+.offcanvas-body {
+    background-color: #20202b;
+    padding: 0 !important;
+}
+
+.hire-screen {
+    height: 100vh;
+    width: 100%;
+}
+
+.no-outline:focus {
+    outline: none;
+}
+
+table tbody tr{
+    margin-bottom: 20px;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+#btn-back1 {
+    width: 48px;
+    height: 48px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 8px;
+    box-sizing: border-box;
+    background-color: #333345;
+    margin-right: 15px;
+}
+
+#btn-back1:hover {
+    background-color: #44445c;
+}
+
+.styled-table {
+    width: 100%;
+    margin: 25px 0;
+    font-size: 16px;
+    border-collapse: collapse;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid gray;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #8d68f2;
+}
+
+.styled-table td {
+    padding: 15px 20px;
+    text-align: left;
+}
+
+.td-label {
+    font-weight: 500;
+}
+
+.td-value {
+    text-align: right;
+    font-weight: 400;
+}
+
+.styled-table input {
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    outline: none;
+    width: 50px;
+}
+
+.cancel{
+    transition: all 0.2s ease-in-out;
+    font-size: larger
+}
+
+.cancel:hover{
+    transform: scale(1.1);
+}
+
+.active-date {
+    background-color: #6e41df !important;
+    border: white solid 0.5px;
+}
