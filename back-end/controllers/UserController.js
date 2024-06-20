@@ -390,6 +390,20 @@ const banUser = async (req, res) => {
     }
 } 
 
+const logout = async (req, res) => {
+    try {
+      res.clearCookie('AccessToken');
+      res.clearCookie('RefreshToken');
+      res.status(200).json({
+        message: "Logout successful"
+      })
+    } catch (error) {
+      res.status(500).json({
+        message: error.toString()
+      })
+    }
+  }
+
 export default {
     register,
     login,
@@ -412,4 +426,5 @@ export default {
     getAllUsers,
     banUser,
     updateOnlySchedule,
+    logout
 }

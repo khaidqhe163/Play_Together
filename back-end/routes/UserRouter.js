@@ -69,5 +69,5 @@ UserRouter.put('/update-only-schedule', jwt.verifyAccessToken, UserController.up
 
 UserRouter.post('/users', UserController.getAllUsers);
 UserRouter.put('/ban/:userId', UserController.banUser)
-
+UserRouter.post('/logout', UserController.logout)
 export default UserRouter
