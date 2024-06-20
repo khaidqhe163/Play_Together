@@ -28,17 +28,21 @@ const Feeds = () => {
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (
-        <div className="flex flex-col items-center space-y-4">
-            {stories.length === 0 ? (
-                <p className="text-center text-gray-500">No stories available.</p>
-            ) : (
-                stories.map(story => (
-                    <div key={story._id} className="w-full max-w-md p-2 bg-white shadow rounded">
-                        <video className="w-full rounded" src={`http://localhost:3008/${story.path}`} controls></video>
-                        <p className="mt-2 text-gray-700 text-sm">{story.text}</p>
-                    </div>
-                ))
-            )}
+        <div className="container mx-auto px-4 mt-16">
+            <div className="flex flex-wrap -mx-2">
+                {stories.length === 0 ? (
+                    <p className="text-center text-gray-500 w-full">No stories available.</p>
+                ) : (
+                    stories.map(story => (
+                        <div key={story._id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+                            <div className="bg-white shadow-md rounded-md overflow-hidden">
+                                <video className="w-full h-auto" src={`http://localhost:3008/${story.path}`} controls></video>
+                                <p className="mt-2 p-2 text-gray-700 text-sm">{story.text}</p>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
         </div>
     );
 };
