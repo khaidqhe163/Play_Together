@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
 import CanvasHire from '../components/CanvasHire';
 import { Bounce, ToastContainer } from 'react-toastify';
+import api from '../utils/axiosConfig'
 
 function PlayerProfile() {
     const { id } = useParams();
@@ -25,6 +26,7 @@ function PlayerProfile() {
     const [openHire, setOpenHire] = useState(false);
     const author = useSelector((state) => state.user);
     const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
+    const [following, setFollowing] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -48,10 +50,38 @@ function PlayerProfile() {
             const dob = new Date(player.dateOfBirth);
             const currentTime = new Date();
             setAge(currentTime.getFullYear() - dob.getFullYear())
+            setFollowing(author?.value?.followingPlayers?.includes(id)); // Set the initial follow status
         } catch (error) {
             console.log(error);
         }
     }
+
+    const followPlayer = async () => {
+        try {
+            await api.post(`http://localhost:3008/api/user/follow-player/${id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${author?.value?.token}`
+                }
+            });
+            setFollowing(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const unfollowPlayer = async () => {
+        try {
+            await api.post(`http://localhost:3008/api/user/unfollow-player/${id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${author?.value?.token}`
+                }
+            });
+            setFollowing(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <>
             <ToastContainer
@@ -69,7 +99,6 @@ function PlayerProfile() {
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
                 <div className="row bg-white shadow-sm" style={{ position: "fixed", zIndex: "1", width: "100vw" }}>
                     <div className="col-12">
-
                         <NavBar />
                     </div>
                 </div>
@@ -79,7 +108,6 @@ function PlayerProfile() {
                 height: "calc(100vh - 56px)"
             }}>
                 <Container fluid>
-
                     <Row style={{ height: "256px", backgroundImage: "url('/profilebackground.png')", backgroundSize: "160%", backgroundPosition: "center", backgroundColor: "black" }}
                         className='profile-header'>
                         <Col md={6} className='profile-header-left'>
@@ -103,7 +131,11 @@ function PlayerProfile() {
                             </div>
                         </Col>
                         <Col md={6} className='profile-header-right'>
-                            <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }}>Theo dõi</button>
+                            {following ? (
+                                <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={unfollowPlayer}>Bỏ theo dõi</button>
+                            ) : (
+                                <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={followPlayer}>Theo dõi</button>
+                            )}
                             <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
                             <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Báo cáo</button>
                         </Col>
@@ -138,14 +170,11 @@ function PlayerProfile() {
                     onCancel={() => setOpenModalBlock(false)}
                     blocked={blocked}
                     setBlocked={handleBlockStatusChange}
-                // onOk={onOk}
                 />
             )}
-            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
-            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
-
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} />
         </>
     )
 }
 
-export default PlayerProfile
+export default PlayerProfile;

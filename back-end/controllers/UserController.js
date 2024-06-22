@@ -379,7 +379,7 @@ const banUser = async (req, res) => {
 const followPlayer = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const playerId = req.params.playerId; // Assuming you pass playerId as a parameter
+        const playerId = req.params.playerId; 
         const updatedUser = await UserService.followPlayer(userId, playerId);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -390,7 +390,7 @@ const followPlayer = async (req, res) => {
 const unfollowPlayer = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const playerId = req.params.playerId; // Assuming you pass playerId as a parameter
+        const playerId = req.params.playerId; 
         const updatedUser = await UserService.unfollowPlayer(userId, playerId);
         res.status(200).json(updatedUser);
     } catch (error) {
