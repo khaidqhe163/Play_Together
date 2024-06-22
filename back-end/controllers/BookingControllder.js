@@ -100,14 +100,14 @@ const createBookingT = async (req, res) => {
             })
         );
 
-        const newData = { ...aBooking._doc, lsBookSchedule};
+        const newData = { ...aBooking._doc, lsBookSchedule };
         return res.status(201).json({ message: "Thuê thành công! ✔️", restUser });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error create booking', error });
     }
 }
 
-const getBookingOnlineOfPlayer = async (req,res) => {
+const getBookingOnlineOfPlayer = async (req, res) => {
     try {
         // const playerId = req.payload.id;
         const playerId = "6651f21e079075c8a3da9d02";
@@ -126,13 +126,25 @@ const getBookingOnlineOfPlayer = async (req,res) => {
         }));
         return res.status(200).json(transformedBookings);
     } catch (error) {
+        res.status(500).json({ message: 'Internal server error create booking', error });
+    }
+};
+
+const changeStatusToProgress = async (req, res) => {
+    try {
+        const { idBooking, status } = req.body;
+        const u = await BookingService.changeStatusToProgress(idBooking, status);
+        console.log(u);
+        res.status(200).json({ message: "Chuyển trạng thái thành công", u });
+    } catch (error) {
         res.status(500).json({ message: 'Internal server error get booking online', error });
     }
-}
+};
 
 export default {
     getTop10Lessees,
     createBooking,
     createBookingT,
     getBookingOnlineOfPlayer,
+    changeStatusToProgress,
 }

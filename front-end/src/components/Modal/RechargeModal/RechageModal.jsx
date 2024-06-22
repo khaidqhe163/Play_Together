@@ -8,7 +8,6 @@ const RechargeModal = ({ show, handleClose }) => {
     const [amountShow, setAmountShow] = useState('');
     const [disableDeposit, setDisableDeposit] = useState(true);
     const handleShowQR = () => setShowQR(true);
-    console.log(amount);
     useEffect(() => {
         setDisableDeposit(parseFloat(amount) < 10000);
     }, [amount]);

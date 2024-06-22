@@ -24,9 +24,9 @@ function ListBookingPage() {
     }
   };
 
-  useEffect(() => {
-    endPoint(subnav);
-  }, [subnav]);
+  // useEffect(() => {
+  //   endPoint(subnav);
+  // }, [subnav]);
 
   return (
     <DefaultNavbar>

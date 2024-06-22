@@ -11,7 +11,7 @@ const getAllBooking = async () => {
 
 const getLatestBooking = async (playerId) => {
     try {
-        const latestBooking = await Booking.findOne({playerId}).sort({ createdAt: -1 }).exec();
+        const latestBooking = await Booking.findOne({ playerId }).sort({ createdAt: -1 }).exec();
         return latestBooking;
     } catch (error) {
         throw new Error(error);
@@ -29,8 +29,17 @@ const createBooking = async (booking) => {
 
 const getBookingOnlineOfPlayer = async (playerId) => {
     try {
-        const allBooking = await Booking.find({playerId}).populate("userId", "-_id username");
+        const allBooking = await Booking.find({ playerId, hours: [] }).populate("userId", "-_id username");
         return allBooking;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const changeStatusToProgress = async (idBooking, status) => {
+    try {
+        const u = await Booking.findByIdAndUpdate(idBooking, { bookingStatus: status }, { new: true });
+        return u;
     } catch (error) {
         throw new Error(error);
     }
@@ -41,4 +50,5 @@ export default {
     getLatestBooking,
     createBooking,
     getBookingOnlineOfPlayer,
+    changeStatusToProgress,
 }
