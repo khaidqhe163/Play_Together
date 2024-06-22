@@ -174,23 +174,23 @@ const updatePlayerInfo = async (id, rentCost, info, youtubeUrl, facebookUrl, roo
 
 const blockOrUnBlock = async (userID, authorID) => {
     try {
-      const user = await User.findOne({ _id: userID})
-      if(!user) return ({}, true, "User not available")
+        const user = await User.findOne({ _id: userID })
+        if (!user) return ({}, true, "User not available")
 
-      const author = await User.findOne({ _id: authorID })
+        const author = await User.findOne({ _id: authorID })
 
-      let blocked 
-      if (!author.blockedUsers.includes(userID)) {
-        blocked = await User.findByIdAndUpdate({ _id: authorID }, { $push: { blockedUsers: userID}}, {new: true})
-      } else {
-        blocked = await User.findByIdAndUpdate({ _id: authorID }, { $pull: { blockedUsers: userID}}, {new: true})
-      }
+        let blocked
+        if (!author.blockedUsers.includes(userID)) {
+            blocked = await User.findByIdAndUpdate({ _id: authorID }, { $push: { blockedUsers: userID } }, { new: true })
+        } else {
+            blocked = await User.findByIdAndUpdate({ _id: authorID }, { $pull: { blockedUsers: userID } }, { new: true })
+        }
 
-      return blocked
+        return blocked
     } catch (error) {
-      throw new Error(error.toString());
+        throw new Error(error.toString());
     }
-  }
+}
 const getPlayerById = async (id) => {
     try {
         const player = await User.findById(id);
@@ -201,7 +201,7 @@ const getPlayerById = async (id) => {
 }
 const findUserById = async (userId) => {
     try {
-        const user = await User.findById(userId).exec(); 
+        const user = await User.findById(userId).exec();
         return user;
     } catch (error) {
         throw new Error(error.toString());
@@ -211,12 +211,12 @@ const findUserById = async (userId) => {
 const updateUser = async (userId, newAvatar, gender, dob, username) => {
     try {
         const updateFields = {
-            
+
             username: username,
             gender: gender,
             dateOfBirth: dob
         };
-        if(newAvatar){
+        if (newAvatar) {
             updateFields.avatar = newAvatar
         }
         console.log(updateFields);
@@ -263,9 +263,9 @@ const getAllUsers = async () => {
     }
 }
 
-const banUser = async  ( userId ) => {
+const banUser = async (userId) => {
     try {
-        const user = await User.findById( userId)
+        const user = await User.findById(userId)
         if (!user) {
             throw new Error("User not found")
         }
@@ -277,6 +277,14 @@ const banUser = async  ( userId ) => {
     }
 }
 
+const getFollowerById = async (id) => {
+    try {
+        const followers = await User.findById(id);
+        return followers.followers;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     register,
     findUserByEmail,
@@ -297,4 +305,5 @@ export default {
     getAllUsers,
     banUser,
     updateOnlySchedule,
+    getFollowerById
 }

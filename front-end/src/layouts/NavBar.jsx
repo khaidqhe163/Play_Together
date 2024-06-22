@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   IoGameControllerOutline,
   IoHomeOutline,
@@ -18,6 +18,9 @@ import RechargeModal from "../components/Modal/RechargeModal/RechageModal.jsx";
 import { getNav, setActiveButton } from "../features/navSlice.js";
 import axios from "axios";
 import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { SocketContext } from "../context/SocketContext.jsx";
+import api from '../utils/axiosConfig'
+import NotificationBox from "../components/Modal/NotificationModal/NotificationBox.jsx";
 export default function NavBar() {
   // const [activeButton, setActiveButton] = useState(null);
   const dispatch = useDispatch();
@@ -28,6 +31,10 @@ export default function NavBar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const nav = useNavigate();
   const [notifyBox, setNotifyBox] = useState(false);
+  const { socket, newNotification, setNewNotification } = useContext(SocketContext)
+  const [notification, setNotification] = useState(null);
+  const [unReadNotification, setUnreadNotification] = useState(0);
+  const [audio, setAudio] = useState(null);
   const fontF = {
     fontFamily: "Arial, Helvetica, sans-serif",
     fontWeight: 500,
@@ -55,6 +62,49 @@ export default function NavBar() {
     backgroundColor: "#8d68f2",
   };
 
+  useEffect(() => {
+    if (userInfo === null) return;
+    const getNotification = async () => {
+      try {
+        const notify = await api.get("api/notification");
+        console.log(notify.data);
+        setNotification(notify.data)
+        const unread = notify.data.filter((n) => {
+          return n.isRead === false;
+        })
+        setUnreadNotification(unread.length)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getNotification();
+  }, [userInfo])
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on("getNotification", (res) => {
+      setNewNotification(res)
+    })
+  }, [socket])
+
+  useEffect(() => {
+    if (newNotification === null) return;
+    const filtedNotify = notification.filter((n) => {
+      return n._id !== newNotification._id
+    })
+    if (filtedNotify.length === notification.length)
+      setNotification([newNotification, ...notification])
+    else
+      setNotification([newNotification, ...filtedNotify])
+
+    const audioInstance = new Audio('/notification.wav');
+    setAudio(audioInstance)
+    setUnreadNotification(unReadNotification + 1)
+  }, [newNotification])
+
+  useEffect(() => {
+    if (audio === null) return;
+    audio.play().catch(error => console.log('Error playing audio:', error));
+  }, [audio])
   const handleButtonClick = (buttonName) => {
     dispatch(setActiveButton(buttonName));
   };
@@ -140,30 +190,26 @@ export default function NavBar() {
                 <FaUserShield color="white" size={35} />
               </div>
             </Link>
-            <Link to={"/"} className="btn mx-2 rounded-circle" style={bgButton}>
+            <Link className="btn mx-2 rounded-circle" style={bgButton}>
               <div className="d-flex justify-content-center align-items-center" style={{ position: "relative" }}>
                 <FaRegBell color="white" size={35} onClick={() => setNotifyBox(!notifyBox)} />
                 {
-                  notifyBox && (
+                  notifyBox && <NotificationBox notification={notification} setUnreadNotification={setUnreadNotification} />
+                }
+                {
+                  !notifyBox && unReadNotification !== 0 && (
                     <div style={{
-                      width: "500px",
-                      maxHeight: "600px",
+                      background: "red",
+                      color: "white",
+                      width: "16px",
+                      height: "16px",
                       position: "absolute",
-                      backgroundColor: "#20202b",
-                      right: "0px",
-                      top: "50px",
-                      boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
-                      borderRadius: "15px",
-                      textAlign: "left",
+                      bottom: "-10px",
+                      borderRadius: "50%",
+                      fontSize: "12px",
+                      right: "-15px"
                     }}>
-                      <p className="text-white pl-30 mt-10">Thông báo</p>
-                      <hr style={{ color: "white" }}></hr>
-                      <div className="p-10 d-flex notification">
-                        <img src="/avatar2.jpg" alt="error" style={{ width: "48px", height: "48px", borderRadius: "50%" }} />
-                        <p className="text-white mb-0 ml-5">
-                          <strong>Lê Văn Châu</strong> đã nhắc đến bạn ở một bình luận trong
-                        </p>
-                      </div>
+                      {unReadNotification}
                     </div>
                   )
                 }

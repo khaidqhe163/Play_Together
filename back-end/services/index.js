@@ -7,6 +7,7 @@ import CommentService from './CommentService.js';
 import MessageService from './MessageService.js'
 import ConversationService from './ConversationService.js';
 import ScheduleService from './ScheduleService.js';
+import NotificationService from './NotificationService.js';
 export {
     UserService,
     StoryService,
@@ -16,6 +17,7 @@ export {
     CommentService,
     ConversationService,
     MessageService,
-    ScheduleService
+    ScheduleService,
+    NotificationService
 }
 

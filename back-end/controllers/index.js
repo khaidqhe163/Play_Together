@@ -7,6 +7,7 @@ import CommentController from './CommentController.js';
 import MessageController from './MessageController.js'
 import ConversationController from './ConversationController.js';
 import ScheduleController from './ScheduleController.js';
+import NotificationController from './NotificationController.js';
 export {
     UserController,
     StoryController,
@@ -16,5 +17,6 @@ export {
     CommentController,
     MessageController,
     ConversationController,
-    ScheduleController
+    ScheduleController,
+    NotificationController
 }

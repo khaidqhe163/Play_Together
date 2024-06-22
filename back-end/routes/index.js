@@ -7,6 +7,7 @@ import CommentRouter from './CommentRouter.js'
 import MessageRouter from './MessageRouter.js'
 import ConversationRouter from './ConversationRouter.js'
 import ScheduleRouter from './ScheduleRouter.js'
+import NotificationRouter from './NotificationRouter.js'
 
 const routes = (app) => {
     app.use('/api/user', UserRouter);
@@ -20,5 +21,6 @@ const routes = (app) => {
     app.use('/api/comment', CommentRouter)
     app.use('/api/message', MessageRouter)
     app.use('/api/conversation', ConversationRouter)
+    app.use('/api/notification', NotificationRouter)
 }
 export default routes

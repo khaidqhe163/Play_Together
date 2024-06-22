@@ -31,6 +31,21 @@ io.on("connection", (socket) => {
             io.to(user.socketId).emit("getNewMessagePrivate", message)
         }
     })
+
+    socket.on("sendNotification", (notification) => {
+        console.log(notification);
+        if (notification?.receivers) {
+            const users = onlineUsers.filter((o) => {
+                return notification.receivers?.includes(o.userId)
+            })
+            console.log(users);
+            if (users) {
+                users.forEach((u) => {
+                    io.to(u.socketId).emit("getNotification", notification)
+                })
+            }
+        }
+    })
     socket.on("disconnect", () => {
         onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
         console.log(onlineUsers);
