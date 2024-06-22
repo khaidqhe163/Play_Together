@@ -4,6 +4,7 @@ import {
   IoHomeOutline,
   IoVideocamOutline,
 } from "react-icons/io5";
+import { MdOutlineWorkHistory } from "react-icons/md";
 import { FaUserShield, FaRegBell } from "react-icons/fa";
 import { GoTrophy } from "react-icons/go";
 import { Link, useNavigate } from "react-router-dom";
@@ -134,9 +135,9 @@ export default function NavBar() {
       <div className="col-sm-3 d-flex justify-content-end align-items-center">
         {userInfo && userInfo !== null ? (
           <>
-            <Link to={"/"} className="btn mx-2 rounded-circle" style={bgButton}>
+            <Link to={"/list-booking"} className="btn mx-2 rounded-circle" style={bgButton}>
               <div className="d-flex justify-content-center align-items-center">
-                <FaUserShield color="white" size={35} />
+                <MdOutlineWorkHistory color="white" size={35} />
               </div>
             </Link>
             <Link to={"/"} className="btn mx-2 rounded-circle" style={bgButton}>

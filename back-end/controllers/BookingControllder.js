@@ -69,11 +69,11 @@ const createBooking = async (req, res) => {
             if (!checked) return res.status(400).json({ error: "Hiện tại player này đang có lịch Duo. Vui lòng chờ đợi! ❌" });
         }
         const aUser = await UserService.findUserById(userId);
-        const aPlayer = await UserService.getPlayerById(playerId);
+        // const aPlayer = await UserService.getPlayerById(playerId);
         aUser.accountBalance -= parseInt(price);
         await aUser.save();
-        aPlayer.accountBalance += (parseInt(price) * 0.9);
-        await aPlayer.save();
+        // aPlayer.accountBalance += (parseInt(price) * 0.9);
+        // await aPlayer.save();
         const { password, ...restUser } = aUser._doc;
         const aBooking = await BookingService.createBooking({ userId, playerId, price, hours, unit, bookingStatus });
         return res.status(201).json({ message: "Thuê thành công! ✔️", restUser });
@@ -107,8 +107,32 @@ const createBookingT = async (req, res) => {
     }
 }
 
+const getBookingOnlineOfPlayer = async (req,res) => {
+    try {
+        // const playerId = req.payload.id;
+        const playerId = "6651f21e079075c8a3da9d02";
+        const allBooking = await BookingService.getBookingOnlineOfPlayer(playerId);
+        const transformedBookings = allBooking.map(({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => ({
+            _id,
+            username: userId.username,
+            playerId,
+            price,
+            hours,
+            unit,
+            bookingStatus,
+            createdAt,
+            updatedAt,
+            __v
+        }));
+        return res.status(200).json(transformedBookings);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error get booking online', error });
+    }
+}
+
 export default {
     getTop10Lessees,
     createBooking,
     createBookingT,
+    getBookingOnlineOfPlayer,
 }

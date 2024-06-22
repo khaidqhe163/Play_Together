@@ -25,10 +25,20 @@ const createBooking = async (booking) => {
     } catch (error) {
         throw new Error(error);
     }
+};
+
+const getBookingOnlineOfPlayer = async (playerId) => {
+    try {
+        const allBooking = await Booking.find({playerId}).populate("userId", "-_id username");
+        return allBooking;
+    } catch (error) {
+        throw new Error(error);
+    }
 }
 
 export default {
     getAllBooking,
     getLatestBooking,
     createBooking,
+    getBookingOnlineOfPlayer,
 }
