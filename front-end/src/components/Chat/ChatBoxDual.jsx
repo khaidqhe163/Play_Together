@@ -19,7 +19,18 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
     console.log(currentConversation);
     const [receiver, setReceiver] = useState();
     const [messageSetting, setMessageSetting] = useState(false);
-
+    const messSetting = useRef(null);
+    const handleClickOutside = (event) => {
+        if (messSetting.current && !messSetting.current.contains(event.target)) {
+            setMessageSetting(false);
+        }
+    };
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [])
     useEffect(() => {
         if (currentConversation !== null) {
             const handleGetMessage = async () => {
@@ -97,10 +108,10 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                     cursor: "pointer",
                     width: "48px",
                     height: "48px"
-                }} onClick={() => setMessageSetting(!messageSetting)}>
+                }} onClick={(event) => { event.stopPropagation(); setMessageSetting(!messageSetting) }}>
                     <PiDotsThreeBold style={{ color: "white", fontSize: "30px", margin: "auto" }} />
                     {messageSetting && (
-                        <div className='message-setting' onClick={(e) => e.stopPropagation()}>
+                        <div className='message-setting' onClick={(e) => e.stopPropagation()} ref={messSetting}>
                             <ul className='list-m-setting'>
                                 <li>Block</li>
                                 <li>Report</li>
