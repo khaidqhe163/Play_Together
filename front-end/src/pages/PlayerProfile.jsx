@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import NavBar from '../layouts/NavBar'
 import '../css/player-profile.css'
@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
 import CanvasHire from '../components/CanvasHire';
 import { Bounce, ToastContainer } from 'react-toastify';
-import api from '../utils/axiosConfig'
 
 function PlayerProfile() {
     const { id } = useParams();
@@ -22,6 +21,9 @@ function PlayerProfile() {
     const [subnav, setSubnav] = useState(2);
     const [snav, setSnav] = useState(1);
     const [age, setAge] = useState("");
+    const { onlineUsers } = useContext(SocketContext);
+    const [playerOnline, setPlayerOnline] = useState(false);
+    console.log(onlineUsers);
     const [openModalBlock, setOpenModalBlock] = useState(false);
     const [openHire, setOpenHire] = useState(false);
     const author = useSelector((state) => state.user);
@@ -30,8 +32,15 @@ function PlayerProfile() {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const checkOnline = onlineUsers?.some(o => o.userId === id);
+        setPlayerOnline(checkOnline)
+    }, [onlineUsers]);
+
+    useEffect(() => {
         getPlayerInformation();
     }, [])
+
+
 
     useEffect(() => {
         setBlocked(author?.value?.blockedUsers?.includes(id))
@@ -172,7 +181,9 @@ function PlayerProfile() {
                     setBlocked={handleBlockStatusChange}
                 />
             )}
-            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} />
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
+            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
+
         </>
     )
 }
