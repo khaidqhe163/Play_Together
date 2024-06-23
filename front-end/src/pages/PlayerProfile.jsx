@@ -14,7 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
 import CanvasHire from '../components/CanvasHire';
 import { Bounce, ToastContainer } from 'react-toastify';
-
+import { SocketContext } from '../context/SocketContext';
+import api from '../utils/axiosConfig';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();

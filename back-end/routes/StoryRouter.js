@@ -1,7 +1,8 @@
 import express from 'express';
-import {StoryController} from '../controllers/index.js';
+import { StoryController } from '../controllers/index.js';
 import multer from 'multer';
 import jwt from '../middleware/jwt.js';
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/stories/')
@@ -10,6 +11,7 @@ const storage = multer.diskStorage({
         cb(null, req.payload.id + Date.now() + file.originalname);
     }
 })
+
 const upload = multer({
     storage: storage,
     limits: {
@@ -21,13 +23,10 @@ const StoryRouter = express.Router();
 
 // Story routes
 StoryRouter.get('/', StoryController.getStories);
-
-StoryRouter.post('/create-story', jwt.verifyAccessToken, upload.single("video"), StoryController.createStory)
-
+StoryRouter.post('/create-story', jwt.verifyAccessToken, upload.single("video"), StoryController.createStory);
+StoryRouter.delete('/:id', jwt.verifyAccessToken, StoryController.deleteStory);
 StoryRouter.get('/:id', StoryController.getStoryDetail);
-
-StoryRouter.post('/likedOrUnlikedStory/:id', jwt.verifyAccessToken, StoryController.likeOrUnlikeStory)
-
-StoryRouter.post('/viewStory/:id', jwt.verifyAccessToken, StoryController.viewStory)
+StoryRouter.post('/likedOrUnlikedStory/:id', jwt.verifyAccessToken, StoryController.likeOrUnlikeStory);
+StoryRouter.post('/viewStory/:id', jwt.verifyAccessToken, StoryController.viewStory);
 
 export default StoryRouter;

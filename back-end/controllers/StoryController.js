@@ -5,6 +5,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import ffmpegPath from '@ffmpeg-installer/ffmpeg'
 
 ffmpeg.setFfmpegPath(ffmpegPath.path);
+
 const getStories = async (req, res) => {
     try {
         const stories = await StoryService.getAllStories();
@@ -18,13 +19,9 @@ const getStories = async (req, res) => {
 
 const createStory = async (req, res) => {
     try {
-        console.log(req.headers);
         const userId = req.payload.id;
-        console.log(req.body.video);
         let video;
-        console.log(req.body);
         await getVideoDurationInSeconds(req.file.path).then((duration) => {
-            console.log(duration);
             video = duration;
         })
         if (video > 60) {
@@ -42,6 +39,22 @@ const createStory = async (req, res) => {
         res.status(500).json({
             message: error.toString()
         })
+    }
+}
+
+const deleteStory = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const story = await StoryService.deleteStory(id);
+        if (!story) {
+            res.status(404).json({ message: 'Story not found' });
+        } else {
+            res.status(200).json({ message: 'Story deleted successfully' });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
     }
 }
 
@@ -65,12 +78,12 @@ function generateThumbnail(videoPath, thumbnailPath, thumbnailName) {
 const getStoryDetail = async (req, res) => {
     const { id } = req.params;
     try {
-      const story = await StoryService.getStoryDetail(id);
-      res.status(200).json(story);
+        const story = await StoryService.getStoryDetail(id);
+        res.status(200).json(story);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
-  };
+};
 
 const likeOrUnlikeStory = async (req, res) => {
     try {
@@ -101,6 +114,7 @@ const viewStory = async (req, res) => {
 export default {
     getStories,
     createStory,
+    deleteStory,
     getStoryDetail,
     likeOrUnlikeStory,
     viewStory,
