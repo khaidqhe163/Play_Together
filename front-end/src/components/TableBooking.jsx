@@ -63,7 +63,6 @@ function TableBooking({ endPoint }) {
             const status = 1;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
             setUpdateBooking(bookingUpdate.data.u);
-            console.log(bookingUpdate);
             toast(bookingUpdate.data.message);
         } catch (error) {
             console.log(error);
@@ -75,7 +74,6 @@ function TableBooking({ endPoint }) {
             const status = 3;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
             setUpdateBooking(bookingUpdate.data.u);
-            console.log(updateBooking);
             toast(bookingUpdate.data.message);
         } catch (error) {
             console.log(error);
@@ -86,20 +84,26 @@ function TableBooking({ endPoint }) {
             const status = 2;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
             setUpdateBooking(bookingUpdate.data.u);
-            console.log(updateBooking);
             toast(bookingUpdate.data.message);
         } catch (error) {
             console.log(error);
         }
     };
 
+    const formatTimeH = (time) => {
+        console.log(time);
+        const hours = Math.floor(time);
+        const minutes = (time - hours) * 60;
+        const formattedMinutes = minutes === 0 ? `0${minutes}` : minutes;
+        return `${hours}:${formattedMinutes}`;
+    };
 
-    console.log(updateBooking);
 
     return (
         <div className='row m-0'>
             <div className='col-12 mt-28'>
-                <table className="min-w-full bg-gray-800 text-white rounded-xl">
+                {listBooking.length === 0 ? <h5 className='text-white'>Hiện tại không có lịch nào!</h5>:
+                    <table className="min-w-full bg-gray-800 text-white rounded-xl">
                     <thead>
                         <tr>
                             <th className="px-6 py-3 text-center">
@@ -135,7 +139,8 @@ function TableBooking({ endPoint }) {
                                 {l.username}
                             </td>
                             <td className='py-2'>
-                                {`${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
+                                {l.hours.length === 0 && `${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
+                                {l.hours.length !== 0 && l?.hours?.map((h, index) => <>{`${formatTimeH(h?.start)} - ${formatTimeH(h?.end)}`} {index === l.hours.length - 1 ? null : <br />}</>)}
                             </td>
                             <td className='py-2'>
                                 {format(new Date(l.createdAt), "dd-MM-yyyy")}
@@ -157,7 +162,8 @@ function TableBooking({ endPoint }) {
                         </tr>)
                         )}
                     </tbody>
-                </table>
+                </table>}
+                
             </div>
         </div>
     )

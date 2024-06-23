@@ -109,8 +109,8 @@ const createBookingT = async (req, res) => {
 
 const getBookingOnlineOfPlayer = async (req, res) => {
     try {
-        // const playerId = req.payload.id;
-        const playerId = "6651f21e079075c8a3da9d02";
+        const playerId = req.payload.id;
+        // const playerId = "6651f21e079075c8a3da9d02";
         const allBooking = await BookingService.getBookingOnlineOfPlayer(playerId);
         const transformedBookings = allBooking.map(({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => ({
             _id,
@@ -126,18 +126,96 @@ const getBookingOnlineOfPlayer = async (req, res) => {
         }));
         return res.status(200).json(transformedBookings);
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error create booking', error });
+        res.status(500).json({ message: 'Internal server error get booking', error });
     }
 };
+
+const getBookingScheduleOfPlayer = async (req, res) => {
+    try {
+        const playerId = req.payload.id;
+        // const playerId = "6651f21e079075c8a3da9d02";
+        const listBooking = await BookingService.getBookingScheduleOfPlayer(playerId);
+        const transformedBookings = await Promise.all(listBooking.map(async ({
+            _id,
+            userId,
+            playerId,
+            price,
+            hours,
+            unit,
+            bookingStatus,
+            createdAt,
+            updatedAt,
+            __v
+        }) => {
+
+            const transformedHours = await Promise.all(hours.map(async (scheduleId) => {
+                const schedule = await ScheduleService.getScheduleById(scheduleId);
+                return schedule;
+            }));
+
+            return {
+                _id,
+                username: userId.username,
+                playerId,
+                price,
+                hours: transformedHours,
+                unit,
+                bookingStatus,
+                createdAt,
+                updatedAt,
+                __v
+            };
+        }));
+
+        return res.status(200).json(transformedBookings);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error get booking', error });
+    }
+
+};
+
+const getMyBooking = async(req,res)=>{
+try {
+    // const userId = req.payload.id;
+    const userId = "665755b517909fecabb76afe";
+    const listBooking = await BookingService.getMyBooking(userId);
+    console.log(listBooking);
+    const transformedBookings = listBooking.map(({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => ({
+        _id,
+        userId,
+        username: playerId.username,
+        price,
+        hours,
+        unit,
+        bookingStatus,
+        createdAt,
+        updatedAt,
+        __v
+    }));
+    return res.status(200).json(transformedBookings);
+} catch (error) {
+    res.status(500).json({ message: 'Internal server error get booking', error });
+
+}    
+}
 
 const changeStatusToProgress = async (req, res) => {
     try {
         const { idBooking, status } = req.body;
+        const playerId = req.payload.id;
+        if (status == 1) {
+            const b = await BookingService.getBookingById(idBooking);
+            const aPlayer = await UserService.getPlayerById(playerId);
+            // console.log(aPlayer);
+            aPlayer.accountBalance += (parseInt(b.price) * 0.9);
+            await aPlayer.save();
+            // console.log(aPlayer);
+        }
         const u = await BookingService.changeStatusToProgress(idBooking, status);
         console.log(u);
         res.status(200).json({ message: "Chuyển trạng thái thành công", u });
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error get booking online', error });
+        res.status(500).json({ message: 'Internal server error change booking online', error });
     }
 };
 
@@ -147,4 +225,6 @@ export default {
     createBookingT,
     getBookingOnlineOfPlayer,
     changeStatusToProgress,
+    getBookingScheduleOfPlayer,
+    getMyBooking,
 }

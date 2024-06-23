@@ -36,6 +36,39 @@ const getBookingOnlineOfPlayer = async (playerId) => {
     }
 };
 
+const getBookingScheduleOfPlayer = async (playerId) => {
+    try {
+        const schedules = await Booking.find({
+            playerId,
+            hours: { $ne: [] }
+        }).populate("userId", "-_id username");
+        return schedules;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+const getMyBooking = async (userId) => {
+    try {
+        const b = await Booking.find({
+            userId
+        }).populate("playerId", "-_id username");
+        return b;
+    } catch (error) {
+        throw new Error(error.message);
+
+    }
+}
+
+const getBookingById = async (idBooking) => {
+    try {
+        const b = await Booking.findById(idBooking);
+        return b;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 const changeStatusToProgress = async (idBooking, status) => {
     try {
         const u = await Booking.findByIdAndUpdate(idBooking, { bookingStatus: status }, { new: true });
@@ -43,7 +76,7 @@ const changeStatusToProgress = async (idBooking, status) => {
     } catch (error) {
         throw new Error(error);
     }
-}
+};
 
 export default {
     getAllBooking,
@@ -51,4 +84,7 @@ export default {
     createBooking,
     getBookingOnlineOfPlayer,
     changeStatusToProgress,
+    getBookingScheduleOfPlayer,
+    getBookingById,
+    getMyBooking,
 }
