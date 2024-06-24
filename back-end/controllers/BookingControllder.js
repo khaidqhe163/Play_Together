@@ -174,29 +174,50 @@ const getBookingScheduleOfPlayer = async (req, res) => {
 
 };
 
-const getMyBooking = async(req,res)=>{
-try {
-    // const userId = req.payload.id;
-    const userId = "665755b517909fecabb76afe";
-    const listBooking = await BookingService.getMyBooking(userId);
-    console.log(listBooking);
-    const transformedBookings = listBooking.map(({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => ({
-        _id,
-        userId,
-        username: playerId.username,
-        price,
-        hours,
-        unit,
-        bookingStatus,
-        createdAt,
-        updatedAt,
-        __v
-    }));
-    return res.status(200).json(transformedBookings);
-} catch (error) {
-    res.status(500).json({ message: 'Internal server error get booking', error });
+const getMyBooking = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        // const userId = "665755b517909fecabb76afe";
+        const listBooking = await BookingService.getMyBooking(userId);
+        console.log(listBooking);
+        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => {
+            if (hours.length === 0) {
+                return {
+                    _id,
+                    userId,
+                    username: playerId.username,
+                    price,
+                    hours,
+                    unit,
+                    bookingStatus,
+                    createdAt,
+                    updatedAt,
+                    __v
+                };
+            } else {
+                const transformedHours = await Promise.all(hours.map(async (scheduleId) => {
+                    const schedule = await ScheduleService.getScheduleById(scheduleId);
+                    return schedule;
+                }));
+                return {
+                    _id,
+                    userId,
+                    username: playerId.username,
+                    price,
+                    hours: transformedHours,
+                    unit,
+                    bookingStatus,
+                    createdAt,
+                    updatedAt,
+                    __v
+                };
+            }
+        }));
+        return res.status(200).json(transformedBookings);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error get booking', error });
 
-}    
+    }
 }
 
 const changeStatusToProgress = async (req, res) => {

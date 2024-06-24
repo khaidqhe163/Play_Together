@@ -1,0 +1,15 @@
+.stable tbody tr {
+    border-bottom: 1px solid rgb(58, 58, 58);
+}
+
+.stable tbody tr:last-child {
+    border-bottom: 2px solid #8d68f2;
+}
+.stable{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+
+.stable thead tr{
+    background-color: #2A415F;
+}

@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react'
 import api from '../utils/axiosConfig';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { userInfor } from '../features/userSlice';
+import '../css/table-booking.css'
 
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
     const [updateBooking, setUpdateBooking] = useState(null);
+
+    const dispatch = useDispatch();
+    const userInfo = useSelector(userInfor);
 
     const fetchBooking = async () => {
         try {
@@ -98,39 +104,73 @@ function TableBooking({ endPoint }) {
         return `${hours}:${formattedMinutes}`;
     };
 
+    console.log(listBooking);
+    console.log(endPoint);
 
     return (
         <div className='row m-0'>
             <div className='col-12 mt-28'>
-                {listBooking.length === 0 ? <h5 className='text-white'>Hiện tại không có lịch nào!</h5>:
-                    <table className="min-w-full bg-gray-800 text-white rounded-xl">
-                    <thead>
-                        <tr>
-                            <th className="px-6 py-3 text-center">
-                                STT
-                            </th>
-                            <th className="px-6 py-3 text-center">
-                                Tên người đặt
-                            </th>
-                            <th className="px-6 py-3 text-center">
-                                Thời gian
-                            </th>
-                            <th className="px-6 py-3 text-center">
-                                Date
-                            </th>
-                            <th className="px-6 py-3 text-center">
-                                Giá tiền
-                            </th>
-                            <th className="px-6 py-3 text-center">
-                                Trạng thái
-                            </th>
-                            <th className="px-6 py-3 text-center">
-                                Hành động
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((l, index) =>
+                {listBooking.length === 0 || listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0 ? <h5 className='text-white'>Hiện tại không có lịch nào!</h5> :
+                    <table className="min-w-full bg-gray-800 text-white rounded-xl stable">
+                        <thead>
+                            <tr>
+                                <th className="px-6 py-3 text-center">
+                                    STT
+                                </th>
+                                <th className="px-6 py-3 text-center">
+                                    {endPoint === 'my-booking' ? "Tên người chơi" : "Tên người đặt"}
+                                </th>
+                                <th className="px-6 py-3 text-center">
+                                    Thời gian
+                                </th>
+                                <th className="px-6 py-3 text-center">
+                                    Date
+                                </th>
+                                <th className="px-6 py-3 text-center">
+                                    Giá tiền
+                                </th>
+                                <th className="px-6 py-3 text-center">
+                                    Trạng thái
+                                </th>
+                                <th className="px-6 py-3 text-center">
+                                    Hành động
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {endPoint !== 'my-booking' ?
+                                listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((l, index) =>
+                                (<tr key={index} className={`text-center`}>
+                                    <td className='py-2'>
+                                        {index + 1}
+                                    </td>
+                                    <td className='py-2'>
+                                        {l.username}
+                                    </td>
+                                    <td className='py-2'>
+                                        {l.hours.length === 0 && `${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
+                                        {l.hours.length !== 0 && l?.hours?.map((h, index) => <>{`${formatTimeH(h?.start)} - ${formatTimeH(h?.end)}`} {index === l.hours.length - 1 ? null : <br />}</>)}
+                                    </td>
+                                    <td className='py-2'>
+                                        {format(new Date(l.createdAt), "dd-MM-yyyy")}
+                                    </td>
+                                    <td className='py-2'>
+                                        {l.price}
+                                    </td>
+                                    <td className='py-2'>
+                                        {formatStatus(l.bookingStatus)}
+                                    </td>
+                                    <td className='py-2'>
+                                        {l.bookingStatus === 1 ? (<button className='btn btn-success mr-10' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>)
+                                            : (<><button className='btn btn-primary mr-10' onClick={() => handleAccept(l._id)}>Chấp nhận</button>
+                                                <button className='btn btn-danger' onClick={() => handleDeny(l._id)}>Từ chối</button></>)
+                                        }
+
+                                    </td>
+
+                                </tr>)
+                                )
+                                :listBooking.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((l, index) =>
                         (<tr key={index} className='text-center'>
                             <td className='py-2'>
                                 {index + 1}
@@ -152,18 +192,17 @@ function TableBooking({ endPoint }) {
                                 {formatStatus(l.bookingStatus)}
                             </td>
                             <td className='py-2'>
-                                {l.bookingStatus === 1 ? (<button className='btn btn-success mr-10' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>)
-                                    : (<><button className='btn btn-primary mr-10' onClick={() => handleAccept(l._id)}>Chấp nhận</button>
-                                        <button className='btn btn-danger' onClick={() => handleDeny(l._id)}>Từ chối</button></>)
+                                {l.bookingStatus === 2 ? (<button className='btn btn-success' onClick={() => {}}>Đánh giá</button>)
+                                    : null
                                 }
 
                             </td>
 
                         </tr>)
                         )}
-                    </tbody>
-                </table>}
-                
+                        </tbody>
+                    </table>}
+
             </div>
         </div>
     )
