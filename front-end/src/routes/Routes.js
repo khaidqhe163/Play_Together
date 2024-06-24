@@ -127,6 +127,14 @@ const routes = [
         path: '/admin/report-reason',
         element: ReportReason
     },
+    {
+        path: '/stories/:storyId',
+        element: StoryPage
+    },
+    {
+        path: '/stories/:storyId/:commentId',
+        element: StoryPage
+    },
 ]
 export default {
     routes
