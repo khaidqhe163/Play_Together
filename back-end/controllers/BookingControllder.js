@@ -224,13 +224,22 @@ const changeStatusToProgress = async (req, res) => {
     try {
         const { idBooking, status } = req.body;
         const playerId = req.payload.id;
+        const now = new Date().getTime();
         if (status == 1) {
             const b = await BookingService.getBookingById(idBooking);
+            console.log(b);
+            let createA = new Date(b.createdAt).getTime();
+            createA += (5 * 60 * 1000);
+
+            if (now > createA) {
+                const d = await BookingService.deleteBookingById(idBooking);
+                return res.status(400).json({ error: "Lịch này đã hết hạn!", d });
+            }
+
             const aPlayer = await UserService.getPlayerById(playerId);
-            // console.log(aPlayer);
             aPlayer.accountBalance += (parseInt(b.price) * 0.9);
             await aPlayer.save();
-            // console.log(aPlayer);
+
         }
         const u = await BookingService.changeStatusToProgress(idBooking, status);
         console.log(u);

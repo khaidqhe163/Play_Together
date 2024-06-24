@@ -78,6 +78,15 @@ const changeStatusToProgress = async (idBooking, status) => {
     }
 };
 
+const deleteBookingById = async (idBooking) => {
+    try {
+        const b = await Booking.findByIdAndDelete(idBooking);
+        return b;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 export default {
     getAllBooking,
     getLatestBooking,
@@ -87,4 +96,5 @@ export default {
     getBookingScheduleOfPlayer,
     getBookingById,
     getMyBooking,
+    deleteBookingById,
 }

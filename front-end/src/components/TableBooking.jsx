@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import api from '../utils/axiosConfig';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfor } from '../features/userSlice';
-import '../css/table-booking.css'
+import '../css/table-booking.css';
 
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
@@ -62,15 +62,22 @@ function TableBooking({ endPoint }) {
             case 3: return <span className="text-danger">Từ chối</span>;
             default: return '';
         }
-    }
+    };
 
     const handleAccept = async (idBooking) => {
         try {
             const status = 1;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
+            console.log(bookingUpdate);
+            
             setUpdateBooking(bookingUpdate.data.u);
             toast(bookingUpdate.data.message);
         } catch (error) {
+            if (error.response.status == 400) {
+                console.log(400);
+                setUpdateBooking(error.response.data.d);
+                toast(error.response.data.error);
+            }
             console.log(error);
         }
     };
@@ -85,6 +92,7 @@ function TableBooking({ endPoint }) {
             console.log(error);
         }
     };
+
     const handleSuccess = async (idBooking) => {
         try {
             const status = 2;
@@ -104,108 +112,88 @@ function TableBooking({ endPoint }) {
         return `${hours}:${formattedMinutes}`;
     };
 
-    console.log(listBooking);
-    console.log(endPoint);
+    const shouldHideRow = (createdAt) => {
+        const now = new Date().getTime();
+        const createdTime = new Date(createdAt).getTime();
+        return now > (createdTime + 5 * 60 * 1000);
+    };
 
     return (
         <div className='row m-0'>
             <div className='col-12 mt-28'>
-                {listBooking.length === 0 || listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0 ? <h5 className='text-white'>Hiện tại không có lịch nào!</h5> :
+                {listBooking.length === 0 || listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0 ?
+                    <h5 className='text-white'>Hiện tại không có lịch nào!</h5> :
                     <table className="min-w-full bg-gray-800 text-white rounded-xl stable">
                         <thead>
                             <tr>
-                                <th className="px-6 py-3 text-center">
-                                    STT
-                                </th>
+                                <th className="px-6 py-3 text-center">STT</th>
                                 <th className="px-6 py-3 text-center">
                                     {endPoint === 'my-booking' ? "Tên người chơi" : "Tên người đặt"}
                                 </th>
-                                <th className="px-6 py-3 text-center">
-                                    Thời gian
-                                </th>
-                                <th className="px-6 py-3 text-center">
-                                    Date
-                                </th>
-                                <th className="px-6 py-3 text-center">
-                                    Giá tiền
-                                </th>
-                                <th className="px-6 py-3 text-center">
-                                    Trạng thái
-                                </th>
-                                <th className="px-6 py-3 text-center">
-                                    Hành động
-                                </th>
+                                <th className="px-6 py-3 text-center">Thời gian</th>
+                                <th className="px-6 py-3 text-center">Date</th>
+                                <th className="px-6 py-3 text-center">Giá tiền</th>
+                                <th className="px-6 py-3 text-center">Trạng thái</th>
+                                <th className="px-6 py-3 text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             {endPoint !== 'my-booking' ?
-                                listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((l, index) =>
-                                (<tr key={index} className={`text-center`}>
-                                    <td className='py-2'>
-                                        {index + 1}
-                                    </td>
-                                    <td className='py-2'>
-                                        {l.username}
-                                    </td>
-                                    <td className='py-2'>
-                                        {l.hours.length === 0 && `${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
-                                        {l.hours.length !== 0 && l?.hours?.map((h, index) => <>{`${formatTimeH(h?.start)} - ${formatTimeH(h?.end)}`} {index === l.hours.length - 1 ? null : <br />}</>)}
-                                    </td>
-                                    <td className='py-2'>
-                                        {format(new Date(l.createdAt), "dd-MM-yyyy")}
-                                    </td>
-                                    <td className='py-2'>
-                                        {l.price}
-                                    </td>
-                                    <td className='py-2'>
-                                        {formatStatus(l.bookingStatus)}
-                                    </td>
-                                    <td className='py-2'>
-                                        {l.bookingStatus === 1 ? (<button className='btn btn-success mr-10' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>)
-                                            : (<><button className='btn btn-primary mr-10' onClick={() => handleAccept(l._id)}>Chấp nhận</button>
-                                                <button className='btn btn-danger' onClick={() => handleDeny(l._id)}>Từ chối</button></>)
-                                        }
-
-                                    </td>
-
-                                </tr>)
-                                )
-                                :listBooking.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((l, index) =>
-                        (<tr key={index} className='text-center'>
-                            <td className='py-2'>
-                                {index + 1}
-                            </td>
-                            <td className='py-2'>
-                                {l.username}
-                            </td>
-                            <td className='py-2'>
-                                {l.hours.length === 0 && `${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
-                                {l.hours.length !== 0 && l?.hours?.map((h, index) => <>{`${formatTimeH(h?.start)} - ${formatTimeH(h?.end)}`} {index === l.hours.length - 1 ? null : <br />}</>)}
-                            </td>
-                            <td className='py-2'>
-                                {format(new Date(l.createdAt), "dd-MM-yyyy")}
-                            </td>
-                            <td className='py-2'>
-                                {l.price}
-                            </td>
-                            <td className='py-2'>
-                                {formatStatus(l.bookingStatus)}
-                            </td>
-                            <td className='py-2'>
-                                {l.bookingStatus === 2 ? (<button className='btn btn-success' onClick={() => {}}>Đánh giá</button>)
-                                    : null
-                                }
-
-                            </td>
-
-                        </tr>)
-                        )}
+                                listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3))
+                                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                    .map((l, index) => {
+                                        if (l.hours.length === 0 && shouldHideRow(l.createdAt)) return null;
+                                        return (
+                                            <tr key={index} className={`text-center`}>
+                                                <td className='py-2'>{index + 1}</td>
+                                                <td className='py-2'>{l.username}</td>
+                                                <td className='py-2'>
+                                                    {l.hours.length === 0 && `${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
+                                                    {l.hours.length !== 0 && l?.hours?.map((h, index) => <>{`${formatTimeH(h?.start)} - ${formatTimeH(h?.end)}`} {index === l.hours.length - 1 ? null : <br />}</>)}
+                                                </td>
+                                                <td className='py-2'>{format(new Date(l.createdAt), "dd-MM-yyyy")}</td>
+                                                <td className='py-2'>{l.price}</td>
+                                                <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
+                                                <td className='py-2'>
+                                                    {l.bookingStatus === 1 ? (
+                                                        <button className='btn btn-success mr-10' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>
+                                                    ) : (
+                                                        <>
+                                                            <button className='btn btn-primary mr-10' onClick={() => handleAccept(l._id)}>Chấp nhận</button>
+                                                            <button className='btn btn-danger' onClick={() => handleDeny(l._id)}>Từ chối</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                :
+                                listBooking.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((l, index) => {
+                                    if (l.hours.length === 0 && shouldHideRow(l.createdAt)) return null;
+                                    return (
+                                        <tr key={index} className='text-center'>
+                                            <td className='py-2'>{index + 1}</td>
+                                            <td className='py-2'>{l.username}</td>
+                                            <td className='py-2'>
+                                                {l.hours.length === 0 && `${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
+                                                {l.hours.length !== 0 && l?.hours?.map((h, index) => <>{`${formatTimeH(h?.start)} - ${formatTimeH(h?.end)}`} {index === l.hours.length - 1 ? null : <br />}</>)}
+                                            </td>
+                                            <td className='py-2'>{format(new Date(l.createdAt), "dd-MM-yyyy")}</td>
+                                            <td className='py-2'>{l.price}</td>
+                                            <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
+                                            <td className='py-2'>
+                                                {l.bookingStatus === 2 ? (
+                                                    <button className='btn btn-success' onClick={() => { }}>Đánh giá</button>
+                                                ) : null}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                         </tbody>
                     </table>}
-
             </div>
         </div>
-    )
+    );
 }
 
-export default TableBooking
+export default TableBooking;
