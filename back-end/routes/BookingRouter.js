@@ -12,5 +12,6 @@ BookingRouter.get('/booking-schedule', jwt.verifyAccessToken, BookingController.
 BookingRouter.put('/booking-online', jwt.verifyAccessToken, BookingController.changeStatusToProgress);
 BookingRouter.post('/', BookingController.createBooking);
 BookingRouter.post('/by-schedule', jwt.verifyAccessToken, BookingController.createBookingT);
+BookingRouter.delete('/booking-online/:bookingId', BookingController.deleteBookingById);
 
 export default BookingRouter;

@@ -71,7 +71,6 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         }));
     };
 
-    console.log(bookingDetails);
     const handleConfirm = async (e) => {
         e.preventDefault();
         try {
@@ -165,7 +164,6 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             );
         });
     };
-    console.log(bookingDetails);
 
     return (
         <Offcanvas id="off" show={showHire} onHide={handleClose} placement='end'>

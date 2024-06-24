@@ -26,6 +26,21 @@ function TableBooking({ endPoint }) {
         fetchBooking();
     }, [endPoint, updateBooking]);
 
+    useEffect(() => {
+        const timer = setInterval(() => {
+            listBooking.forEach(async (booking) => {
+
+                if (booking.hours.length === 0 && booking.bookingStatus === 0 && shouldHideRow(booking.createdAt)) {
+                    console.log("Hello");
+
+                    await handleDeleteBooking(booking._id);
+                }
+            });
+        }, 3000);
+
+        return () => clearInterval(timer);
+    }, [listBooking]);
+
     const formatTime = (d) => {
         const t = new Date(d);
         let hours = t.getHours();
@@ -68,16 +83,9 @@ function TableBooking({ endPoint }) {
         try {
             const status = 1;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
-            console.log(bookingUpdate);
-            
             setUpdateBooking(bookingUpdate.data.u);
             toast(bookingUpdate.data.message);
         } catch (error) {
-            if (error.response.status == 400) {
-                console.log(400);
-                setUpdateBooking(error.response.data.d);
-                toast(error.response.data.error);
-            }
             console.log(error);
         }
     };
@@ -105,7 +113,6 @@ function TableBooking({ endPoint }) {
     };
 
     const formatTimeH = (time) => {
-        console.log(time);
         const hours = Math.floor(time);
         const minutes = (time - hours) * 60;
         const formattedMinutes = minutes === 0 ? `0${minutes}` : minutes;
@@ -115,7 +122,16 @@ function TableBooking({ endPoint }) {
     const shouldHideRow = (createdAt) => {
         const now = new Date().getTime();
         const createdTime = new Date(createdAt).getTime();
-        return now > (createdTime + 5 * 60 * 1000);
+        return now > (createdTime + 0.5 * 60 * 1000);
+    };
+
+    const handleDeleteBooking = async (bookingId) => {
+        try {
+            const deleteBooking = await api.delete(`/api/booking/booking-online/${bookingId}`);
+            setUpdateBooking(deleteBooking.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

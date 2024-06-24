@@ -242,12 +242,22 @@ const changeStatusToProgress = async (req, res) => {
 
         }
         const u = await BookingService.changeStatusToProgress(idBooking, status);
-        console.log(u);
         res.status(200).json({ message: "Chuyển trạng thái thành công", u });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error change booking online', error });
     }
 };
+
+const deleteBookingById = async (req, res) => {
+    try {
+        const {bookingId} = req.params;
+        const d = await BookingService.deleteBookingById(bookingId);
+        console.log(bookingId);
+        res.status(200).json(d);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error delete booking online', error });
+    }
+}
 
 export default {
     getTop10Lessees,
@@ -257,4 +267,5 @@ export default {
     changeStatusToProgress,
     getBookingScheduleOfPlayer,
     getMyBooking,
+    deleteBookingById,
 }
