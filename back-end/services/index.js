@@ -7,6 +7,9 @@ import CommentService from './CommentService.js';
 import MessageService from './MessageService.js'
 import ConversationService from './ConversationService.js';
 import ScheduleService from './ScheduleService.js';
+import ReportReasonService from './ReportReasonService.js';
+import ReportService from './ReportService.js'
+
 export {
     UserService,
     StoryService,
@@ -16,6 +19,8 @@ export {
     CommentService,
     ConversationService,
     MessageService,
-    ScheduleService
+    ScheduleService,
+    ReportReasonService,
+    ReportService,
 }
 

@@ -16,7 +16,7 @@ const items = [
     label: 'DashBoard',
   },
   {
-    key: '/admin/users',
+    key: 'users',
     icon: <DesktopOutlined />,
     label: 'Tài khoản',
     children: [
@@ -38,6 +38,26 @@ const items = [
     key: '/admin/stories',
     icon: <ContainerOutlined />,
     label: 'Story',
+  },
+  {
+    key: 'reports',
+    icon: <ContainerOutlined />,
+    label: 'Báo cáo',
+    children: [
+      {
+        key: '/admin/reports/stories',
+        label: 'Video bị báo cáo',
+      },
+      {
+        key: '/admin/reports/users',
+        label: 'Người dùng bị báo cáo',
+      },
+    ],
+  },
+  {
+    key: '/admin/report-reason',
+    icon: <ContainerOutlined />,
+    label: 'Report Reason',
   },
 ];
 
@@ -61,7 +81,7 @@ const LeftSide = () => {
         onClick={e => handleChangeMenu(e.key)}
         selectedKeys={location?.pathname}
         defaultSelectedKeys={['/admin/users']}
-        defaultOpenKeys={['/admin/users']}
+        defaultOpenKeys={['users']}
       />
     </HomeContainer>
   );
