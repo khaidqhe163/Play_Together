@@ -170,7 +170,7 @@ export default function PlayerSchedule() {
                     </label>
                 </div>
             </div>
-            {isOnlySchedule&&(<><div className='col-10 mx-auto'>
+            {isOnlySchedule && (<><div className='col-10 mx-auto'>
                 <form onSubmit={handleSubmit} className='mt-14'>
                     <div className="mb-3">
                         <label className="form-label">Ngày duo</label>
@@ -215,38 +215,38 @@ export default function PlayerSchedule() {
                     <button type="submit" className="btn btn-primary mt-20">Lưu lịch</button>
                 </form>
             </div>
-            <div className='col-10 mx-auto'>
-                <h5 className="text-white mt-16">Lịch Duo của tôi</h5>
-            </div>
-            <div className="mt-4 col-10 mx-auto">
-                <table className="min-w-full bg-gray-800 text-white text-center">
-                    <thead>
-                        <tr>
-                            <th className="px-6 py-3">Date</th>
-                            <th className="px-6 py-3">Giờ bắt đầu</th>
-                            <th className="px-6 py-3">Giờ kết thúc</th>
-                            <th className="px-6 py-3"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {scheduleUpdate.map((s, index) => (
-                            <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
-                                <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
-                                <td className="px-6 py-4">{formatTime(s.start)} </td>
-                                <td className="px-6 py-4">{formatTime(s.end)} </td>
-                                <td className="px-6 py-4">
-                                    <button
-                                        className="btn btn-danger"
-                                        onClick={() => handleDelete(s._id)}
-                                    >
-                                        Xoá
-                                    </button>
-                                </td>
+                <div className='col-10 mx-auto'>
+                    <h5 className="text-white mt-16">Lịch Duo của tôi</h5>
+                </div>
+                <div className="mt-4 col-10 mx-auto">
+                    <table className="min-w-full bg-gray-800 text-white text-center">
+                        <thead>
+                            <tr>
+                                <th className="px-6 py-3">Date</th>
+                                <th className="px-6 py-3">Giờ bắt đầu</th>
+                                <th className="px-6 py-3">Giờ kết thúc</th>
+                                <th className="px-6 py-3">Hành động</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div></>)}
+                        </thead>
+                        <tbody>
+                            {scheduleUpdate.map((s, index) => (
+                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
+                                    <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
+                                    <td className="px-6 py-4">{formatTime(s.start)} </td>
+                                    <td className="px-6 py-4">{formatTime(s.end)} </td>
+                                    <td className="px-6 py-4">
+                                        {s.bookingId !== null ? <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleDelete(s._id)}
+                                        >
+                                            Xoá
+                                        </button> : null}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div></>)}
         </div>
     );
 }

@@ -3,7 +3,7 @@ import api from '../utils/axiosConfig';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { userInfor } from '../features/userSlice';
+import { setUserInformation, userInfor } from '../features/userSlice';
 import '../css/table-booking.css';
 
 function TableBooking({ endPoint }) {
@@ -31,7 +31,6 @@ function TableBooking({ endPoint }) {
             listBooking.forEach(async (booking) => {
 
                 if (booking.hours.length === 0 && booking.bookingStatus === 0 && shouldHideRow(booking.createdAt)) {
-                    console.log("Hello");
 
                     await handleDeleteBooking(booking._id);
                 }
@@ -83,7 +82,9 @@ function TableBooking({ endPoint }) {
         try {
             const status = 1;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
+            console.log(bookingUpdate);
             setUpdateBooking(bookingUpdate.data.u);
+            dispatch(setUserInformation(bookingUpdate.data.restU));
             toast(bookingUpdate.data.message);
         } catch (error) {
             console.log(error);
@@ -108,7 +109,11 @@ function TableBooking({ endPoint }) {
             setUpdateBooking(bookingUpdate.data.u);
             toast(bookingUpdate.data.message);
         } catch (error) {
-            console.log(error);
+            if (error.response.status === 400) {
+                toast(error.response.data.error);
+            } else {
+                toast('Có lỗi trong việc chuyển trạng thái Duo!');
+            }
         }
     };
 
@@ -122,7 +127,7 @@ function TableBooking({ endPoint }) {
     const shouldHideRow = (createdAt) => {
         const now = new Date().getTime();
         const createdTime = new Date(createdAt).getTime();
-        return now > (createdTime + 0.5 * 60 * 1000);
+        return now > (createdTime + 5 * 60 * 1000);
     };
 
     const handleDeleteBooking = async (bookingId) => {
@@ -158,7 +163,7 @@ function TableBooking({ endPoint }) {
                                 listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3))
                                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                                     .map((l, index) => {
-                                        if (l.hours.length === 0 && shouldHideRow(l.createdAt)) return null;
+                                        if (l.hours.length === 0 && shouldHideRow(l.createdAt) && l.bookingStatus === 0) return null;
                                         return (
                                             <tr key={index} className={`text-center`}>
                                                 <td className='py-2'>{index + 1}</td>
@@ -172,7 +177,7 @@ function TableBooking({ endPoint }) {
                                                 <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
                                                 <td className='py-2'>
                                                     {l.bookingStatus === 1 ? (
-                                                        <button className='btn btn-success mr-10' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>
+                                                        <button className='btn btn-success' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>
                                                     ) : (
                                                         <>
                                                             <button className='btn btn-primary mr-10' onClick={() => handleAccept(l._id)}>Chấp nhận</button>
@@ -185,7 +190,7 @@ function TableBooking({ endPoint }) {
                                     })
                                 :
                                 listBooking.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((l, index) => {
-                                    if (l.hours.length === 0 && shouldHideRow(l.createdAt)) return null;
+                                    if (l.hours.length === 0 && shouldHideRow(l.createdAt) && l.bookingStatus === 0) return null;
                                     return (
                                         <tr key={index} className='text-center'>
                                             <td className='py-2'>{index + 1}</td>
