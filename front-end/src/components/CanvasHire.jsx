@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
 import { format, startOfWeek, addDays } from 'date-fns';
 
-export default function CanvasHire({ showHire, handleClose, player, snav, setSnav }) {
+export default function CanvasHire({ showHire, handleClose, player, snav, setSnav, playerOnline }) {
 
     const today = new Date();
 
@@ -23,7 +23,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         price: 0,
         hours: [],
         unit: 1,
-        bookingStatus: false
+        bookingStatus: 0
     });
 
     const [schedule, setSchedule] = useState(format(today, 'yyyy-MM-dd'));
@@ -43,7 +43,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     useEffect(() => {
         if (player?._id) {
             const newPlayerId = player._id;
-            if (snav === 1) {
+            if (!player.player.onlySchedule) {
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
                     playerId: player._id,
@@ -54,6 +54,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                     ...prevDetails,
                     playerId: player._id,
                     unit: 0,
+                    bookingStatus: 1,
                     price: (player?.player?.rentCost || 0) * prevDetails.hours.length
                 }));
                 if (newPlayerId) {
@@ -61,7 +62,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                 }
             }
         }
-    }, [player, bookingDetails.unit, schedule, snav, bookingDetails.hours]);
+    }, [player, bookingDetails.unit, schedule, bookingDetails.hours]);
 
     const handleUnitChange = (newUnit) => {
         setBookingDetails((prevDetails) => ({
@@ -70,19 +71,17 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         }));
     };
 
-    console.log(bookingDetails);
-    console.log(snav + "a");
     const handleConfirm = async (e) => {
         e.preventDefault();
         try {
-            if (userInfo.accountBalance < bookingDetails.price) return toast("Số tiền của bạn hiện không đủ để thanh toán! ❌💰");
-            const s = await api.post(`/api/booking${snav === 2 ? "/by-schedule" : ''}`, bookingDetails);
+            if (userInfo?.accountBalance < bookingDetails.price) return toast("Số tiền của bạn hiện không đủ để thanh toán! ❌💰");
+            const s = await api.post(`/api/booking${player.player.onlySchedule ? "/by-schedule" : ''}`, bookingDetails);
             if (s.status === 201) {
                 dispatch(setUserInformation(s.data.restUser));
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
                     hours: []
-                }))
+                }));
                 fetchData(schedule);
                 toast(s.data.message);
                 setTimeout(handleClose, 2000);
@@ -151,19 +150,20 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             const isSelected = bookingDetails.hours.includes(slot._id);
             const check = slot.bookingId;
             return (
-                <button
-                    key={slot._id}
-                    type="button"
-                    className={`btn btn-outline-light mx-1 my-1 ${isSelected ? 'active-date text-white' : ''}`}
-                    onClick={() => handleSlotSelection(slot._id)}
-                    disabled={check}
-                >
-                    {slotTime}
-                </button>
+                <div className='col-3 p-0 text-center'>
+                    <button
+                        key={slot._id}
+                        type="button"
+                        className={`btn btn-outline-light w-5/6 my-1 ${isSelected ? 'active-date text-white' : ''}`}
+                        onClick={() => handleSlotSelection(slot._id)}
+                        disabled={check}
+                    >
+                        {slotTime}
+                    </button>
+                </div>
             );
         });
     };
-    console.log(bookingDetails);
 
     return (
         <Offcanvas id="off" show={showHire} onHide={handleClose} placement='end'>
@@ -181,14 +181,12 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                 </div>
                                 <Row className='mb-20'>
                                     <Col md={12} id='snav' className='bg-bgSecondary'>
-                                        <div className={snav === 1 && `snav-active`}
-                                            onClick={() => setSnav(1)}>Đặt trực tiếp</div>
-                                        <div className={snav === 2 && `snav-active`}
-                                            onClick={() => setSnav(2)}>Đặt lịch</div>
+
+                                        {player?.player?.onlySchedule ? (<div className={`snav-active`}>Đặt lịch</div>) : (<div className={`snav-active`}>Đặt trực tiếp</div>)}
 
                                     </Col>
                                 </Row>
-                                {snav === 1 ? (
+                                {((!player?.player?.onlySchedule && playerOnline) || (!player?.player?.onlySchedule && !playerOnline)) ? (
                                     <>
                                         <div className='row'>
                                             <div className='col-md-4'>
@@ -202,7 +200,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                                         <tr><td className='td-label'>Chi phí:</td><td className='td-value'>{(player?.player?.rentCost || 0).toLocaleString('en-US', {
                                                             minimumFractionDigits: 0,
                                                             maximumFractionDigits: 3,
-                                                        })} đ/phút</td></tr>
+                                                        })}đ/ 30phút</td></tr>
                                                         <tr><td className='td-label'>Thời gian muốn thuê:</td><td className='td-value text-center'>
                                                             <div className='d-flex align-items-center justify-start'>
                                                                 <GrSubtractCircle
@@ -271,10 +269,15 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                                 <hr style={{ color: "gray" }} />
                                             </div>
                                         </div>
+                                        {!playerOnline && (<div className='row mb-12'>
+                                            <div className='col-md-12 text-textDetail'>
+                                                <p className='text-red-500 fw-medium'>Hiện tại {player?.username} không online. Nên không thể đặt lịch được!</p>
+                                            </div>
+                                        </div>)}
                                         <div className='row'>
                                             <div className='col-md-12 d-flex justify-end'>
                                                 <button className='w-36 mt-2 mx-2 fw-medium cancel bg-bgSecondButton text-white px-4 py-2 rounded-xl' type='button' onClick={handleClose}>Huỷ</button>
-                                                <button className='w-32 mt-2 mx-2 fw-medium cancel text-white rounded-xl hover:bg-bgButtonHover' type='submit'>Xác nhận</button>
+                                                <button disabled={!playerOnline} className='w-32 mt-2 mx-2 fw-medium cancel text-white rounded-xl hover:bg-bgButtonHover' type='submit'>Xác nhận</button>
                                             </div>
 
                                         </div>
@@ -292,7 +295,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                                     <tr><td className='td-label'>Chi phí:</td><td className='td-value'>{(player?.player?.rentCost || 0).toLocaleString('en-US', {
                                                         minimumFractionDigits: 0,
                                                         maximumFractionDigits: 3,
-                                                    })} đ/phút</td></tr>
+                                                    })}đ/ 30phút</td></tr>
 
                                                     <tr><td className='td-label'>Số dư hiện tại:</td><td className='td-value'>{userInfo?.accountBalance.toLocaleString('en-US', {
                                                         minimumFractionDigits: 0,
@@ -308,7 +311,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                             </div>
                                             <div className="mb-3">
                                                 <label className="form-label">Danh sách giờ duo</label>
-                                                <div className="d-flex">
+                                                <div className="d-flex row">
                                                     {renderScheduleButtons()}
                                                 </div>
                                             </div>
@@ -343,6 +346,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                             <hr style={{ color: "gray" }} />
                                         </div>
                                     </div>
+
                                     <div className='row'>
                                         <div className='col-md-12 d-flex justify-end'>
                                             <button className='w-36 mt-2 mx-2 fw-medium cancel bg-bgSecondButton text-white px-4 py-2 rounded-xl' type='button' onClick={handleClose}>Huỷ</button>

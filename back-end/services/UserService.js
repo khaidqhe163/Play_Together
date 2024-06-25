@@ -240,6 +240,19 @@ const updateDuoSetting = async (userId, isDuoEnabled) => {
     }
 };
 
+const updateOnlySchedule = async (userId, isOnlySchedule) => {
+    try {
+        const updateFields = {
+            'player.onlySchedule': isOnlySchedule,
+        };
+
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, { $set: updateFields }, { new: true });
+        return updatedUser;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+};
+
 
 const getAllUsers = async () => {
     try {
@@ -312,5 +325,6 @@ export default {
     getAllUsers,
     banUser,
     followPlayer,
-    unfollowPlayer
+    unfollowPlayer,
+    updateOnlySchedule,
 }

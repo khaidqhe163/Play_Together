@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
 import { format, startOfWeek, addDays } from 'date-fns';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserInformation, userInfor } from '../features/userSlice';
+import axios from '../utils/axiosConfig';
+
 
 export default function PlayerSchedule() {
+    const dispatch = useDispatch();
     const today = new Date();
 
     const [schedule, setSchedule] = useState({
@@ -39,7 +44,7 @@ export default function PlayerSchedule() {
     };
 
     useEffect(() => {
-        fetchData(schedule.date); 
+        fetchData(schedule.date);
     }, [schedule.date]);
 
     const handleSubmit = async (e) => {
@@ -115,13 +120,58 @@ export default function PlayerSchedule() {
         return buttons;
     };
 
+
+    const [isOnlySchedule, setOnlySchedule] = useState(false);
+    const userInfo = useSelector(userInfor);
+
+    useEffect(() => {
+        if (userInfo && userInfo.player && userInfo.player.onlySchedule) {
+            setOnlySchedule(userInfo.player.onlySchedule);
+        }
+    }, [userInfo]);
+
+    const toggleDuo = async () => {
+        const newIsOnlySchedule = !isOnlySchedule;
+        setOnlySchedule(newIsOnlySchedule);
+        await handleUpdate(newIsOnlySchedule);
+    };
+
+    const handleUpdate = async (newIsOnlySchedule) => {
+        try {
+            const response = await axios.put('/api/user/update-only-schedule', { isOnlySchedule: newIsOnlySchedule });
+            console.log('Duo setting updated:', response.data);
+            dispatch(setUserInformation(response.data));
+        } catch (error) {
+            console.error('Error updating Duo setting:', error);
+        }
+    };
+
+
     return (
         <div className="row mt-4">
             <div className='col-12'>
                 <h1 className="text-white">Thiết lập lịch Duo</h1>
             </div>
             <div className='col-10 mx-auto'>
-                <form onSubmit={handleSubmit}>
+                <div className="my-4 flex items-center">
+                    <h4 className="text-white mr-4">Bạn muốn thiết lập lịch Duo: </h4>
+                    <label className="inline-flex items-center cursor-pointer ml-5">
+                        <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={isOnlySchedule}
+                            onChange={toggleDuo}
+                            value={isOnlySchedule}
+                        />
+                        <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                        <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                            {isOnlySchedule ? "Bật" : "Tắt"}
+                        </span>
+                    </label>
+                </div>
+            </div>
+            {isOnlySchedule && (<><div className='col-10 mx-auto'>
+                <form onSubmit={handleSubmit} className='mt-14'>
                     <div className="mb-3">
                         <label className="form-label">Ngày duo</label>
                         <div className="d-flex">
@@ -165,38 +215,38 @@ export default function PlayerSchedule() {
                     <button type="submit" className="btn btn-primary mt-20">Lưu lịch</button>
                 </form>
             </div>
-            <div className='col-10 mx-auto'>
-                <h5 className="text-white mt-16">Lịch Duo của tôi</h5>
-            </div>
-            <div className="mt-4 col-10 mx-auto">
-                <table className="min-w-full bg-gray-800 text-white text-center">
-                    <thead>
-                        <tr>
-                            <th className="px-6 py-3">Date</th>
-                            <th className="px-6 py-3">Giờ bắt đầu</th>
-                            <th className="px-6 py-3">Giờ kết thúc</th>
-                            <th className="px-6 py-3"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {scheduleUpdate.map((s, index) => (
-                            <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
-                                <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
-                                <td className="px-6 py-4">{formatTime(s.start)} </td>
-                                <td className="px-6 py-4">{formatTime(s.end)} </td>
-                                <td className="px-6 py-4">
-                                    <button
-                                        className="btn btn-danger"
-                                        onClick={() => handleDelete(s._id)}
-                                    >
-                                        Xoá
-                                    </button>
-                                </td>
+                <div className='col-10 mx-auto'>
+                    <h5 className="text-white mt-16">Lịch Duo của tôi</h5>
+                </div>
+                <div className="mt-4 col-10 mx-auto">
+                    <table className="min-w-full bg-gray-800 text-white text-center">
+                        <thead>
+                            <tr>
+                                <th className="px-6 py-3">Date</th>
+                                <th className="px-6 py-3">Giờ bắt đầu</th>
+                                <th className="px-6 py-3">Giờ kết thúc</th>
+                                <th className="px-6 py-3">Hành động</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {scheduleUpdate.map((s, index) => (
+                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
+                                    <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
+                                    <td className="px-6 py-4">{formatTime(s.start)} </td>
+                                    <td className="px-6 py-4">{formatTime(s.end)} </td>
+                                    <td className="px-6 py-4">
+                                        {s.bookingId !== null ? <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleDelete(s._id)}
+                                        >
+                                            Xoá
+                                        </button> : null}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div></>)}
         </div>
     );
 }

@@ -24,6 +24,11 @@ import Dashboard from "../pages/Admin/Dashboard"
 import ManagerStory from "../pages/Admin/ManagerStory"
 import UserBanned from "../pages/Admin/ManagerUser/UserBanned"
 import Players from "../pages/Admin/ManagerUser/Players"
+import { element } from "prop-types"
+import ListBookingPage from "../pages/ListBookingPage"
+import ReportedStory from "../pages/Admin/ManagerReported/ReportedStory"
+import ReportedUser from "../pages/Admin/ManagerReported/ReportedUser"
+import ReportReason from "../pages/Admin/ManagerReportReason"
 const routes = [
     {
         path: '/',
@@ -112,12 +117,35 @@ const routes = [
     {
         path: '/admin/stories',
         element: ManagerStory
-    }
-    ,
+    },
     {
         path: '/player-schedule',
         element: PlayerSchedulePage
-    }
+    },
+    {
+        path: '/list-booking',
+        element: ListBookingPage
+    },
+    {
+        path: '/admin/reports/stories',
+        element: ReportedStory
+    },
+    {
+        path: '/admin/reports/users',
+        element: ReportedUser
+    },
+    {
+        path: '/admin/report-reason',
+        element: ReportReason
+    },
+    {
+        path: '/stories/:storyId',
+        element: StoryPage
+    },
+    {
+        path: '/stories/:storyId/:commentId',
+        element: StoryPage
+    },
 ]
 export default {
     routes

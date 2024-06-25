@@ -18,6 +18,15 @@ const getListScheduleByDay = async (playerId, date) => {
     }
 };
 
+const getScheduleById = async (id) => {
+    try {
+        const schedule = await Schedule.findById(id).select("start end date");
+        return schedule;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 
 const createSchedule = async ({ playerId, date, startTime, endTime }) => {
     try {
@@ -89,7 +98,9 @@ const updateBookingIdOfSchedule = async (bookingId, scheduleId) => {
     } catch (error) {
         throw new Error(error);
     }
-}
+};
+
+
 
 
 
@@ -100,4 +111,5 @@ export default {
     getListScheduleByDay,
     deleteScheduleById,
     updateBookingIdOfSchedule,
+    getScheduleById,
 };
