@@ -225,9 +225,9 @@ const changeStatusToProgress = async (req, res) => {
         const { idBooking, status } = req.body;
         const playerId = req.payload.id;
         const now = new Date().getTime();
+        let restU = {};
+        const b = await BookingService.getBookingById(idBooking);
         if (status == 1) {
-            const b = await BookingService.getBookingById(idBooking);
-            console.log(b);
             let createA = new Date(b.createdAt).getTime();
             createA += (5 * 60 * 1000);
 
