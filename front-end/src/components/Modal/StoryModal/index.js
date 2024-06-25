@@ -161,7 +161,6 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
         } finally {
         }
     }
-    console.log(likedStatus);
 
     const handleCreateComment = async () => {
         try {

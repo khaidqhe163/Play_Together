@@ -18,21 +18,26 @@ export default function StoryPage() {
   }, []);
 
   useEffect(() => {
-    console.log(storyId);
+    // console.log(storyId);
     if (stories && storyId) {
-      let index;
+      let index = null;
       for (let i = 0; i < stories.length; i++) {
-        index = i;
-        break;
+        if (stories[i]._id === storyId) {
+          index = i;
+          break;
+        }
       }
-      console.log(index);
-      if (index) setCurrentStory(index);
+      console.log("index", index);
+      if (index !== null) setCurrentStory(index);
     }
   }, [stories]);
 
 
   useEffect(() => {
-    if (currentStory !== undefined && !openModalStory) {
+    console.log(currentStory);
+    console.log(openModalStory);
+    if (currentStory !== null && !openModalStory) {
+      console.log("zoday");
       setOpenModalStory(true);
     }
   }, [currentStory]);
