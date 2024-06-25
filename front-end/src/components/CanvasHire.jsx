@@ -74,7 +74,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     const handleConfirm = async (e) => {
         e.preventDefault();
         try {
-            if (userInfo.accountBalance < bookingDetails.price) return toast("Số tiền của bạn hiện không đủ để thanh toán! ❌💰");
+            if (userInfo?.accountBalance < bookingDetails.price) return toast("Số tiền của bạn hiện không đủ để thanh toán! ❌💰");
             const s = await api.post(`/api/booking${player.player.onlySchedule ? "/by-schedule" : ''}`, bookingDetails);
             if (s.status === 201) {
                 dispatch(setUserInformation(s.data.restUser));

@@ -123,6 +123,7 @@ export default function NavBar() {
           withCredentials: true
         }
       )
+      socket.emit("logout", userInfo._id)
       dispatch(setUserInformation(null));
       toast("Đăng xuất thành công!");
       nav('/login')
@@ -305,18 +306,6 @@ export default function NavBar() {
         show={openModalPayment}
         handleClose={() => setOpenModalPayment(false)}
       />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce} />
-    </div >
+    </div>
   );
 }

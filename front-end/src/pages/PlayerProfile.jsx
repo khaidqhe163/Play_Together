@@ -30,9 +30,9 @@ function PlayerProfile() {
     const author = useSelector((state) => state.user);
     const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
     const dispatch = useDispatch();
-
+    const [online, setOnline] = useState(false);
     useEffect(() => {
-        const checkOnline = onlineUsers.some(o => o.userId === id);
+        const checkOnline = onlineUsers?.some(o => o.userId === id);
         setPlayerOnline(checkOnline)
     }, [onlineUsers]);
 
@@ -63,6 +63,7 @@ function PlayerProfile() {
             console.log(error);
         }
     }
+    console.log(onlineUsers);
     return (
         <>
             <ToastContainer
@@ -103,9 +104,25 @@ function PlayerProfile() {
                                         <span>{age}</span>
                                     </div>
                                     <div id='account-status'>
-                                        <div style={{ width: "20px", height: "20px", backgroundColor: "green", borderRadius: "50%" }}>
-                                        </div>
-                                        <p style={{ margin: "0", marginLeft: "10px" }}>Online</p>
+                                        {
+                                            onlineUsers && onlineUsers?.some(o => o.userId === id) && (
+                                                <>
+                                                    <div style={{ width: "20px", height: "20px", backgroundColor: "green", borderRadius: "50%" }}>
+                                                    </div>
+                                                    <p style={{ margin: "0", marginLeft: "10px" }}>Online</p>
+                                                </>
+                                            )
+                                        }
+                                        {
+                                            (!onlineUsers || !onlineUsers?.some(o => o.userId === id)) && (
+                                                <>
+                                                    <div style={{ width: "20px", height: "20px", backgroundColor: "gray", borderRadius: "50%" }}>
+                                                    </div>
+                                                    <p style={{ margin: "0", marginLeft: "10px" }}>Offline</p>
+                                                </>
+                                            )
+                                        }
+
                                     </div>
                                     <div id='account-status'>
                                         <p style={{ margin: "0", marginLeft: "10px" }}>{formatMoney(player?.player?.rentCost)}</p>
@@ -152,7 +169,7 @@ function PlayerProfile() {
                 // onOk={onOk}
                 />
             )}
-            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} playerOnline={playerOnline}/>
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} playerOnline={playerOnline} />
             {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
 
         </>

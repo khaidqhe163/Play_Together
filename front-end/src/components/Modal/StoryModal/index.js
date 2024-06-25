@@ -10,22 +10,35 @@ import api from '../../../utils/axiosConfig.js';
 import { useSelector } from "react-redux";
 import ModalDeleteComment from "./ModalDeleteComment/index.js";
 import { SocketContext } from "../../../context/SocketContext.jsx";
+import ModalDeleteStory from "./ModalDeleteStory/index.js";
+import ModalReportStory from "./ModalReportStory/index.js";
 
-const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onOk }) => {
+const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onOk, commentId }) => {
     const [form] = Form.useForm();
     const user = useSelector((state) => state.user);
     const [loading, setLoading] = useState(false)
     const [likedStatus, setLikedStatus] = useState(open?.like?.some(i => i?._id === user?.value?._id))
     const [likesCount, setLikesCount] = useState(0);
     const [viewCount, setViewCount] = useState(open?.view?.some(i => i?._id === user?.value?._id));
-    const [comments, setComments] = useState([])
+    const [comments, setComments] = useState(null)
     const [openModalDeleteComment, setOpenModalDeleteComment] = useState(false)
+    const [openDeleteStory, setOpenDeleteStory] = useState(false)
+    const [openReportStory, setOpenReportStory] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
     const [rep, setRep] = useState(false)
     const inputRef = useRef(null)
-    const createdAt = dayjs(open.createdAt);
+    const createdAt = dayjs(open?.createdAt);
     const today = dayjs();
     const yesterday = today.subtract(1, 'day');
+    const commentBox = useRef()
+    useEffect(() => {
+        if(commentId && comments){
+            if(document.getElementById(commentId))
+            document.getElementById(commentId).scrollIntoView({
+                behavior: "smooth"
+            })
+        }
+    }, [comments])
 
     let displayDate;
     if (createdAt.isSame(today, 'day')) {
@@ -54,6 +67,41 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             key: '1',
         },
     ];
+
+    const item2 = [
+        // {
+        //     label: (
+        //         <span className="fs-12" onClick={() => setOpenReportStory(open)}>
+        //             Báo cáo
+        //         </span>
+        //     ),
+        //     key: '1',
+        // },
+    ];
+
+    if (open?.author?._id !== user?.value?._id) {
+        item2.unshift ({
+            label: (
+                <span className="fs-12" onClick={() => setOpenReportStory(open)}>
+                    Báo cáo
+                </span>
+            ),
+            key: '1',
+        },)
+    }
+
+    if (open?.author?._id === user?.value?._id) {
+        item2.unshift({
+            label: (
+                <span className="fs-12" style={{boxSizing: 'border-box'}}
+                    onClick={() => setOpenDeleteStory(open)}
+                >
+                    Xóa tin
+                </span>
+            ),
+            key: '0',
+        });
+    }
 
     const handleEditComment = (comment) => {
         form.setFieldsValue({
@@ -212,8 +260,8 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                             </Col>
                             <Col span={12} className="video__content">
                                 <div>
-                                    <video key={open._id} controls style={{ width: '100%' }} autoPlay loop autoCapitalize="true">
-                                        <source src={baseUrl + open.path} type="video/mp4" />
+                                    <video key={open?._id} controls style={{ width: '100%' }} autoPlay loop autoCapitalize="true">
+                                        <source src={baseUrl + open?.path} type="video/mp4" />
                                     </video>
                                 </div>
                             </Col>
@@ -251,12 +299,27 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                             <div style={{ fontSize: '12px', color: '#A19F9F' }} className="created"> {displayDate} </div>
                                         </div>
                                     </div>
-                                    <div className="thue mr-20">
+                                    <div className="thue mr-20 d-flex ">
                                         <Button danger type="primary" shape="round"
                                             style={{ color: 'white', height: '34px', width: '84px', fontSize: '16px', fontWeight: 600 }}
                                         >
                                             Thuê
                                         </Button>
+
+                                        <div className="ml-20 mt-3" style={{}}>
+                                            <Dropdown
+                                                menu={{ items: item2 }}
+                                                trigger={['click']}
+                                            >
+                                                <span className="fs-14 fw-700 white" style={{cursor: "pointer"}}>
+                                                    . . .
+                                                </span>
+                                            </Dropdown> 
+                                        </div>
+                                        {/* <Button danger type="primary" shape="round" className="ml-10"
+                                            style={{ color: 'white', height: '36px', width: '40px'}}
+                                        >
+                                        </Button> */}
                                     </div>
                                 </div>
                                 <div className="option d-flex justify-content-space-evenly mt-20" style={{ color: 'hsl(0deg 0.78% 74.71%)' }}>
@@ -272,7 +335,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                             </div>
 
                             <Spin spinning={loading} className="d-flex justify-content-center align-content-center">
-                                <div className="comment pl-30" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                                <div className="comment pl-30" style={{ maxHeight: '250px', overflowY: 'auto' }} ref={commentBox}>
                                     {
                                         comments.map((c, i) => (
                                             <div key={i} className="d-flex mb-10">
@@ -291,7 +354,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                                     <div className="created" style={{ fontSize: '10px', color: '#A19F9F' }}>
                                                         <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span>
                                                         {
-                                                            user?.value?._id ? (
+                                                            (user?.value?._id && user?.value?._id !== c?.commentor?._id) ? (
                                                                 <>
                                                                     <span className="ml-10 reply_story_comment" onClick={() => {
                                                                         // handleReply(c)
@@ -403,6 +466,22 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                     open={openModalDeleteComment}
                     onCancel={() => setOpenModalDeleteComment(false)}
                     setLoading={setLoading}
+                    onOk={onOk}
+                />
+            )}
+
+            {!!openDeleteStory && (
+                <ModalDeleteStory
+                    open={openDeleteStory}
+                    onCancel={() => setOpenDeleteStory(false)}
+                    onOk={onOk}
+                />
+            )}
+
+            {!!openReportStory && (
+                <ModalReportStory
+                    open={openReportStory}
+                    onCancel={() => setOpenReportStory(false)}
                     onOk={onOk}
                 />
             )}
