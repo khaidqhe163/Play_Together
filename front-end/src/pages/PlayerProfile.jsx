@@ -41,7 +41,9 @@ function PlayerProfile() {
         getPlayerInformation();
     }, [])
 
-
+    useEffect(() => {
+        getPlayerInformation();
+    }, [author])
 
     useEffect(() => {
         setBlocked(author?.value?.blockedUsers?.includes(id))
@@ -60,7 +62,8 @@ function PlayerProfile() {
             const dob = new Date(player.dateOfBirth);
             const currentTime = new Date();
             setAge(currentTime.getFullYear() - dob.getFullYear())
-            setFollowing(author?.value?.followingPlayers?.includes(id)); // Set the initial follow status
+            console.log(author?.value?.followers.includes(id));
+            setFollowing(author?.value?.followers.includes(id)); // Set the initial follow status
         } catch (error) {
             console.log(error);
         }
