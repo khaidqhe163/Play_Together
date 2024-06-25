@@ -93,18 +93,20 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                     } alt='' />
                     <p className='text-white m-0 ml-10' style={{ fontSize: "20px", fontWeight: "bold" }}>{receiver?.username}</p>
                 </div>
-                <div className='rounded-circle chat-options d-flex align-items-center justify-content-between' style={{
-                    cursor: "pointer",
-                    width: "48px",
-                    height: "48px"
-                }} onClick={() => setMessageSetting(!messageSetting)}>
-                    <PiDotsThreeBold style={{ color: "white", fontSize: "30px", margin: "auto" }} />
-                    {messageSetting && (
-                        <div className='message-setting'>
+                {
+                    //     <div className='rounded-circle chat-options d-flex align-items-center justify-content-between' style={{
+                    //     cursor: "pointer",
+                    //     width: "48px",
+                    //     height: "48px"
+                    // }} onClick={() => setMessageSetting(!messageSetting)}>
+                    //     <PiDotsThreeBold style={{ color: "white", fontSize: "30px", margin: "auto" }} />
+                    //     {messageSetting && (
+                    //         <div className='message-setting'>
 
-                        </div>
-                    )}
-                </div>
+                    //         </div>
+                    //     )}
+                    // </div>
+                }
             </div>
             <hr style={{ color: "white" }}></hr>
             <Stack direction='vertical' gap={3} ref={chatbox} style={{ overflow: "auto" }}>
