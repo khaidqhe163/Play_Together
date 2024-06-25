@@ -77,11 +77,27 @@ const likeStoryNotification = async (req, res) => {
         res.status(500).json(error)
     }
 }
+
+const sendBookingNotification = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        // const {
+        //     bookingId,
+        //     playerId,
+
+        // }
+        const notification = await NotificationService.sendBookingNotification(userId, bookingId);
+        res.status(200).json(notification);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 export default {
     sendReplyStoryNotification,
     sendPostStoryNotification,
     getNotification,
     sendCommentStoryNotification,
     readNotification,
-    likeStoryNotification
+    likeStoryNotification,
+    sendBookingNotification
 }

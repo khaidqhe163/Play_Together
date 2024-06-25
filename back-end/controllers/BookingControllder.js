@@ -76,7 +76,7 @@ const createBooking = async (req, res) => {
         // await aPlayer.save();
         const { password, ...restUser } = aUser._doc;
         const aBooking = await BookingService.createBooking({ userId, playerId, price, hours, unit, bookingStatus });
-        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser });
+        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser, aBooking });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error create booking', error });
     }
@@ -101,7 +101,7 @@ const createBookingT = async (req, res) => {
         );
 
         const newData = { ...aBooking._doc, lsBookSchedule };
-        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser });
+        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser, aBooking });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error create booking', error });
     }

@@ -82,6 +82,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                     ...prevDetails,
                     hours: []
                 }));
+                console.log(s.data.aBooking);
                 fetchData(schedule);
                 toast(s.data.message);
                 setTimeout(handleClose, 2000);

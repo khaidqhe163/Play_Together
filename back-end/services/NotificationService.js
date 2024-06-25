@@ -103,11 +103,20 @@ const likeStoryNotification = async (storyId, userId) => {
         throw new Error(error)
     }
 }
+
+const sendBookingNotification = async (userId, bookingId) => {
+    try {
+        
+    } catch (error) {
+        throw new Error(error)
+    }
+}
 export default {
     sendReplyStoryNotification,
     sendPostStoryNotification,
     getNotification,
     sendCommentStoryNotification,
     readNotification,
-    likeStoryNotification
+    likeStoryNotification,
+    sendBookingNotification
 }
