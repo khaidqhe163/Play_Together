@@ -17,6 +17,7 @@ import PlayerGuidePage from "../pages/PlayerGuidePage"
 import PlayerSchedulePage from "../pages/PlayerSchedulePage"
 import Home from "../components/Home"
 import ImageGallery from "../components/ImageGallery"
+import AdminLogin from "../pages/Admin/AdminLogin"
 import HomePageAdmin from "../pages/Admin"
 import ManagerUser from "../pages/Admin/ManagerUser/Users"
 import Dashboard from "../pages/Admin/Dashboard"
@@ -92,6 +93,10 @@ const routes = [
     {
         path: '/player-guide',
         element: PlayerGuidePage
+    },
+    {
+        path: '/admin/login',
+        element: AdminLogin
     },
     {
         path: '/admin/dashboard',
