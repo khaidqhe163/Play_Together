@@ -239,10 +239,20 @@ const changeStatusToProgress = async (req, res) => {
             const aPlayer = await UserService.getPlayerById(playerId);
             aPlayer.accountBalance += (parseInt(b.price) * 0.9);
             await aPlayer.save();
-
+            const { password, ...restUser } = aPlayer._doc;
+            restU = restUser;
+        } else if (status == 2) {
+            const checkB = b.hours.length;
+            console.log(checkB);
+            if (!checkB) {
+                let endTime = new Date(b.createdAt).getTime();
+                endTime += (b.unit * 30 * 60 * 1000);
+                const decision = now <= endTime;
+                if(decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌"}); 
+            }
         }
         const u = await BookingService.changeStatusToProgress(idBooking, status);
-        res.status(200).json({ message: "Chuyển trạng thái thành công", u });
+        res.status(200).json({ message: "Chuyển trạng thái thành công", u, restU });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error change booking online', error });
     }
@@ -250,7 +260,7 @@ const changeStatusToProgress = async (req, res) => {
 
 const deleteBookingById = async (req, res) => {
     try {
-        const {bookingId} = req.params;
+        const { bookingId } = req.params;
         const d = await BookingService.deleteBookingById(bookingId);
         console.log(bookingId);
         res.status(200).json(d);
