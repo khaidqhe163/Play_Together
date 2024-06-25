@@ -290,8 +290,8 @@ const getFollowerById = async (id) => {
 const followPlayer = async (userId, playerId) => {
   try {
       const user = await User.findByIdAndUpdate(
-          userId,
-          { $addToSet: { followers: playerId } }, 
+          playerId,
+          { $addToSet: { followers: userId } }, 
           { new: true }
       );
       return user;
@@ -303,8 +303,8 @@ const followPlayer = async (userId, playerId) => {
 const unfollowPlayer = async (userId, playerId) => {
   try {
       const user = await User.findByIdAndUpdate(
-          userId,
-          { $pull: { followers: playerId } }, 
+          playerId,
+          { $pull: { followers: userId } }, 
           { new: true }
       );
       return user;

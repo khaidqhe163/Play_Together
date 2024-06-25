@@ -5,7 +5,7 @@ import CommentService from "./CommentService.js";
 const sendReplyStoryNotification = async (storyId, commentor, commentId, replyId) => {
     try {
         const content = "vừa trả lời bình luận của bạn";
-        const url = `/story/${storyId}/${commentId}`;
+        const url = `/stories/${storyId}/${commentId}`;
         const receivers = [replyId]
         const type = "reply comment"
         const notification = (await Notification.create({ userId: commentor, receivers, type, content, url })).populate("userId", ["username", "avatar"]);
@@ -19,7 +19,7 @@ const sendReplyStoryNotification = async (storyId, commentor, commentId, replyId
 const sendPostStoryNotification = async (id, storyId, receivers) => {
     try {
         const content = "vừa đăng story trên trang cá nhân"
-        const url = "/story/" + storyId
+        const url = "/stories/" + storyId
         const type = "post story"
         const notification = (await Notification.create({ userId: id, receivers, type, content, url, storyId })).populate("userId", ["username", "avatar"]);
         return notification
@@ -45,7 +45,7 @@ const sendCommentStoryNotification = async (storyId, author, commentor, commentI
         console.log(comments.length);
         if (comments.length <= 1) {
             const content = "đã bình luận trong story của bạn";
-            const url = `/story/${storyId}/${commentId}`
+            const url = `/stories/${storyId}/${commentId}`
             const type = "comment story"
             notification = (await Notification.create({ userId: commentor, receivers: [author], type, content, url, storyId })).populate("userId", ["username", "avatar"])
 
@@ -84,7 +84,7 @@ const likeStoryNotification = async (storyId, userId) => {
         console.log(story.like.length);
         if (story.like.length === 1) {
             const content = "đã thích story của bạn";
-            const url = `/story/${storyId}`
+            const url = `/stories/${storyId}`
             const type = "like story"
             notification = (await Notification.create({ userId: userId, receivers: [story.author], type, content, url, storyId })).populate("userId", ["username", "avatar"])
         } else {

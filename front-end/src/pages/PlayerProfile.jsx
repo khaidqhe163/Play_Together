@@ -63,7 +63,7 @@ function PlayerProfile() {
             const currentTime = new Date();
             setAge(currentTime.getFullYear() - dob.getFullYear())
             console.log(author?.value?.followers.includes(id));
-            setFollowing(author?.value?.followers.includes(id)); // Set the initial follow status
+            setFollowing(player.followers.includes(author.value?._id)); // Set the initial follow status
         } catch (error) {
             console.log(error);
         }
