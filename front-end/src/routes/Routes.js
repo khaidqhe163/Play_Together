@@ -23,6 +23,8 @@ import Dashboard from "../pages/Admin/Dashboard"
 import ManagerStory from "../pages/Admin/ManagerStory"
 import UserBanned from "../pages/Admin/ManagerUser/UserBanned"
 import Players from "../pages/Admin/ManagerUser/Players"
+import { element } from "prop-types"
+import ListBookingPage from "../pages/ListBookingPage"
 import ReportedStory from "../pages/Admin/ManagerReported/ReportedStory"
 import ReportedUser from "../pages/Admin/ManagerReported/ReportedUser"
 import ReportReason from "../pages/Admin/ManagerReportReason"
@@ -114,6 +116,10 @@ const routes = [
     {
         path: '/player-schedule',
         element: PlayerSchedulePage
+    },
+    {
+        path: '/list-booking',
+        element: ListBookingPage
     },
     {
         path: '/admin/reports/stories',

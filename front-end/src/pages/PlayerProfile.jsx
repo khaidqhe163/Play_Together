@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import NavBar from '../layouts/NavBar'
 import '../css/player-profile.css'
@@ -12,21 +12,34 @@ import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
+import CanvasHire from '../components/CanvasHire';
+import { Bounce, ToastContainer } from 'react-toastify';
+import { SocketContext } from '../context/SocketContext';
+
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
     const [subnav, setSubnav] = useState(2);
+    const [snav, setSnav] = useState(1);
     const [age, setAge] = useState("");
-    const [openModalBlock, setOpenModalBlock] = useState(false)
+    const { onlineUsers } = useContext(SocketContext);
+    const [playerOnline, setPlayerOnline] = useState(false);
+    const [openModalBlock, setOpenModalBlock] = useState(false);
+    const [openHire, setOpenHire] = useState(false);
     const author = useSelector((state) => state.user);
     const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
     const dispatch = useDispatch();
 
-    console.log("author:", author);
+    useEffect(() => {
+        const checkOnline = onlineUsers?.some(o => o.userId === id);
+        setPlayerOnline(checkOnline)
+    }, [onlineUsers]);
 
     useEffect(() => {
         getPlayerInformation();
     }, [])
+
+
 
     useEffect(() => {
         setBlocked(author?.value?.blockedUsers?.includes(id))
@@ -49,12 +62,24 @@ function PlayerProfile() {
             console.log(error);
         }
     }
-
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce} />
             <div className="container-fluid d-flex flex-column overflow-x-hidden bg-bgMain">
                 <div className="row bg-white shadow-sm" style={{ position: "fixed", zIndex: "1", width: "100vw" }}>
                     <div className="col-12">
+
                         <NavBar />
                     </div>
                 </div>
@@ -64,10 +89,11 @@ function PlayerProfile() {
                 height: "calc(100vh - 56px)"
             }}>
                 <Container fluid>
+
                     <Row style={{ height: "256px", backgroundImage: "url('/profilebackground.png')", backgroundSize: "160%", backgroundPosition: "center", backgroundColor: "black" }}
                         className='profile-header'>
                         <Col md={6} className='profile-header-left'>
-                            <img src={baseUrl + player?.avatar} id='player-avatar' alt="#"/>
+                            <img src={baseUrl + player?.avatar} id='player-avatar' alt="#" />
                             <div style={{ marginLeft: "20px" }}>
                                 <p style={{ color: "white", fontSize: "40px", fontWeight: "bold" }}>{player?.username}</p>
                                 <div style={{ display: "flex" }} className='header-info'>
@@ -95,36 +121,39 @@ function PlayerProfile() {
                     <Row>
                         <Col md={12} id='se-nav'>
                             <div className={subnav === 1 && `se-nav-active`}
-                                onClick={() => setSubnav(1)}>Achievements</div>
+                                onClick={() => setSubnav(1)}>Thành tựu</div>
                             <div className={subnav === 2 && `se-nav-active`}
-                                onClick={() => setSubnav(2)}>Services</div>
+                                onClick={() => setSubnav(2)}>Dịch vụ</div>
                             <div className={subnav === 3 && `se-nav-active`}
-                                onClick={() => setSubnav(3)}>Album</div>
+                                onClick={() => setSubnav(3)}>Thư viện</div>
                             <div className={subnav === 4 && `se-nav-active`}
-                                onClick={() => setSubnav(4)}>Feeds</div>
+                                onClick={() => setSubnav(4)}>Video</div>
                         </Col>
                     </Row>
                 </Container>
                 {
-                    subnav === 1 && <Achivement player={player} />
+                    subnav === 1 && <Achivement player={player} setOpenHire={() => { setOpenHire(true) }} />
                 }
                 {
-                    subnav === 2 && <Services player={player} />
+                    subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} />
                 }
                 {
                     subnav === 3 && <Album player={player} />
                 }
             </div>
-            
+
             {!!openModalBlock && (
                 <BlockUserModal
                     open={openModalBlock}
                     onCancel={() => setOpenModalBlock(false)}
                     blocked={blocked}
                     setBlocked={handleBlockStatusChange}
-                    // onOk={onOk}
+                // onOk={onOk}
                 />
             )}
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} playerOnline={playerOnline}/>
+            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
+
         </>
     )
 }

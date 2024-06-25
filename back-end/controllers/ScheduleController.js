@@ -6,10 +6,10 @@ const createSchedule = async (req, res) => {
         const playerId = req.payload.id;
         const isDuplicate = await ScheduleService.checkDuplicateSchedule(playerId, date, parseFloat(startTime), parseFloat(endTime));
         if (isDuplicate) {
-            return res.status(400).json({ error: "Thời gian đã được đặt trước đó. ❌" });
+            return res.status(400).json({ error: "Thời gian đã được đặt trước đó. ❌📆" });
         }
         const schedules = await ScheduleService.createSchedule({ playerId, date, startTime, endTime });
-        res.status(201).json({ message: "Thiết lập thời gian thành công! ✔️", schedules });
+        res.status(201).json({ message: "Thiết lập thời gian thành công! ✔️📆", schedules });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -37,6 +37,19 @@ const getListScheduleByDay = async (req, res) => {
         });
     }
 }
+
+const getListScheduleByDayOfPlayer = async (req, res) => {
+    try {
+        const {date, pid} = req.query;
+        const schedules = await ScheduleService.getListScheduleByDay(pid,date);
+        res.status(200).json(schedules);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
 const deleteScheduleById = async (req, res) => {
     try {
         const {id} = req.params;
@@ -53,4 +66,5 @@ export default {
     getListSchedule,
     getListScheduleByDay,
     deleteScheduleById,
+    getListScheduleByDayOfPlayer,
 }

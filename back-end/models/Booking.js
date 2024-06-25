@@ -1,18 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 const bookingSchema = new Schema({
-    lessee: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: "user",
         required: true
     },
-    player: {
+    playerId: {
         type: Schema.Types.ObjectId,
         ref: "user",
-        required: true
-    },
-    serviceLessor: {
-        type: Schema.Types.ObjectId,
-        ref: "service",
         required: true
     },
     price: {
@@ -20,11 +15,15 @@ const bookingSchema = new Schema({
         required: true
     },
     hours: {
-        type: Number,
-        required: true
+        type: [Schema.Types.ObjectId],
+        default: [],
     },
-    completionStatus: {
-        type: Boolean,
+    unit: {
+        type: Number,
+        default: 0,
+    },
+    bookingStatus: {
+        type: Number,
         default: true
     }
 }, {

@@ -65,8 +65,9 @@ const upload = multer({
 });
 UserRouter.put('/update-profile', jwt.verifyAccessToken, upload.single('newAvatar'), UserController.updateUser);
 UserRouter.put('/update-duo-setting', jwt.verifyAccessToken, UserController.updateDuoSetting);
+UserRouter.put('/update-only-schedule', jwt.verifyAccessToken, UserController.updateOnlySchedule);
 
 UserRouter.post('/users', UserController.getAllUsers);
 UserRouter.put('/ban/:userId', UserController.banUser)
-
+UserRouter.post('/logout', UserController.logout)
 export default UserRouter

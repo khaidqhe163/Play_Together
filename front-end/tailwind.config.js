@@ -7,8 +7,14 @@ module.exports = {
         bgMain: "#13131a",
         bgSecondary: "#20202b",
         bgButton: "#8d68f2",
-        textSecondary:"#ADADAD"
+        bgButtonHover: "#7b47ff",
+        bgSecondButton:"#bcbeff1f",
+        textSecondary:"#ADADAD",
+        textDetail: "#adadbf",
       }
+    },
+    fontFamily: {
+      poppins: ['Poppins'],
     },
   },
   plugins: [],

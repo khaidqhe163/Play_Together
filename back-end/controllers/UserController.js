@@ -357,6 +357,20 @@ const updateDuoSetting = async (req, res) => {
     }
 };
 
+const updateOnlySchedule = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const { isOnlySchedule} = req.body;
+
+        const updatedUser = await UserService.updateOnlySchedule(userId, isOnlySchedule);
+        const {password, ...rest} = updatedUser._doc;
+        res.status(200).json(rest);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+
 const getAllUsers = async (req, res) => {
     try {
         const users = await UserService.getAllUsers();
@@ -375,6 +389,20 @@ const banUser = async (req, res) => {
         res.status(500).json({ message: error.toString() });
     }
 } 
+
+const logout = async (req, res) => {
+    try {
+      res.clearCookie('AccessToken');
+      res.clearCookie('RefreshToken');
+      res.status(200).json({
+        message: "Logout successful"
+      })
+    } catch (error) {
+      res.status(500).json({
+        message: error.toString()
+      })
+    }
+  }
 
 export default {
     register,
@@ -397,4 +425,6 @@ export default {
     changePassword,
     getAllUsers,
     banUser,
+    updateOnlySchedule,
+    logout
 }
