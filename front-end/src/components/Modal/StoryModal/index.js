@@ -328,7 +328,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                     <div><FontAwesomeIcon icon={faHeart} /> {likesCount} </div>
                                 </div>
                                 <div className="stuatus mt-20 ml-20" style={{ color: 'hsl(0deg 0.78% 74.71%)' }}>
-                                    {open.text}
+                                    {open?.text}
                                 </div>
 
                                 <Divider className="mt-10 mb-0" style={{ backgroundColor: 'white' }} />
@@ -337,7 +337,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                             <Spin spinning={loading} className="d-flex justify-content-center align-content-center">
                                 <div className="comment pl-30" style={{ maxHeight: '250px', overflowY: 'auto' }} ref={commentBox}>
                                     {
-                                        comments.map((c, i) => (
+                                        comments?.map((c, i) => (
                                             <div key={i} className="d-flex mb-10">
                                                 <div className="d-flex">
                                                     <div className="avatar-commnet mr-20 mt-15">

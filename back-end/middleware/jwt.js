@@ -79,14 +79,12 @@ function signRefreshToken(user) {
 
 function verifyRefreshToken(req, res) {
     const token = req.body.refreshToken;
-    console.log(token);
     jwt.verify(token, process.env.PRIVATE_KEY_REFRESH, (err, payload) => {
         if (err) {
-            console.log("error refresh");
             return res.status(401).json({
                 message: "Unauthorized"
             })
-        } console.log(" refresh");
+        }
         const accessToken = signAccessToken(payload);
         res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         return res.status(201).json({
