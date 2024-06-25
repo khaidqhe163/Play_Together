@@ -20,7 +20,7 @@ const getListScheduleByDay = async (playerId, date) => {
 
 const getScheduleById = async (id) => {
     try {
-        const schedule = await Schedule.findById(id).select("start end");
+        const schedule = await Schedule.findById(id).select("start end date");
         return schedule;
     } catch (error) {
         throw new Error(error);

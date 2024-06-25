@@ -132,8 +132,8 @@ const getBookingOnlineOfPlayer = async (req, res) => {
 
 const getBookingScheduleOfPlayer = async (req, res) => {
     try {
-        const playerId = req.payload.id;
-        // const playerId = "6651f21e079075c8a3da9d02";
+        // const playerId = req.payload.id;
+        const playerId = "6651fbbb25f49e2ff935d699";
         const listBooking = await BookingService.getBookingScheduleOfPlayer(playerId);
         const transformedBookings = await Promise.all(listBooking.map(async ({
             _id,
@@ -233,7 +233,7 @@ const changeStatusToProgress = async (req, res) => {
 
             if (now > createA) {
                 const d = await BookingService.deleteBookingById(idBooking);
-                return res.status(400).json({ error: "Lịch này đã hết hạn!", d });
+                return res.status(400).json({ error: "Lịch này đã hết hạn! ❌📆", d });
             }
 
             const aPlayer = await UserService.getPlayerById(playerId);
@@ -248,15 +248,49 @@ const changeStatusToProgress = async (req, res) => {
                 let endTime = new Date(b.createdAt).getTime();
                 endTime += (b.unit * 30 * 60 * 1000);
                 const decision = now <= endTime;
-                if(decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌"}); 
+                if (decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc! ❌" });
+            }else{
+                const { _id,
+                    userId,
+                    playerId,
+                    price,
+                    hours,
+                    unit,
+                    bookingStatus,
+                    createdAt,
+                    updatedAt,
+                    __v } = b;
+                const transformedHours = await Promise.all(hours.map(async (scheduleId) => {
+                    const schedule = await ScheduleService.getScheduleById(scheduleId);
+                    return schedule;
+                }));
+                const newB = { ...b._doc, hours: transformedHours };
+        
+                const convertToMilliseconds = (date, hour) => {
+                    const fullDate = new Date(date);
+                    const hours = Math.floor(hour);
+                    const minutes = (hour - hours) * 60;
+                    fullDate.setHours(hours, minutes, 0, 0);
+                    return fullDate.getTime();
+                };
+        
+                const maxEndTimeInMilliseconds = Math.max(...newB.hours.map(hour =>
+                    convertToMilliseconds(hour.date, hour.end)
+                ));
+
+                const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
+         
+                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
+
             }
         }
         const u = await BookingService.changeStatusToProgress(idBooking, status);
-        res.status(200).json({ message: "Chuyển trạng thái thành công", u, restU });
+        res.status(200).json({ message: "Chuyển trạng thái thành công! ✔️", u, restU });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error change booking online', error });
     }
 };
+
 
 const deleteBookingById = async (req, res) => {
     try {
