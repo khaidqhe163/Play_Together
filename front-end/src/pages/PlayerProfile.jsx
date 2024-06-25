@@ -24,7 +24,6 @@ function PlayerProfile() {
     const [age, setAge] = useState("");
     const { onlineUsers } = useContext(SocketContext);
     const [playerOnline, setPlayerOnline] = useState(false);
-    console.log(onlineUsers);
     const [openModalBlock, setOpenModalBlock] = useState(false);
     const [openHire, setOpenHire] = useState(false);
     const author = useSelector((state) => state.user);
