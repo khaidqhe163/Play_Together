@@ -23,7 +23,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         price: 0,
         hours: [],
         unit: 1,
-        bookingStatus: false
+        bookingStatus: 0
     });
 
     const [schedule, setSchedule] = useState(format(today, 'yyyy-MM-dd'));
@@ -54,6 +54,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                     ...prevDetails,
                     playerId: player._id,
                     unit: 0,
+                    bookingStatus: 1,
                     price: (player?.player?.rentCost || 0) * prevDetails.hours.length
                 }));
                 if (newPlayerId) {
@@ -70,7 +71,6 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         }));
     };
 
-    console.log(bookingDetails);
     const handleConfirm = async (e) => {
         e.preventDefault();
         try {
@@ -81,7 +81,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
                     hours: []
-                }))
+                }));
                 fetchData(schedule);
                 toast(s.data.message);
                 setTimeout(handleClose, 2000);
@@ -164,7 +164,6 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             );
         });
     };
-    console.log(bookingDetails);
 
     return (
         <Offcanvas id="off" show={showHire} onHide={handleClose} placement='end'>
@@ -201,7 +200,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                                         <tr><td className='td-label'>Chi phí:</td><td className='td-value'>{(player?.player?.rentCost || 0).toLocaleString('en-US', {
                                                             minimumFractionDigits: 0,
                                                             maximumFractionDigits: 3,
-                                                        })} đ/phút</td></tr>
+                                                        })}đ/ 30phút</td></tr>
                                                         <tr><td className='td-label'>Thời gian muốn thuê:</td><td className='td-value text-center'>
                                                             <div className='d-flex align-items-center justify-start'>
                                                                 <GrSubtractCircle
@@ -296,7 +295,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                                                     <tr><td className='td-label'>Chi phí:</td><td className='td-value'>{(player?.player?.rentCost || 0).toLocaleString('en-US', {
                                                         minimumFractionDigits: 0,
                                                         maximumFractionDigits: 3,
-                                                    })} đ/phút</td></tr>
+                                                    })}đ/ 30phút</td></tr>
 
                                                     <tr><td className='td-label'>Số dư hiện tại:</td><td className='td-value'>{userInfo?.accountBalance.toLocaleString('en-US', {
                                                         minimumFractionDigits: 0,
