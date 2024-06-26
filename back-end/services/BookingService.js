@@ -11,7 +11,7 @@ const getAllBooking = async () => {
 
 const getLatestBooking = async (playerId) => {
     try {
-        const latestBooking = await Booking.findOne({ playerId }).sort({ createdAt: -1 }).exec();
+        const latestBooking = await Booking.findOne({ playerId, bookingStatus: { $ne: 3 } }).sort({ createdAt: -1 }).exec();
         return latestBooking;
     } catch (error) {
         throw new Error(error);
