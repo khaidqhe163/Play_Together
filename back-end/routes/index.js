@@ -6,6 +6,7 @@ import PlaymentRouter from './PaymentRouter.js'
 import CommentRouter from './CommentRouter.js'
 import MessageRouter from './MessageRouter.js'
 import ConversationRouter from './ConversationRouter.js'
+import AdminRouter from './AdminRouter.js'
 import ScheduleRouter from './ScheduleRouter.js'
 import ReportReasonRouter from './ReportReasonRouter.js'
 import ReportRouter from './ReportRouter.js'
@@ -23,6 +24,7 @@ const routes = (app) => {
     app.use('/api/message', MessageRouter)
     app.use('/api/conversation', ConversationRouter)
 
+    app.use('/api/admin', AdminRouter);
     app.use('/api/report-reason', ReportReasonRouter)
     app.use('/api/report', ReportRouter)
 }
