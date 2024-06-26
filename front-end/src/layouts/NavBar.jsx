@@ -88,14 +88,14 @@ export default function NavBar() {
   }, [socket])
 
   useEffect(() => {
-    if (newNotification === null) return;
+    if (newNotification === null || !notification) return;
     const filtedNotify = notification.filter((n) => {
       return n._id !== newNotification._id
     })
-    if (filtedNotify.length === notification.length)
-      setNotification([newNotification, ...notification])
-    else
-      setNotification([newNotification, ...filtedNotify])
+    // if (filtedNotify.length === notification.length)
+    //   setNotification([newNotification, ...filtedNotify])
+    // else
+    setNotification([newNotification, ...filtedNotify])
 
     const audioInstance = new Audio('/notification.wav');
     setAudio(audioInstance)

@@ -23,7 +23,6 @@ const sendPostStoryNotification = async (req, res) => {
         if (!receivers && receivers.length === 0)
             res.status(400).json("No one followers")
         const notifcation = await NotificationService.sendPostStoryNotification(id, storyId, receivers);
-        console.log(receivers);
         res.status(201).json(notifcation)
     } catch (error) {
         res.status(500).json(error)
@@ -67,6 +66,7 @@ const readNotification = async (req, res) => {
 
 const likeStoryNotification = async (req, res) => {
     try {
+        console.log("like");
         const userId = req.payload.id;
         const {
             storyId,
@@ -81,12 +81,12 @@ const likeStoryNotification = async (req, res) => {
 const sendBookingNotification = async (req, res) => {
     try {
         const userId = req.payload.id;
-        // const {
-        //     bookingId,
-        //     playerId,
-
-        // }
-        const notification = await NotificationService.sendBookingNotification(userId, bookingId);
+        const {
+            bookingId,
+            playerId,
+            onlySchedule
+        } = req.body;
+        const notification = await NotificationService.sendBookingNotification(userId, bookingId, playerId, onlySchedule);
         res.status(200).json(notification);
     } catch (error) {
         res.status(500).json(error)

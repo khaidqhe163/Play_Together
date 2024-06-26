@@ -19,7 +19,8 @@ const notificationSchema = new Schema({
     isRead: {
         type: Boolean,
         default: false
-    }
+    },
+    sendDate: Date
 }, {
     timestamps: true
 });
