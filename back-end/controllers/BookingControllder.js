@@ -114,6 +114,7 @@ const getBookingOnlineOfPlayer = async (req, res) => {
         const allBooking = await BookingService.getBookingOnlineOfPlayer(playerId);
         const transformedBookings = allBooking.map(({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => ({
             _id,
+            userId: userId._id,
             username: userId.username,
             playerId,
             price,
@@ -283,6 +284,13 @@ const changeStatusToProgress = async (req, res) => {
                 if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
 
             }
+        }else if(status == 3){
+            const {userId} = req.body;
+            const aUser = await UserService.findUserById(userId);
+            aUser.accountBalance += parseInt(b.price);
+            await aUser.save();
+            const { password, ...restUser } = aUser._doc;
+            restU = restUser;
         }
         const u = await BookingService.changeStatusToProgress(idBooking, status);
         res.status(200).json({ message: "Chuyển trạng thái thành công! ✔️", u, restU });

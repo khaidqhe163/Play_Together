@@ -123,7 +123,7 @@ const routes = [
         element: PlayerSchedulePage
     },
     {
-        path: '/list-booking',
+        path: '/list-booking/:url',
         element: ListBookingPage
     },
     {
