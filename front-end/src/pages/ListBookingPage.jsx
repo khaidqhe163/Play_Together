@@ -30,7 +30,7 @@ function ListBookingPage() {
 
   return (
     <DefaultNavbar>
-    
+
       <Row>
         <Col md={12} id='snav'>
           <div className={subnav === 1 && `snav-active`}
@@ -40,7 +40,7 @@ function ListBookingPage() {
           <div className={subnav === 3 && `snav-active`}
             onClick={() => handleClick(3)}>Lịch schedule</div>
         </Col>
-        <TableBooking endPoint={endPoint(subnav)}/>
+        <TableBooking endPoint={endPoint(subnav)} />
       </Row>
 
     </DefaultNavbar>
