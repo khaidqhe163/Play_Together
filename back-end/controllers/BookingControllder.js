@@ -180,16 +180,19 @@ const getMyBooking = async (req, res) => {
         const userId = req.payload.id;
         // const userId = "665755b517909fecabb76afe";
         const listBooking = await BookingService.getMyBooking(userId);
-        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => {
+        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, bookingReview, createdAt, updatedAt, __v }) => {
             if (hours.length === 0) {
                 return {
                     _id,
                     userId,
+                    playerId: playerId._id,
                     username: playerId.username,
+                    avatar: playerId.avatar,
                     price,
                     hours,
                     unit,
                     bookingStatus,
+                    bookingReview: bookingReview ? bookingReview : null,
                     createdAt,
                     updatedAt,
                     __v
@@ -202,11 +205,14 @@ const getMyBooking = async (req, res) => {
                 return {
                     _id,
                     userId,
+                    playerId: playerId._id,
                     username: playerId.username,
+                    avatar: playerId.avatar,
                     price,
                     hours: transformedHours,
                     unit,
                     bookingStatus,
+                    bookingReview: bookingReview ? bookingReview : null,
                     createdAt,
                     updatedAt,
                     __v
@@ -248,7 +254,7 @@ const changeStatusToProgress = async (req, res) => {
                 endTime += (b.unit * 30 * 60 * 1000);
                 const decision = now <= endTime;
                 if (decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc! ❌" });
-            }else{
+            } else {
                 const { _id,
                     userId,
                     playerId,
@@ -264,7 +270,7 @@ const changeStatusToProgress = async (req, res) => {
                     return schedule;
                 }));
                 const newB = { ...b._doc, hours: transformedHours };
-        
+
                 const convertToMilliseconds = (date, hour) => {
                     const fullDate = new Date(date);
                     const hours = Math.floor(hour);
@@ -272,18 +278,18 @@ const changeStatusToProgress = async (req, res) => {
                     fullDate.setHours(hours, minutes, 0, 0);
                     return fullDate.getTime();
                 };
-        
+
                 const maxEndTimeInMilliseconds = Math.max(...newB.hours.map(hour =>
                     convertToMilliseconds(hour.date, hour.end)
                 ));
 
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
-         
-                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
+
+                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
 
             }
-        }else if(status == 3){
-            const {userId} = req.body;
+        } else if (status == 3) {
+            const { userId } = req.body;
             const aUser = await UserService.findUserById(userId);
             aUser.accountBalance += parseInt(b.price);
             await aUser.save();

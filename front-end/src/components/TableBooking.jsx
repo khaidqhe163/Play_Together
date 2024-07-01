@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUserInformation, userInfor } from '../features/userSlice';
 import '../css/table-booking.css';
 import { SocketContext } from '../context/SocketContext';
+import ReviewModal from './Modal/ReviewModal/ReviewModal';
 
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
@@ -14,6 +15,11 @@ function TableBooking({ endPoint }) {
     const dispatch = useDispatch();
     const userInfo = useSelector(userInfor);
     const { socket } = useContext(SocketContext);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const [player, setPlayer] = useState(null);
     const fetchBooking = async () => {
         try {
             const s = await api.get(`/api/booking/${endPoint}`);
@@ -157,7 +163,7 @@ function TableBooking({ endPoint }) {
             console.log(error);
         }
     };
-
+    console.log(listBooking);
     return (
         <div className='row m-0'>
             <div className='col-12 mt-28'>
@@ -222,8 +228,8 @@ function TableBooking({ endPoint }) {
                                             <td className='py-2'>{l.price}</td>
                                             <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
                                             <td className='py-2'>
-                                                {l.bookingStatus === 2 ? (
-                                                    <button className='btn btn-success' onClick={() => { }}>Đánh giá</button>
+                                                {l.bookingStatus === 2 && l.bookingReview === null ? (
+                                                    <button className='btn btn-success' onClick={() => { handleShow(); setPlayer(l) }}>Đánh giá</button>
                                                 ) : null}
                                             </td>
                                         </tr>
@@ -232,6 +238,7 @@ function TableBooking({ endPoint }) {
                         </tbody>
                     </table>}
             </div>
+            <ReviewModal show={show} handleClose={handleClose} player={player} />
         </div>
     );
 }

@@ -52,7 +52,7 @@ const getMyBooking = async (userId) => {
     try {
         const b = await Booking.find({
             userId
-        }).populate("playerId", "-_id username");
+        }).populate("playerId", "_id username avatar");
         return b;
     } catch (error) {
         throw new Error(error.message);
