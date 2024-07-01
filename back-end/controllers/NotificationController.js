@@ -66,7 +66,6 @@ const readNotification = async (req, res) => {
 
 const likeStoryNotification = async (req, res) => {
     try {
-        console.log("like");
         const userId = req.payload.id;
         const {
             storyId,

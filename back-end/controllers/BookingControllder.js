@@ -114,6 +114,7 @@ const getBookingOnlineOfPlayer = async (req, res) => {
         const allBooking = await BookingService.getBookingOnlineOfPlayer(playerId);
         const transformedBookings = allBooking.map(({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => ({
             _id,
+            userId: userId._id,
             username: userId.username,
             playerId,
             price,
@@ -179,7 +180,6 @@ const getMyBooking = async (req, res) => {
         const userId = req.payload.id;
         // const userId = "665755b517909fecabb76afe";
         const listBooking = await BookingService.getMyBooking(userId);
-        console.log(listBooking);
         const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => {
             if (hours.length === 0) {
                 return {
@@ -243,7 +243,6 @@ const changeStatusToProgress = async (req, res) => {
             restU = restUser;
         } else if (status == 2) {
             const checkB = b.hours.length;
-            console.log(checkB);
             if (!checkB) {
                 let endTime = new Date(b.createdAt).getTime();
                 endTime += (b.unit * 30 * 60 * 1000);
@@ -283,6 +282,13 @@ const changeStatusToProgress = async (req, res) => {
                 if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
 
             }
+        }else if(status == 3){
+            const {userId} = req.body;
+            const aUser = await UserService.findUserById(userId);
+            aUser.accountBalance += parseInt(b.price);
+            await aUser.save();
+            const { password, ...restUser } = aUser._doc;
+            restU = restUser;
         }
         const u = await BookingService.changeStatusToProgress(idBooking, status);
         res.status(200).json({ message: "Chuyển trạng thái thành công! ✔️", u, restU });
@@ -296,7 +302,6 @@ const deleteBookingById = async (req, res) => {
     try {
         const { bookingId } = req.params;
         const d = await BookingService.deleteBookingById(bookingId);
-        console.log(bookingId);
         res.status(200).json(d);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error delete booking online', error });

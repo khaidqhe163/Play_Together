@@ -22,7 +22,6 @@ passport.use(new FacebookStrategy({
     profileFields: ['id', 'emails', 'name']
 },
     async function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
         await UserService.addSocialAccount(profile);
         return cb(null, profile);
     }

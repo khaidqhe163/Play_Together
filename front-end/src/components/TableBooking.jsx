@@ -98,7 +98,7 @@ function TableBooking({ endPoint }) {
         }
     };
 
-    const handleDeny = async (idBooking) => {
+    const handleDeny = async (idBooking, userId) => {
         try {
             const status = 3;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
@@ -161,7 +161,7 @@ function TableBooking({ endPoint }) {
     return (
         <div className='row m-0'>
             <div className='col-12 mt-28'>
-                {listBooking.length === 0 || listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0 ?
+                {listBooking.length === 0 || (endPoint === 'booking-online' && listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0) ?
                     <h5 className='text-white'>Hiện tại không có lịch nào!</h5> :
                     <table className="min-w-full bg-gray-800 text-white rounded-xl stable">
                         <thead>
@@ -200,7 +200,7 @@ function TableBooking({ endPoint }) {
                                                     ) : (
                                                         <>
                                                             <button className='btn btn-primary mr-10' onClick={() => handleAccept(l._id)}>Chấp nhận</button>
-                                                            <button className='btn btn-danger' onClick={() => handleDeny(l._id)}>Từ chối</button>
+                                                            <button className='btn btn-danger' onClick={() => handleDeny(l._id, l.userId)}>Từ chối</button>
                                                         </>
                                                     )}
                                                 </td>
@@ -225,7 +225,6 @@ function TableBooking({ endPoint }) {
                                                 {l.bookingStatus === 2 ? (
                                                     <button className='btn btn-success' onClick={() => { }}>Đánh giá</button>
                                                 ) : null}
-
                                             </td>
                                         </tr>
                                     );

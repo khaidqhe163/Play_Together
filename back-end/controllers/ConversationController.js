@@ -14,7 +14,6 @@ const createConversation = async (req, res) => {
         const member1 = req.payload.id;
         const member2 = req.body.member;
         const type = 2;
-        console.log(member1, member2);
         const existConversation = await ConversationService.getConversation(member1, member2);
         if (existConversation) {
             return res.status(400).json({

@@ -29,7 +29,7 @@ const createBooking = async (booking) => {
 
 const getBookingOnlineOfPlayer = async (playerId) => {
     try {
-        const allBooking = await Booking.find({ playerId, hours: [] }).populate("userId", "-_id username");
+        const allBooking = await Booking.find({ playerId, hours: [] }).populate("userId", "_id username");
         return allBooking;
     } catch (error) {
         throw new Error(error);

@@ -187,7 +187,8 @@ export default function NavBar() {
       <div className="col-sm-3 d-flex justify-content-end align-items-center">
         {userInfo && userInfo !== null ? (
           <>
-            <Link to={"/list-booking"} className="btn mx-2 rounded-circle" style={bgButton}>
+            <Link to={"/list-booking/my-booking"} className="btn mx-2 rounded-circle" style={activeButton === "booking" ? bgButtonActive : bgButton}
+              onClick={() => handleButtonClick("booking")}>
               <div className="d-flex justify-content-center align-items-center">
                 <MdOutlineWorkHistory color="white" size={35} />
               </div>
