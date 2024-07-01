@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import api from '../utils/axiosConfig';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserInformation, userInfor } from '../features/userSlice';
 import '../css/table-booking.css';
+import { SocketContext } from '../context/SocketContext';
 
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
@@ -12,7 +13,7 @@ function TableBooking({ endPoint }) {
 
     const dispatch = useDispatch();
     const userInfo = useSelector(userInfor);
-
+    const { socket } = useContext(SocketContext);
     const fetchBooking = async () => {
         try {
             const s = await api.get(`/api/booking/${endPoint}`);
@@ -84,6 +85,12 @@ function TableBooking({ endPoint }) {
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
             console.log(bookingUpdate);
             setUpdateBooking(bookingUpdate.data.u);
+            const notification = await api.post(`/api/notification/process-booking-notification`, {
+                userId: bookingUpdate.data.u.userId,
+                status: 1,
+                bookingId: bookingUpdate.data.u._id
+            })
+            socket.emit("sendNotification", notification.data)
             dispatch(setUserInformation(bookingUpdate.data.restU));
             toast(bookingUpdate.data.message);
         } catch (error) {
@@ -95,6 +102,12 @@ function TableBooking({ endPoint }) {
         try {
             const status = 3;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
+            const notification = await api.post(`/api/notification/process-booking-notification`, {
+                userId: bookingUpdate.data.u.userId,
+                status: 3,
+                bookingId: bookingUpdate.data.u._id
+            })
+            socket.emit("sendNotification", notification.data)
             setUpdateBooking(bookingUpdate.data.u);
             toast(bookingUpdate.data.message);
         } catch (error) {
@@ -106,6 +119,12 @@ function TableBooking({ endPoint }) {
         try {
             const status = 2;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
+            const notification = await api.post(`/api/notification/complete-booking-notification`, {
+                userId: bookingUpdate.data.u.userId,
+                status: 3,
+                bookingId: bookingUpdate.data.u._id
+            })
+            socket.emit("sendNotification", notification.data)
             setUpdateBooking(bookingUpdate.data.u);
             toast(bookingUpdate.data.message);
         } catch (error) {
@@ -206,6 +225,7 @@ function TableBooking({ endPoint }) {
                                                 {l.bookingStatus === 2 ? (
                                                     <button className='btn btn-success' onClick={() => { }}>Đánh giá</button>
                                                 ) : null}
+
                                             </td>
                                         </tr>
                                     );

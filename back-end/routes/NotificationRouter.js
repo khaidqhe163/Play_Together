@@ -10,4 +10,6 @@ NotificationRouter.post("/comment-story-notification", jwt.verifyAccessToken, No
 NotificationRouter.put("/read-notification", jwt.verifyAccessToken, NotificationController.readNotification)
 NotificationRouter.post("/like-story-notification", jwt.verifyAccessToken, NotificationController.likeStoryNotification)
 NotificationRouter.post("/booking-notification", jwt.verifyAccessToken, NotificationController.sendBookingNotification)
+NotificationRouter.post("/process-booking-notification", jwt.verifyAccessToken, NotificationController.processBookingNotification)
+NotificationRouter.post("/complete-booking-notification", jwt.verifyAccessToken, NotificationController.completeBookingNotification)
 export default NotificationRouter

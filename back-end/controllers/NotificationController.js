@@ -48,7 +48,7 @@ const sendCommentStoryNotification = async (req, res) => {
             commentId
         } = req.body;
         const notification = await NotificationService.sendCommentStoryNotification(storyId, author, commentor, commentId);
-        res.status(200).json(notification);
+        res.status(201).json(notification);
     } catch (error) {
         res.status(500).json(error)
     }
@@ -58,7 +58,7 @@ const readNotification = async (req, res) => {
     try {
         const id = req.payload.id;
         await NotificationService.readNotification(id)
-        res.status(200).json("success");
+        res.status(201).json("success");
     } catch (error) {
         res.status(500).json(error)
     }
@@ -72,7 +72,7 @@ const likeStoryNotification = async (req, res) => {
             storyId,
         } = req.body;
         const notification = await NotificationService.likeStoryNotification(storyId, userId);
-        res.status(200).json(notification);
+        res.status(201).json(notification);
     } catch (error) {
         res.status(500).json(error)
     }
@@ -87,7 +87,36 @@ const sendBookingNotification = async (req, res) => {
             onlySchedule
         } = req.body;
         const notification = await NotificationService.sendBookingNotification(userId, bookingId, playerId, onlySchedule);
-        res.status(200).json(notification);
+        res.status(201).json(notification);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const processBookingNotification = async (req, res) => {
+    try {
+        const playerId = req.payload.id;
+        const {
+            userId,
+            status,
+            bookingId
+        } = req.body;
+        const notification = await NotificationService.processBookingNotification(userId, bookingId, playerId, status)
+        res.status(201).json(notification);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const completeBookingNotification = async (req, res) => {
+    try {
+        const playerId = req.payload.id;
+        const {
+            userId,
+            bookingId
+        } = req.body;
+        const notification = await NotificationService.completeBookingNotification(userId, bookingId, playerId);
+        res.status(201).json(notification);
     } catch (error) {
         res.status(500).json(error)
     }
@@ -99,5 +128,7 @@ export default {
     sendCommentStoryNotification,
     readNotification,
     likeStoryNotification,
-    sendBookingNotification
+    sendBookingNotification,
+    processBookingNotification,
+    completeBookingNotification
 }
