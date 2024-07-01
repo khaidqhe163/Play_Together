@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { SocketContext } from '../../context/SocketContext'
 import api from '../../utils/axiosConfig'
-function PiRight({ id, setOpenHire }) {
+function PiRight({ id, setOpenHire, setShowDonate}) {
     const { setOpenChatCanvas, setReceiverId, newChat, setNewChat } = useContext(SocketContext)
     const handleOpenChat = async () => {
         try {
@@ -18,7 +18,7 @@ function PiRight({ id, setOpenHire }) {
     return (
         <div className='pi-right pi'>
             <button onClick={handleOpenChat}>Chat</button>
-            <button>Donate</button>
+            <button onClick={setShowDonate}>Donate</button>
             <button onClick={setOpenHire}>Thuê</button>
         </div>
     )

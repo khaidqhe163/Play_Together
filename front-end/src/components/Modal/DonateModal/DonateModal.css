@@ -1,0 +1,26 @@
+.custom-modal-header,
+.custom-modal-body,
+.custom-modal-footer {
+  background-color: #000000; /* Replace with your desired background color */
+  color: white;
+}
+
+.custom-modal-title {
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+}
+
+.tablex {
+  width: 100%;
+    background-color: #20202b;
+}
+
+.tablex td {
+    padding: 15px 20px;
+    color: white;
+}
+
+.form-control {
+  width: 100%;
+}
