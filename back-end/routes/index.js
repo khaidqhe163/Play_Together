@@ -10,6 +10,7 @@ import AdminRouter from './AdminRouter.js'
 import ScheduleRouter from './ScheduleRouter.js'
 import ReportReasonRouter from './ReportReasonRouter.js'
 import ReportRouter from './ReportRouter.js'
+import DonateRouter from './DonateRouter.js'
 
 const routes = (app) => {
     app.use('/api/user', UserRouter);
@@ -27,5 +28,7 @@ const routes = (app) => {
     app.use('/api/admin', AdminRouter);
     app.use('/api/report-reason', ReportReasonRouter)
     app.use('/api/report', ReportRouter)
+
+    app.use('/api/donate' ,DonateRouter)
 }
 export default routes

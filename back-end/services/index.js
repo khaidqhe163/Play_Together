@@ -9,6 +9,7 @@ import ConversationService from './ConversationService.js';
 import ScheduleService from './ScheduleService.js';
 import ReportReasonService from './ReportReasonService.js';
 import ReportService from './ReportService.js'
+import DonateService from './DonateService.js'
 
 export {
     UserService,
@@ -22,5 +23,6 @@ export {
     ScheduleService,
     ReportReasonService,
     ReportService,
+    DonateService,
 }
 
