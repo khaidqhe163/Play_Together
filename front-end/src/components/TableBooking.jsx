@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import api from '../utils/axiosConfig';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserInformation, userInfor } from '../features/userSlice';
 import '../css/table-booking.css';
+import { SocketContext } from '../context/SocketContext';
+import ReviewModal from './Modal/ReviewModal/ReviewModal';
 
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
@@ -12,7 +14,12 @@ function TableBooking({ endPoint }) {
 
     const dispatch = useDispatch();
     const userInfo = useSelector(userInfor);
+    const { socket } = useContext(SocketContext);
+    const [show, setShow] = useState(false);
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const [player, setPlayer] = useState(null);
     const fetchBooking = async () => {
         try {
             const s = await api.get(`/api/booking/${endPoint}`);
@@ -84,6 +91,12 @@ function TableBooking({ endPoint }) {
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
             console.log(bookingUpdate);
             setUpdateBooking(bookingUpdate.data.u);
+            const notification = await api.post(`/api/notification/process-booking-notification`, {
+                userId: bookingUpdate.data.u.userId,
+                status: 1,
+                bookingId: bookingUpdate.data.u._id
+            })
+            socket.emit("sendNotification", notification.data)
             dispatch(setUserInformation(bookingUpdate.data.restU));
             toast(bookingUpdate.data.message);
         } catch (error) {
@@ -94,7 +107,13 @@ function TableBooking({ endPoint }) {
     const handleDeny = async (idBooking, userId) => {
         try {
             const status = 3;
-            const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status, userId });
+            const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
+            const notification = await api.post(`/api/notification/process-booking-notification`, {
+                userId: bookingUpdate.data.u.userId,
+                status: 3,
+                bookingId: bookingUpdate.data.u._id
+            })
+            socket.emit("sendNotification", notification.data)
             setUpdateBooking(bookingUpdate.data.u);
             toast(bookingUpdate.data.message);
         } catch (error) {
@@ -106,6 +125,12 @@ function TableBooking({ endPoint }) {
         try {
             const status = 2;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
+            const notification = await api.post(`/api/notification/complete-booking-notification`, {
+                userId: bookingUpdate.data.u.userId,
+                status: 3,
+                bookingId: bookingUpdate.data.u._id
+            })
+            socket.emit("sendNotification", notification.data)
             setUpdateBooking(bookingUpdate.data.u);
             toast(bookingUpdate.data.message);
         } catch (error) {
@@ -138,7 +163,7 @@ function TableBooking({ endPoint }) {
             console.log(error);
         }
     };
-
+    console.log(listBooking);
     return (
         <div className='row m-0'>
             <div className='col-12 mt-28'>
@@ -203,8 +228,8 @@ function TableBooking({ endPoint }) {
                                             <td className='py-2'>{l.price}</td>
                                             <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
                                             <td className='py-2'>
-                                                {l.bookingStatus === 2 ? (
-                                                    <button className='btn btn-success' onClick={() => { }}>Đánh giá</button>
+                                                {l.bookingStatus === 2 && l.bookingReview === null ? (
+                                                    <button className='btn btn-success' onClick={() => { handleShow(); setPlayer(l) }}>Đánh giá</button>
                                                 ) : null}
                                             </td>
                                         </tr>
@@ -213,6 +238,7 @@ function TableBooking({ endPoint }) {
                         </tbody>
                     </table>}
             </div>
+            <ReviewModal show={show} handleClose={handleClose} player={player} />
         </div>
     );
 }

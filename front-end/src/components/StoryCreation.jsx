@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
 import '../css/postcreate.css'
 import { useSelector } from 'react-redux';
 import { userInfor } from '../features/userSlice';
 import api from '../utils/axiosConfig'
 import { baseUrl } from '../utils/service';
+import { SocketContext } from '../context/SocketContext';
 function StoryCreation({ show, close, stories, setStory }) {
     const inputFile = useRef();
     const [stage, setStage] = useState(0);
@@ -14,6 +15,7 @@ function StoryCreation({ show, close, stories, setStory }) {
     const modalCreate = useRef();
     const userInfo = useSelector(userInfor);
     const videosrc = useRef();
+    const { socket } = useContext(SocketContext)
     useEffect(() => {
         if (show === false) {
             setStage(0);
@@ -63,7 +65,10 @@ function StoryCreation({ show, close, stories, setStory }) {
             );
             console.log(story);
             const updateStory = [story.data.data, ...stories];
-            console.log(updateStory);
+            const notification = await api.post("/api/notification/send-post-story-notification", {
+                storyId: story.data.data._id
+            })
+            socket.emit("sendNotification", notification.data)
             setStory(updateStory)
             close();
         } catch (error) {

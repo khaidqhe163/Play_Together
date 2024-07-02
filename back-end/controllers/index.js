@@ -7,6 +7,7 @@ import CommentController from './CommentController.js';
 import MessageController from './MessageController.js'
 import ConversationController from './ConversationController.js';
 import ScheduleController from './ScheduleController.js';
+import NotificationController from './NotificationController.js';
 import ReportReasonController from './ReportReasonController.js';
 import ReportController from './ReportController.js'
 
@@ -20,6 +21,7 @@ export {
     MessageController,
     ConversationController,
     ScheduleController,
+    NotificationController,
     ReportReasonController,
     ReportController,
 }

@@ -59,9 +59,38 @@ const updateComment = async (req, res) => {
     }
 };
 
+
+const reviewPlayer = async (req, res) => {
+    try {
+        const commentor = req.payload.id;
+        console.log(commentor);
+        const {
+            userId,
+            rating,
+            content,
+            bookingId
+        } = req.body;
+        const review = await CommentService.reviewPlayer(commentor, userId, rating, content, bookingId);
+        res.status(201).json(review)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+const getReviewPlayer = async (req, res) => {
+    try {
+        const playerId = req.params.playerId;
+        const reviews = await CommentService.getReviewPlayer(playerId);
+        res.status(200).json(reviews)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 export default {
     getAllCommentsByStoryId,
     createComment,
     deleteComment,
     updateComment,
+    reviewPlayer,
+    getReviewPlayer
 }

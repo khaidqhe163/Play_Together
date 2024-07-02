@@ -76,7 +76,7 @@ const createBooking = async (req, res) => {
         // await aPlayer.save();
         const { password, ...restUser } = aUser._doc;
         const aBooking = await BookingService.createBooking({ userId, playerId, price, hours, unit, bookingStatus });
-        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser });
+        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser, aBooking });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error create booking', error });
     }
@@ -101,7 +101,7 @@ const createBookingT = async (req, res) => {
         );
 
         const newData = { ...aBooking._doc, lsBookSchedule };
-        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser });
+        return res.status(201).json({ message: "Thuê thành công! ✔️", restUser, aBooking });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error create booking', error });
     }
@@ -180,17 +180,19 @@ const getMyBooking = async (req, res) => {
         const userId = req.payload.id;
         // const userId = "665755b517909fecabb76afe";
         const listBooking = await BookingService.getMyBooking(userId);
-        console.log(listBooking);
-        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, createdAt, updatedAt, __v }) => {
+        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, bookingReview, createdAt, updatedAt, __v }) => {
             if (hours.length === 0) {
                 return {
                     _id,
                     userId,
+                    playerId: playerId._id,
                     username: playerId.username,
+                    avatar: playerId.avatar,
                     price,
                     hours,
                     unit,
                     bookingStatus,
+                    bookingReview: bookingReview ? bookingReview : null,
                     createdAt,
                     updatedAt,
                     __v
@@ -203,11 +205,14 @@ const getMyBooking = async (req, res) => {
                 return {
                     _id,
                     userId,
+                    playerId: playerId._id,
                     username: playerId.username,
+                    avatar: playerId.avatar,
                     price,
                     hours: transformedHours,
                     unit,
                     bookingStatus,
+                    bookingReview: bookingReview ? bookingReview : null,
                     createdAt,
                     updatedAt,
                     __v
@@ -244,13 +249,12 @@ const changeStatusToProgress = async (req, res) => {
             restU = restUser;
         } else if (status == 2) {
             const checkB = b.hours.length;
-            console.log(checkB);
             if (!checkB) {
                 let endTime = new Date(b.createdAt).getTime();
                 endTime += (b.unit * 30 * 60 * 1000);
                 const decision = now <= endTime;
                 if (decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc! ❌" });
-            }else{
+            } else {
                 const { _id,
                     userId,
                     playerId,
@@ -266,7 +270,7 @@ const changeStatusToProgress = async (req, res) => {
                     return schedule;
                 }));
                 const newB = { ...b._doc, hours: transformedHours };
-        
+
                 const convertToMilliseconds = (date, hour) => {
                     const fullDate = new Date(date);
                     const hours = Math.floor(hour);
@@ -274,18 +278,18 @@ const changeStatusToProgress = async (req, res) => {
                     fullDate.setHours(hours, minutes, 0, 0);
                     return fullDate.getTime();
                 };
-        
+
                 const maxEndTimeInMilliseconds = Math.max(...newB.hours.map(hour =>
                     convertToMilliseconds(hour.date, hour.end)
                 ));
 
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
-         
-                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
+
+                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
 
             }
-        }else if(status == 3){
-            const {userId} = req.body;
+        } else if (status == 3) {
+            const { userId } = req.body;
             const aUser = await UserService.findUserById(userId);
             aUser.accountBalance += parseInt(b.price);
             await aUser.save();
@@ -304,7 +308,6 @@ const deleteBookingById = async (req, res) => {
     try {
         const { bookingId } = req.params;
         const d = await BookingService.deleteBookingById(bookingId);
-        console.log(bookingId);
         res.status(200).json(d);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error delete booking online', error });

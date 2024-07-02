@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   IoGameControllerOutline,
   IoHomeOutline,
@@ -19,6 +19,9 @@ import RechargeModal from "../components/Modal/RechargeModal/RechageModal.jsx";
 import { getNav, setActiveButton } from "../features/navSlice.js";
 import axios from "axios";
 import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { SocketContext } from "../context/SocketContext.jsx";
+import api from '../utils/axiosConfig'
+import NotificationBox from "../components/Modal/NotificationModal/NotificationBox.jsx";
 export default function NavBar() {
   // const [activeButton, setActiveButton] = useState(null);
   const dispatch = useDispatch();
@@ -28,6 +31,11 @@ export default function NavBar() {
   const activeButton = useSelector(getNav);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const nav = useNavigate();
+  const [notifyBox, setNotifyBox] = useState(false);
+  const { socket, newNotification, setNewNotification } = useContext(SocketContext)
+  const [notification, setNotification] = useState(null);
+  const [unReadNotification, setUnreadNotification] = useState(0);
+  const [audio, setAudio] = useState(null);
   const fontF = {
     fontFamily: "Arial, Helvetica, sans-serif",
     fontWeight: 500,
@@ -55,6 +63,49 @@ export default function NavBar() {
     backgroundColor: "#8d68f2",
   };
 
+  useEffect(() => {
+    if (userInfo === null) return;
+    const getNotification = async () => {
+      try {
+        const notify = await api.get("api/notification");
+        console.log(notify.data);
+        setNotification(notify.data)
+        const unread = notify.data.filter((n) => {
+          return n.isRead === false;
+        })
+        setUnreadNotification(unread.length)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getNotification();
+  }, [userInfo])
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on("getNotification", (res) => {
+      setNewNotification(res)
+    })
+  }, [socket])
+
+  useEffect(() => {
+    if (newNotification === null || !notification) return;
+    const filtedNotify = notification.filter((n) => {
+      return n._id !== newNotification._id
+    })
+    // if (filtedNotify.length === notification.length)
+    //   setNotification([newNotification, ...filtedNotify])
+    // else
+    setNotification([newNotification, ...filtedNotify])
+
+    const audioInstance = new Audio('/notification.wav');
+    setAudio(audioInstance)
+    setUnreadNotification(unReadNotification + 1)
+  }, [newNotification])
+
+  useEffect(() => {
+    if (audio === null) return;
+    audio.play().catch(error => console.log('Error playing audio:', error));
+  }, [audio])
   const handleButtonClick = (buttonName) => {
     dispatch(setActiveButton(buttonName));
   };
@@ -73,6 +124,7 @@ export default function NavBar() {
           withCredentials: true
         }
       )
+      socket.emit("logout", userInfo._id)
       dispatch(setUserInformation(null));
       toast("Đăng xuất thành công!");
       nav('/login')
@@ -141,9 +193,29 @@ export default function NavBar() {
                 <MdOutlineWorkHistory color="white" size={35} />
               </div>
             </Link>
-            <Link to={"/"} className="btn mx-2 rounded-circle" style={bgButton}>
-              <div className="d-flex justify-content-center align-items-center">
-                <FaRegBell color="white" size={35} />
+            <Link className="btn mx-2 rounded-circle" style={bgButton}>
+              <div className="d-flex justify-content-center align-items-center" style={{ position: "relative" }}>
+                <FaRegBell color="white" size={35} onClick={() => setNotifyBox(!notifyBox)} />
+                {
+                  notifyBox && <NotificationBox notification={notification} setUnreadNotification={setUnreadNotification} setNotifyBox={setNotifyBox} />
+                }
+                {
+                  !notifyBox && unReadNotification !== 0 && (
+                    <div style={{
+                      background: "red",
+                      color: "white",
+                      width: "16px",
+                      height: "16px",
+                      position: "absolute",
+                      bottom: "-10px",
+                      borderRadius: "50%",
+                      fontSize: "12px",
+                      right: "-15px"
+                    }}>
+                      {unReadNotification}
+                    </div>
+                  )
+                }
               </div>
             </Link>
             {userInfo !== null && (<div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
@@ -223,29 +295,19 @@ export default function NavBar() {
         )}
       </div>
 
-      {!!openModalRanking && (
-        <RankingModal
-          open={openModalRanking}
-          onCancel={() => setOpenModalRanking(undefined)}
-        // onOk={getList}
-        />
-      )}
+      {
+        !!openModalRanking && (
+          <RankingModal
+            open={openModalRanking}
+            onCancel={() => setOpenModalRanking(undefined)}
+          // onOk={getList}
+          />
+        )
+      }
       <RechargeModal
         show={openModalPayment}
         handleClose={() => setOpenModalPayment(false)}
       />
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce} /> */}
     </div>
   );
 }

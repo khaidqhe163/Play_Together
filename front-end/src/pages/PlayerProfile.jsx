@@ -31,7 +31,7 @@ function PlayerProfile() {
     const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
     const [following, setFollowing] = useState(false);
     const dispatch = useDispatch();
-
+    const [online, setOnline] = useState(false);
     useEffect(() => {
         const checkOnline = onlineUsers?.some(o => o.userId === id);
         setPlayerOnline(checkOnline)
@@ -63,11 +63,12 @@ function PlayerProfile() {
             const currentTime = new Date();
             setAge(currentTime.getFullYear() - dob.getFullYear())
             console.log(author?.value?.followers.includes(id));
-            setFollowing(author?.value?.followers.includes(id)); // Set the initial follow status
+            setFollowing(player.followers.includes(author.value?._id)); // Set the initial follow status
         } catch (error) {
             console.log(error);
         }
     }
+    console.log(onlineUsers);
 
     const followPlayer = async () => {
         try {
@@ -133,9 +134,25 @@ function PlayerProfile() {
                                         <span>{age}</span>
                                     </div>
                                     <div id='account-status'>
-                                        <div style={{ width: "20px", height: "20px", backgroundColor: "green", borderRadius: "50%" }}>
-                                        </div>
-                                        <p style={{ margin: "0", marginLeft: "10px" }}>Online</p>
+                                        {
+                                            onlineUsers && onlineUsers?.some(o => o.userId === id) && (
+                                                <>
+                                                    <div style={{ width: "20px", height: "20px", backgroundColor: "green", borderRadius: "50%" }}>
+                                                    </div>
+                                                    <p style={{ margin: "0", marginLeft: "10px" }}>Online</p>
+                                                </>
+                                            )
+                                        }
+                                        {
+                                            (!onlineUsers || !onlineUsers?.some(o => o.userId === id)) && (
+                                                <>
+                                                    <div style={{ width: "20px", height: "20px", backgroundColor: "gray", borderRadius: "50%" }}>
+                                                    </div>
+                                                    <p style={{ margin: "0", marginLeft: "10px" }}>Offline</p>
+                                                </>
+                                            )
+                                        }
+
                                     </div>
                                     <div id='account-status'>
                                         <p style={{ margin: "0", marginLeft: "10px" }}>{formatMoney(player?.player?.rentCost)}</p>

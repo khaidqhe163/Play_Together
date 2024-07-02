@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 export default function StoryPage() {
   const [stories, setStories] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentStory, setCurrentStory] = useState();
+  const [currentStory, setCurrentStory] = useState(null);
   const [openModalStory, setOpenModalStory] = useState(false);
   const { storyId, commentId } = useParams();
   useEffect(() => {
@@ -18,29 +18,36 @@ export default function StoryPage() {
   }, []);
 
   useEffect(() => {
+    // console.log(storyId);
     if (stories && storyId) {
-      let index;
+      let index = null;
       for (let i = 0; i < stories.length; i++) {
-        index = i;
-        break;
+        if (stories[i]._id === storyId) {
+          index = i;
+          break;
+        }
       }
-      if (index) setCurrentStory(index);
+      console.log("index", index);
+      if (index !== null) setCurrentStory(index);
     }
   }, [stories]);
 
-  
-
-    useEffect(() => {
-        if(!openModalStory) {
-            setCurrentStory(undefined);
-        }
-    }, [openModalStory]);
 
   useEffect(() => {
-    if (currentStory !== undefined && !openModalStory) {
+    console.log(currentStory);
+    console.log(openModalStory);
+    if (currentStory !== null && !openModalStory) {
+      console.log("zoday");
       setOpenModalStory(true);
     }
   }, [currentStory]);
+
+  useEffect(() => {
+    if (!openModalStory) {
+      setCurrentStory(null);
+    }
+  }, [openModalStory]);
+
 
   const getListStories = async () => {
     try {
@@ -74,7 +81,7 @@ export default function StoryPage() {
     } finally {
     }
   };
-
+  console.log(openModalStory);
   return (
     <div className="container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain">
       <div
@@ -114,8 +121,8 @@ export default function StoryPage() {
           onViewStory={handleViewStory}
           onOk={getListStories}
           commentId={commentId}
-          // story={stories[currentStory]}
-          // onOk={getList}
+        // story={stories[currentStory]}
+        // onOk={getList}
         />
       )}
     </div>
