@@ -197,7 +197,7 @@ export default function NavBar() {
               <div className="d-flex justify-content-center align-items-center" style={{ position: "relative" }}>
                 <FaRegBell color="white" size={35} onClick={() => setNotifyBox(!notifyBox)} />
                 {
-                  notifyBox && <NotificationBox notification={notification} setUnreadNotification={setUnreadNotification} />
+                  notifyBox && <NotificationBox notification={notification} setUnreadNotification={setUnreadNotification} setNotifyBox={setNotifyBox} />
                 }
                 {
                   !notifyBox && unReadNotification !== 0 && (

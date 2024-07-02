@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { baseUrl } from '../../../utils/service'
 import api from '../../../utils/axiosConfig'
 import { Link } from 'react-router-dom'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs';
-function NotificationBox({ notification, setUnreadNotification }) {
+function NotificationBox({ notification, setUnreadNotification, setNotifyBox }) {
     dayjs.extend(relativeTime);
+    const notificationbox = useRef(null);
     useEffect(() => {
         const readNotification = async () => {
             try {
@@ -14,8 +15,18 @@ function NotificationBox({ notification, setUnreadNotification }) {
                 console.log(error);
             }
         }
+        function handleClickOutside(event) {
+            if (notificationbox.current && !notificationbox.current.contains(event.target)) {
+                setNotifyBox(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
         readNotification();
         setUnreadNotification(0);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, [])
     return (
         < div style={{
@@ -28,7 +39,7 @@ function NotificationBox({ notification, setUnreadNotification }) {
             boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
             borderRadius: "15px",
             textAlign: "left",
-        }}>
+        }} ref={notificationbox}>
             <p className="text-white pl-30 mt-10">Thông báo</p>
             <hr style={{ color: "white" }}></hr>
             {
