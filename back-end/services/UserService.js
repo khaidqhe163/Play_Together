@@ -182,15 +182,15 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
             players = await Promise.all(players.map(async player => {
 
                 const comments = await Comment.find({ userId: player._id, storyId: null }).exec();
-                const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.stars, 0) / comments.length;
-                // player = player.toObject();
+                // console.log(comments);
+                const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.rating, 0) / comments.length;
+                player = player.toObject();
                 player.totalHiredHours = player.player.totalHiredHour;
 
                 player.averageStars = averageStars;
 
                 return player;
             }));
-
             players = players.filter(player => player.averageStars >= 4.5 && player.averageStars <= 5.0);
             players = players.sort((a, b) => b.totalHiredHours - a.totalHiredHours);
         }
