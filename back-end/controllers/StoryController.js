@@ -18,13 +18,9 @@ const getStories = async (req, res) => {
 
 const createStory = async (req, res) => {
     try {
-        console.log(req.headers);
         const userId = req.payload.id;
-        console.log(req.body.video);
         let video;
-        console.log(req.body);
         await getVideoDurationInSeconds(req.file.path).then((duration) => {
-            console.log(duration);
             video = duration;
         })
         if (video > 60) {

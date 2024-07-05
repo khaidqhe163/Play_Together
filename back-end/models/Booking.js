@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, SchemaTypes } from "mongoose";
 const bookingSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
@@ -25,6 +25,10 @@ const bookingSchema = new Schema({
     bookingStatus: {
         type: Number,
         default: true
+    },
+    bookingReview: {
+        type: Schema.Types.ObjectId,
+        ref: "comment"
     }
 }, {
     timestamps: true

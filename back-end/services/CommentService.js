@@ -1,6 +1,7 @@
 import Story from '../models/Story.js';
 import User from '../models/User.js';
 import Comment from '../models/Comment.js';
+import Booking from '../models/Booking.js';
 
 export const getAllCommentsByStoryId = async (storyID) => {
     try {
@@ -41,10 +42,29 @@ const updateComment = async (updateData, commentId) => {
     }
 };
 
+const reviewPlayer = async (commentor, userId, rating, content, bookingId) => {
+    try {
+        const review = await Comment.create({ bookingId, userId, rating, commentor, content });
+        await Booking.updateOne({ _id: bookingId }, { $set: { bookingReview: review._id } })
+        return review;
+    } catch (error) {
+        throw new Error('Error updating comment');
+    }
+}
 
+const getReviewPlayer = async (playerId) => {
+    try {
+        const reviews = await Comment.find({ userId: playerId, rating: { $exists: true } }).populate("commentor", "username avatar")
+        return reviews
+    } catch (error) {
+        throw new Error('Error updating comment');
+    }
+}
 export default {
     getAllCommentsByStoryId,
     createComment,
     deleteComment,
     updateComment,
+    reviewPlayer,
+    getReviewPlayer
 }

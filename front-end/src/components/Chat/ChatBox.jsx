@@ -28,8 +28,6 @@ function ChatBox() {
                 setConversation(con.data);
                 setCurrentConvers(con.data[0]);
                 const unreads = con.data.reduce((preValue, currentValue) => {
-                    console.log("pre", preValue.unread);
-                    console.log("cur", currentValue.unread);
                     return preValue + currentValue.unread;
                 }, 0)
                 setTotalUnread(unreads);
@@ -43,7 +41,6 @@ function ChatBox() {
     useEffect(() => {
 
         if (receiverId !== null) {
-            console.log("zoday");
             setOpenChatCanvas(true)
             setMessageType(2);
             const conversation = conversations.find((c) => {
@@ -70,7 +67,6 @@ function ChatBox() {
     }
     useEffect(() => {
         if (newChat !== null) {
-            console.log("newChat", newChat);
             setOpenChatCanvas(true)
             setMessageType(2);
             setCurrentConvers(newChat);
@@ -101,7 +97,6 @@ function ChatBox() {
                 const filterConvers = conversations.filter((c) => {
                     return c._id !== newMessage.message.conversationId;
                 })
-                console.log(updateConversation);
                 setConversation([updateConversation, ...filterConvers])
             }
         } else {
@@ -176,7 +171,6 @@ function ChatBox() {
                                         let converted_path = avatar?.avatar.replaceAll("\\", "/")
                                         const url = baseUrl + converted_path;
                                         const username = avatar?.username
-                                        console.log(a);
                                         return (
                                             <div className={`receiver-boxchat ${currentConver && currentConver._id === a._id && messageType === 2 ? "chat-active" : ""}`}
                                                 key={index}

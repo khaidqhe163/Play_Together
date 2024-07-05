@@ -10,6 +10,7 @@ export const SocketProvider = ({ user, children }) => {
     const handleClose = () => setOpenChatCanvas(false);
     const [receiverId, setReceiverId] = useState(null);
     const [newChat, setNewChat] = useState(null);
+    const [newNotification, setNewNotification] = useState(null);
     useEffect(() => {
         const newSocket = io("http://localhost:5000")
         setSocket(newSocket)
@@ -34,7 +35,9 @@ export const SocketProvider = ({ user, children }) => {
             receiverId,
             setReceiverId,
             newChat,
-            setNewChat
+            setNewChat,
+            newNotification,
+            setNewNotification
         }}>
             {children}
         </SocketContext.Provider>

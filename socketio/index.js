@@ -31,6 +31,30 @@ io.on("connection", (socket) => {
             io.to(user.socketId).emit("getNewMessagePrivate", message)
         }
     })
+
+    socket.on("logout", (userId) => {
+        console.log(userId);
+        onlineUsers = onlineUsers.filter((o) => {
+            return o.userId !== userId
+        })
+        console.log(onlineUsers);
+        io.emit("getOnlineUsers", onlineUsers)
+    })
+
+    socket.on("sendNotification", (notification) => {
+        console.log(notification);
+        if (notification?.receivers) {
+            const users = onlineUsers.filter((o) => {
+                return notification.receivers?.includes(o.userId)
+            })
+            console.log(users);
+            if (users) {
+                users.forEach((u) => {
+                    io.to(u.socketId).emit("getNotification", notification)
+                })
+            }
+        }
+    })
     socket.on("disconnect", () => {
         onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
         console.log(onlineUsers);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, Col, Container, Offcanvas, Row, Stack } from 'react-bootstrap';
 import '../css/canvas-hire.css';
 import { GrLinkNext, GrSubtractCircle, GrAddCircle } from 'react-icons/gr';
@@ -8,6 +8,7 @@ import { setUserInformation, userInfor } from "../features/userSlice";
 import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
 import { format, startOfWeek, addDays } from 'date-fns';
+import { SocketContext } from '../context/SocketContext.jsx';
 
 export default function CanvasHire({ showHire, handleClose, player, snav, setSnav, playerOnline }) {
 
@@ -17,6 +18,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
 
     const userInfo = useSelector(userInfor);
 
+    const { socket } = useContext(SocketContext);
     const [bookingDetails, setBookingDetails] = useState({
         userId: userInfo?._id || '',
         playerId: '',
@@ -76,12 +78,20 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         try {
             if (userInfo?.accountBalance < bookingDetails.price) return toast("Số tiền của bạn hiện không đủ để thanh toán! ❌💰");
             const s = await api.post(`/api/booking${player.player.onlySchedule ? "/by-schedule" : ''}`, bookingDetails);
+            const notification = await api.post("/api/notification/booking-notification", {
+                bookingId: s.data.aBooking._id,
+                playerId: s.data.aBooking.playerId,
+                onlySchedule: player.player.onlySchedule
+            })
+            socket.emit("sendNotification", notification.data)
             if (s.status === 201) {
                 dispatch(setUserInformation(s.data.restUser));
+
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
                     hours: []
                 }));
+                console.log(s.data.aBooking);
                 fetchData(schedule);
                 toast(s.data.message);
                 setTimeout(handleClose, 2000);
