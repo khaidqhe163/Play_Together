@@ -1,50 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import NavBar from '../../layouts/NavBar';
+import ListIdol from '../../layouts/ListIdol';
+import ListStoryPage from "../../components/ListStoryPage";
+import StoryModal from '../../components/Modal/StoryModal';
+import { Spin } from 'antd';
+import axios from 'axios';
 
-const Feeds = () => {
+export default function Feeds() {
     const { id } = useParams(); // Assuming you get the player id from the URL
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [currentStory, setCurrentStory] = useState();
+    const [openModalStory, setOpenModalStory] = useState(false);
 
     useEffect(() => {
-        const fetchStories = async () => {
-            try {
-                const response = await axios.get(`http://localhost:3008/api/stories/user/${id}`);
-                setStories(response.data);
-            } catch (error) {
-                setError('Error fetching stories.');
-                console.error('Error fetching stories:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (currentStory !== undefined && !openModalStory) {
+            setOpenModalStory(true);
+        }
+    }, [currentStory]);
 
+    const fetchStories = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3008/api/stories/user/${id}`);
+            setStories(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching stories:", error);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchStories();
     }, [id]);
 
-    if (loading) return <p className="text-center text-gray-500">Loading...</p>;
-    if (error) return <p className="text-center text-red-500">{error}</p>;
+    if (loading) {
+        return <Spin spinning={loading} className='d-flex justify-content-center align-content-center h-100'></Spin>;
+    }
+
+    const handleViewStory = async () => {
+        try {
+            const res = await axios.post('/api/stories/viewStory/' + stories[currentStory]?._id);
+            if (res?.isError) return;
+        } catch (error) {
+            console.log(error);
+        } 
+    };
 
     return (
-        <div className="container mx-auto px-4 mt-16">
-            <div className="flex flex-wrap -mx-2">
-                {stories.length === 0 ? (
-                    <p className="text-center text-gray-500 w-full">No stories available.</p>
-                ) : (
-                    stories.map(story => (
-                        <div key={story._id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-                            <div className="bg-white shadow-md rounded-md overflow-hidden">
-                                <video className="w-full h-auto" src={`http://localhost:3008/${story.path}`} controls></video>
-                                <p className="mt-2 p-2 text-gray-700 text-sm">{story.text}</p>
-                            </div>
+        <div className="container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain">
+            <div className="col-10">
+                    <div className="row d-flex justify-content-center">
+                        <div className="col-12 col-md-10 py-3">
+                            <ListStoryPage stories={stories} setOpenModalStory={setOpenModalStory} setCurrentStory={setCurrentStory} handleViewStory={handleViewStory} />
                         </div>
-                    ))
-                )}
-            </div>
+                    </div>
+                </div>
+
+            {!!openModalStory && (
+                <StoryModal
+                    open={stories[currentStory]}
+                    onCancel={() => setOpenModalStory(undefined)}
+                    setCurrentStory={setCurrentStory}
+                    stories={stories}
+                    onViewStory={handleViewStory}
+                    onOk={fetchStories}
+                />
+            )}
         </div>
     );
-};
-
-export default Feeds;
+}
