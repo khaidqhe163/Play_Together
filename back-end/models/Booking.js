@@ -17,6 +17,7 @@ const bookingSchema = new Schema({
     hours: {
         type: [Schema.Types.ObjectId],
         default: [],
+        ref: "schedule"
     },
     unit: {
         type: Number,

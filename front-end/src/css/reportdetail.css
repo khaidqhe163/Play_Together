@@ -1,0 +1,32 @@
+#report-detail .modal-title{
+    margin: 0;
+}
+
+.report-screen-shot {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    border: 1px solid black;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+.report-screen-shot-img {
+    width: 80px;
+    height: 80px;
+}
+
+.report-screen-shot-action {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(128, 128, 128, 0.304);
+    visibility: hidden;
+}
+
+.report-screen-shot-action svg {
+    cursor: pointer;
+}
+
+.report-screen-shot:hover .report-screen-shot-action {
+    visibility: visible;
+}

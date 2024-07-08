@@ -6,12 +6,16 @@ import { baseUrl } from '../utils/service';
 
 const ImageGallery = ({ image, isOpen, closeModal, previousImage, nextImage }) => {
     console.log(isOpen);
+    console.log(image);
     let converted_path;
-    if (image)
+    let url;
+    if (image && !image.startsWith('blob:')) {
         converted_path = image.replaceAll("\\", "/")
-    const url = baseUrl + converted_path;
+        url = baseUrl + converted_path;
+    } else
+        url = image
     return (
-        <div style={{ zIndex: "10" }} onClick={closeModal}>
+        <div onClick={closeModal}>
             <Modal
                 isOpen={isOpen}
                 onRequestClose={closeModal}
@@ -28,9 +32,11 @@ const ImageGallery = ({ image, isOpen, closeModal, previousImage, nextImage }) =
                         top: "0",
                         left: "0",
                         height: "100vh",
+                        zIndex: "1060"
                     },
                     overlay: {
                         backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                        zIndex: "1060"
                     },
                 }}
             >

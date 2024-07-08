@@ -1,4 +1,4 @@
-import { UserService } from "../services/index.js"
+import { UserService, BanService } from "../services/index.js"
 import jwt from '../middleware/jwt.js';
 import bcrypt from 'bcryptjs'
 // import bcrypt from "bcrypt";
@@ -360,10 +360,10 @@ const updateDuoSetting = async (req, res) => {
 const updateOnlySchedule = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const { isOnlySchedule} = req.body;
+        const { isOnlySchedule } = req.body;
 
         const updatedUser = await UserService.updateOnlySchedule(userId, isOnlySchedule);
-        const {password, ...rest} = updatedUser._doc;
+        const { password, ...rest } = updatedUser._doc;
         res.status(200).json(rest);
     } catch (error) {
         res.status(500).json({ message: error.toString() });
@@ -382,18 +382,86 @@ const getAllUsers = async (req, res) => {
 
 const banUser = async (req, res) => {
     try {
-        const userId = req.params.userId
-        const user = await UserService.banUser(userId)
+        const {
+            complaint,
+            reason,
+            userId
+        } = req.body;
+        let endDate;
+        console.log(complaint);
+        switch (complaint) {
+            case 1:
+                console.log("zoday");
+                endDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+                break;
+            case 2:
+                endDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+                break;
+            case 3:
+                endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                break;
+            case 4:
+                endDate = new Date(Date.now() + 100 * 365.25 * 24 * 60 * 60 * 1000);
+                break;
+            default:
+                break;
+        }
+
+        const player = await UserService.getPlayerById(userId);
+        // const transporter = nodemailer.createTransport({
+        //     host: "smtp.gmail.com",
+        //     port: 587,
+        //     secure: false, // Use `true` for port 465, `false` for all other ports
+        //     auth: {
+        //         user: "khaidqhe163770@fpt.edu.vn",
+        //         pass: "iyrdweksgcrjokhw",
+        //     },
+        // });
+        // const handlebarOptions = {
+        //     viewEngine: {
+        //         partialsDir: path.resolve('./templates/'),
+        //         defaultLayout: false,
+        //     },
+        //     viewPath: path.resolve('./templates/'),
+        // };
+        // transporter.use('compile', hbs(handlebarOptions))
+        // const mail = {
+        //     from: '"Play Together" <khaidqhe163770@fpt.edu.vn>',
+        //     to: `${player.email}`,
+        //     subject: 'Report player',
+        //     template: 'reportplayer',
+        //     context: {
+        //         description: reason,
+        //     },
+        //     attachments: [{
+        //         filename: 'warning-email.png',
+        //         path: './public/warning-email.png',
+        //         cid: 'emailbackground' //same cid value as in the html img src
+        //     }]
+        // }
+        // transporter.sendMail(mail);
+        // console.log("Send End");
+        console.log(endDate);
+        const user = await BanService.banUser(userId, endDate, reason);
         res.status(200).json(user)
     } catch (error) {
         res.status(500).json({ message: error.toString() });
     }
-} 
+}
 
+const unbanUser = async (req, res) => {
+    try {
+        const userId = req.body.userId
+        const user = await UserService.unban(userId);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json(error.toString());
+    }
+}
 const followPlayer = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const playerId = req.params.playerId; 
+        const playerId = req.params.playerId;
         const updatedUser = await UserService.followPlayer(userId, playerId);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -404,7 +472,7 @@ const followPlayer = async (req, res) => {
 const unfollowPlayer = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const playerId = req.params.playerId; 
+        const playerId = req.params.playerId;
         const updatedUser = await UserService.unfollowPlayer(userId, playerId);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -413,17 +481,17 @@ const unfollowPlayer = async (req, res) => {
 };
 const logout = async (req, res) => {
     try {
-      res.clearCookie('AccessToken');
-      res.clearCookie('RefreshToken');
-      res.status(200).json({
-        message: "Logout successful"
-      })
+        res.clearCookie('AccessToken');
+        res.clearCookie('RefreshToken');
+        res.status(200).json({
+            message: "Logout successful"
+        })
     } catch (error) {
-      res.status(500).json({
-        message: error.toString()
-      })
+        res.status(500).json({
+            message: error.toString()
+        })
     }
-  }
+}
 
 export default {
     register,
@@ -449,5 +517,6 @@ export default {
     followPlayer,
     unfollowPlayer,
     updateOnlySchedule,
-    logout
+    logout,
+    unbanUser
 }

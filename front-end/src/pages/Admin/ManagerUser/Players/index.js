@@ -8,9 +8,9 @@ import dayjs from "dayjs";
 import ModalBanUser from "../Modal/ModalBanUser";
 
 const Players = () => {
-    const [players, setPlayers] = useState([])
-    const [openModalBlockUser, setOpenModalBlockUser] = useState(false)
-    
+    const [players, setPlayers] = useState(null)
+    const [openModal, setOpenModal] = useState(false);
+    const [currentPlayer, setCurrentPlayer] = useState(0);
     const getList = async () => {
         try {
             const res = await axios.get("http://localhost:3008/api/user/players")
@@ -24,16 +24,15 @@ const Players = () => {
         getList()
     }, [])
 
-    console.log("players", players);
 
-    return ( 
+    return (
         <LayoutAdmin>
             <ContainerPage>
                 <div className="title">
                     <h6>Danh sách người dùng đã đăng ký</h6>
                 </div>
                 <div className="table">
-                    <div style={{height: '80px'}}></div>
+                    <div style={{ height: '80px' }}></div>
                     <div>
                         <table className="data_table">
                             <thead>
@@ -46,7 +45,7 @@ const Players = () => {
                             </thead>
                             <tbody>
                                 {
-                                    players.map((p, i) => (
+                                    players?.map((p, i) => (
                                         <tr key={i}>
                                             <td className="px-6 py-3">
                                                 <div className="d-flex">
@@ -67,7 +66,7 @@ const Players = () => {
                                             <td className="px-6 py-3">{i % 2 === 0 ? <span className="onl">Online</span> : <span className="off">Offline</span>}</td>
                                             <td className="px-6 py-3 created-user">{dayjs(p?.createdAt).format('DD-MM-YYYY')}</td>
                                             <td className="px-6 py-3">
-                                                <Button className="ml-20" type="primary" danger onClick={() => setOpenModalBlockUser(p)}> 
+                                                <Button className="ml-20" type="primary" danger onClick={() => { setCurrentPlayer(i); setOpenModal(true) }}>
                                                     {p?.status === false ? "Khóa" : "Mở khóa"}
                                                 </Button>
                                             </td>
@@ -79,16 +78,18 @@ const Players = () => {
                     </div>
                 </div>
 
-                {!!openModalBlockUser && (
+                {players && (
                     <ModalBanUser
-                        open={openModalBlockUser}
-                        onCancel={() => setOpenModalBlockUser(false)}
-                        onOk={getList}
+                        show={openModal}
+                        players={players}
+                        onCancel={() => setOpenModal(false)}
+                        player={players[currentPlayer]}
+                        setPlayers={setPlayers}
                     />
                 )}
             </ContainerPage>
         </LayoutAdmin>
     );
 }
- 
+
 export default Players;

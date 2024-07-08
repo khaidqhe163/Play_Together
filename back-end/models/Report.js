@@ -4,23 +4,28 @@ const reportSchema = new Schema({
     description: {
         type: String
     },
-    screenShot: {
-        type: String
-    },
+    screenShot: [String],
     reportReason: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'reportreason' 
+        type: Schema.Types.ObjectId, ref: 'reportreason'
     },
     title: {
         type: String
     },
-    owner: { 
-        type: mongoose.Schema.Types.ObjectId, ref: 'user' 
+    owner: {
+        type: Schema.Types.ObjectId, ref: 'user'
     },
     storyId: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'story'
+        type: Schema.Types.ObjectId, ref: 'story'
     },
     accused: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'user' 
+        type: Schema.Types.ObjectId, ref: 'user'
+    },
+    formsProcessing: {
+        type: String
+    },
+    status: {
+        type: Number,
+        default: 1
     }
 }, {
     timestamps: true,

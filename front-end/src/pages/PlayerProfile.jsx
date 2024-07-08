@@ -16,6 +16,7 @@ import CanvasHire from '../components/CanvasHire';
 import { Bounce, ToastContainer } from 'react-toastify';
 import api from '../utils/axiosConfig'
 import { SocketContext } from '../context/SocketContext';
+import ReportPlayer from '../components/Modal/ReportPlayerModal/ReportPlayer';
 
 function PlayerProfile() {
     const { id } = useParams();
@@ -32,6 +33,10 @@ function PlayerProfile() {
     const [following, setFollowing] = useState(false);
     const dispatch = useDispatch();
     const [online, setOnline] = useState(false);
+    const [showReport, setShowReport] = useState(false);
+
+    const handleCloseReport = () => setShowReport(false);
+    const handleShowReport = () => setShowReport(true);
     useEffect(() => {
         const checkOnline = onlineUsers?.some(o => o.userId === id);
         setPlayerOnline(checkOnline)
@@ -167,7 +172,7 @@ function PlayerProfile() {
                                 <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={followPlayer}>Theo dõi</button>
                             )}
                             <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
-                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }}>Báo cáo</button>
+                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }} onClick={handleShowReport}>Báo cáo</button>
                         </Col>
                     </Row>
                     <Row>
@@ -204,7 +209,7 @@ function PlayerProfile() {
             )}
             <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} playerOnline={playerOnline} />
             {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
-
+            <ReportPlayer show={showReport} handleClose={handleCloseReport} id={id} />
         </>
     )
 }
