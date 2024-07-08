@@ -44,7 +44,7 @@ export default function ListPlayer(props) {
                                 </div>
                                 <div className="card-body">
                                     <h3 className="card-title text-lg text-white d-flex align-items-center">
-                                        <Link className='text-decoration-none text-white'>{p.username}</Link>
+                                        <p className='text-decoration-none text-white mb-0'>{p.username}</p>
                                         <IoIosCheckmarkCircle size={20} className='ml-1 text-bgButton' />
                                         <div className="player-status ready"> </div>
                                     </h3>

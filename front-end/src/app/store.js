@@ -6,6 +6,7 @@ import refreshTokenReducer from '../features/refreshTokenSlice'
 import serviceReducer from '../features/serviceSlice'
 import socketSlice from '../features/socketSlice'
 import onlineUserSlice from '../features/onlineUserSlice'
+import navReducer from "../features/navSlice"
 
 export default configureStore ({
     reducer: {
@@ -15,6 +16,7 @@ export default configureStore ({
         refreshToken: refreshTokenReducer,
         service: serviceReducer,
         socket: socketSlice,
-        onlineUser: onlineUserSlice
+        onlineUser: onlineUserSlice,
+        navigation: navReducer    
     }
 })

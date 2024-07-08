@@ -1,27 +1,41 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   IoGameControllerOutline,
   IoHomeOutline,
   IoVideocamOutline,
 } from "react-icons/io5";
+import { MdOutlineWorkHistory } from "react-icons/md";
 import { FaUserShield, FaRegBell } from "react-icons/fa";
 import { GoTrophy } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 import RankingModal from "../components/Modal/RankingModal";
 import StoryModal from "../components/Modal/StoryModal";
-import { userInfor } from "../features/userSlice";
+import { userInfor, setUserInformation } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { baseUrl } from "../utils/service.js";
 import { MdOutlineAdd } from "react-icons/md";
 import RechargeModal from "../components/Modal/RechargeModal/RechageModal.jsx";
-
+import { getNav, setActiveButton } from "../features/navSlice.js";
+import axios from "axios";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { SocketContext } from "../context/SocketContext.jsx";
+import api from '../utils/axiosConfig'
+import NotificationBox from "../components/Modal/NotificationModal/NotificationBox.jsx";
 export default function NavBar() {
-  const [activeButton, setActiveButton] = useState(null);
+  // const [activeButton, setActiveButton] = useState(null);
+  const dispatch = useDispatch();
   const [openModalRanking, setOpenModalRanking] = useState();
   const [openModalPayment, setOpenModalPayment] = useState(false);
   const userInfo = useSelector(userInfor);
+  const activeButton = useSelector(getNav);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const nav = useNavigate();
+  const [notifyBox, setNotifyBox] = useState(false);
+  const { socket, newNotification, setNewNotification } = useContext(SocketContext)
+  const [notification, setNotification] = useState(null);
+  const [unReadNotification, setUnreadNotification] = useState(0);
+  const [audio, setAudio] = useState(null);
   const fontF = {
     fontFamily: "Arial, Helvetica, sans-serif",
     fontWeight: 500,
@@ -49,15 +63,77 @@ export default function NavBar() {
     backgroundColor: "#8d68f2",
   };
 
+  useEffect(() => {
+    if (userInfo === null) return;
+    const getNotification = async () => {
+      try {
+        const notify = await api.get("api/notification");
+        console.log(notify.data);
+        setNotification(notify.data)
+        const unread = notify.data.filter((n) => {
+          return n.isRead === false;
+        })
+        setUnreadNotification(unread.length)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getNotification();
+  }, [userInfo])
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on("getNotification", (res) => {
+      setNewNotification(res)
+    })
+  }, [socket])
+
+  useEffect(() => {
+    if (newNotification === null || !notification) return;
+    const filtedNotify = notification.filter((n) => {
+      return n._id !== newNotification._id
+    })
+    // if (filtedNotify.length === notification.length)
+    //   setNotification([newNotification, ...filtedNotify])
+    // else
+    setNotification([newNotification, ...filtedNotify])
+
+    const audioInstance = new Audio('/notification.wav');
+    setAudio(audioInstance)
+    setUnreadNotification(unReadNotification + 1)
+  }, [newNotification])
+
+  useEffect(() => {
+    if (audio === null) return;
+    audio.play().catch(error => console.log('Error playing audio:', error));
+  }, [audio])
   const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName);
+    dispatch(setActiveButton(buttonName));
   };
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:3008/api/user/logout", {},
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        }
+      )
+      socket.emit("logout", userInfo._id)
+      dispatch(setUserInformation(null));
+      toast("Đăng xuất thành công!");
+      nav('/login')
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
+
     <div
       className="row d-flex justify-content-center align-items-center py-2 navbar-wrapper"
       style={{
@@ -67,6 +143,8 @@ export default function NavBar() {
         borderBottom: "1px solid black",
       }}
     >
+
+
       <div className="col-sm-3 d-flex">
         <Link to={"/"}>
           <IoGameControllerOutline color="white" size={35} />
@@ -109,19 +187,40 @@ export default function NavBar() {
       <div className="col-sm-3 d-flex justify-content-end align-items-center">
         {userInfo && userInfo !== null ? (
           <>
-            <Link to={"/"} className="btn mx-2 rounded-circle" style={bgButton}>
+            <Link to={"/list-booking/my-booking"} className="btn mx-2 rounded-circle" style={activeButton === "booking" ? bgButtonActive : bgButton}
+              onClick={() => handleButtonClick("booking")}>
               <div className="d-flex justify-content-center align-items-center">
-                <FaUserShield color="white" size={35} />
+                <MdOutlineWorkHistory color="white" size={35} />
               </div>
             </Link>
-            <Link to={"/"} className="btn mx-2 rounded-circle" style={bgButton}>
-              <div className="d-flex justify-content-center align-items-center">
-                <FaRegBell color="white" size={35} />
+            <Link className="btn mx-2 rounded-circle" style={bgButton}>
+              <div className="d-flex justify-content-center align-items-center" style={{ position: "relative" }}>
+                <FaRegBell color="white" size={35} onClick={() => setNotifyBox(!notifyBox)} />
+                {
+                  notifyBox && <NotificationBox notification={notification} setUnreadNotification={setUnreadNotification} setNotifyBox={setNotifyBox} />
+                }
+                {
+                  !notifyBox && unReadNotification !== 0 && (
+                    <div style={{
+                      background: "red",
+                      color: "white",
+                      width: "16px",
+                      height: "16px",
+                      position: "absolute",
+                      bottom: "-10px",
+                      borderRadius: "50%",
+                      fontSize: "12px",
+                      right: "-15px"
+                    }}>
+                      {unReadNotification}
+                    </div>
+                  )
+                }
               </div>
             </Link>
-            {userInfo !== null &&(<div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
-                        <MdOutlineAdd size={22} className='font-black'/><span className='font-bold'> {userInfo.accountBalance} đ</span>
-                    </div>)}
+            {userInfo !== null && (<div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
+              <MdOutlineAdd size={22} className='font-black' /><span className='font-bold'> {userInfo.accountBalance} đ</span>
+            </div>)}
           </>
         ) : null}
         {!userInfo || userInfo === null ? (
@@ -145,64 +244,66 @@ export default function NavBar() {
           </>
         ) : (
           <div className="relative">
-              <img
-                className="w-12 h-12 rounded-circle object-cover object-center cursor-pointer"
-                src={baseUrl + userInfo.avatar}
-                onClick={handleDropdownToggle}
-                alt="user avatar"
-              />
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 rounded-lg shadow-lg z-50 text-white" style={{ backgroundColor: "#212529", }}>
-                  <Link to={`/player-profile/${userInfo._id}`} style={{ textDecoration: 'none' }}>
-                    <div className="px-4 py-3 flex justify-between items-center">
-                      <img
-                        className="w-12 h-12 mr-6 rounded-full object-cover object-center"
-                        src={baseUrl + userInfo.avatar}
-                        alt="user avatar"
-                      />
-                      <div className="ml-4 flex-grow">
-                        <span className="block text-sm text-white">
-                          {userInfo.username}
-                        </span>
-                        <span className="block text-sm text-gray-500 truncate">
-                          Xem trang player của bạn
-                        </span>
-                      </div>
+            <img
+              className="w-12 h-12 rounded-circle object-cover object-center cursor-pointer"
+              src={baseUrl + userInfo.avatar}
+              onClick={handleDropdownToggle}
+              alt="user avatar"
+            />
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-64 rounded-lg shadow-lg z-50 text-white" style={{ backgroundColor: "#212529", }}>
+                <Link to={`/player-profile/${userInfo._id}`} style={{ textDecoration: 'none' }}>
+                  <div className="px-4 py-3 flex justify-between items-center">
+                    <img
+                      className="w-12 h-12 mr-6 rounded-full object-cover object-center"
+                      src={baseUrl + userInfo.avatar}
+                      alt="user avatar"
+                    />
+                    <div className="ml-4 flex-grow">
+                      <span className="block text-sm text-white">
+                        {userInfo.username}
+                      </span>
+                      <span className="block text-sm text-gray-500 truncate">
+                        Xem trang player của bạn
+                      </span>
                     </div>
-                  </Link>
-                  <ul className="py-2">
-                    <li>
-                      <Link
-                        to={"/profile"}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-gray-400 "
-                        style={{ textDecoration: 'none' }}
-                      >
-                        Cài đặt tài khoản
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to={"/logout"}
-                        className="block px-4 py-2 text-sm text-gray-300 hover:text-gray-400"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        Đăng xuất
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+                  </div>
+                </Link>
+                <ul className="py-2">
+                  <li>
+                    <Link
+                      to={"/profile"}
+                      className="block px-4 py-2 text-sm text-gray-300 hover:text-gray-400 "
+                      style={{ textDecoration: 'none' }}
+                    >
+                      Cài đặt tài khoản
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      onClick={() => handleLogout()}
+                      className="block px-4 py-2 text-sm text-gray-300 hover:text-gray-400"
+                      style={{ textDecoration: 'none' }}
+                    >
+                      Đăng xuất
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
-      {!!openModalRanking && (
-        <RankingModal
-          open={openModalRanking}
-          onCancel={() => setOpenModalRanking(undefined)}
+      {
+        !!openModalRanking && (
+          <RankingModal
+            open={openModalRanking}
+            onCancel={() => setOpenModalRanking(undefined)}
           // onOk={getList}
-        />
-      )}
+          />
+        )
+      }
       <RechargeModal
         show={openModalPayment}
         handleClose={() => setOpenModalPayment(false)}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaUser, FaGamepad, FaUserCircle, FaKey, FaHistory, FaCog, FaList, FaBook } from 'react-icons/fa';
+import { AiFillSchedule } from "react-icons/ai";
 import { BiSolidPhotoAlbum } from "react-icons/bi"; // Importing icons
 import '../App.css';
 
@@ -107,6 +108,13 @@ export default function AccountSettings() {
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaBook style={{ marginRight: "5px" }} />
                             <span>Hướng dẫn</span>
+                        </div>
+                    </NavLink>
+                    <br />
+                    <NavLink to="/player-schedule" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <AiFillSchedule size={20}  style={{ marginRight: "5px" }} />
+                            <span>Thiết lập lịch Duo</span>
                         </div>
                     </NavLink>
                 </div>

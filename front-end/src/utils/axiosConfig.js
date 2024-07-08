@@ -15,7 +15,6 @@ let isRefreshing = false;
 instance.interceptors.request.use(function (config) {
 
     let headersToken = store.getState().accessToken.value;
-    console.log("headerToken", headersToken);
     if (headersToken) {
         config.headers.Authorization = `Bearer ${headersToken}`
     }

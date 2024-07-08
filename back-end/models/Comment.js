@@ -1,9 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
 const commentSchema = new Schema({
-    storyId: { type: Schema.Types.ObjectId, ref: 'story', required: true },
+    storyId: { type: Schema.Types.ObjectId, ref: 'story'},
+    bookingId: { type: Schema.Types.ObjectId, ref: 'booking'},
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
-    stars: { type: Number, min: 1, max: 5, default: 5 },
+    rating: { type: Number, min: 1, max: 5},
     commentor: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     content: {type: String, required: true},
     reply: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },

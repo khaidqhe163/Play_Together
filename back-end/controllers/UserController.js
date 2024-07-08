@@ -217,8 +217,8 @@ const getAllPlayer = async (req, res) => {
 
 const searchPlayerByCriteria = async (req, res) => {
     try {
-        const { gender, playerName, gameName, priceRange } = req.body;
-        const players = await UserService.searchPlayerByCriteria(gender, playerName, gameName, priceRange);
+        const { gender, category, playerName, gameName, priceRange } = req.body;
+        const players = await UserService.searchPlayerByCriteria(gender, category, playerName, gameName, priceRange);
         res.status(200).json(players);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
@@ -356,6 +356,75 @@ const updateDuoSetting = async (req, res) => {
         res.status(500).json({ message: error.toString() });
     }
 };
+
+const updateOnlySchedule = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const { isOnlySchedule} = req.body;
+
+        const updatedUser = await UserService.updateOnlySchedule(userId, isOnlySchedule);
+        const {password, ...rest} = updatedUser._doc;
+        res.status(200).json(rest);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await UserService.getAllUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const banUser = async (req, res) => {
+    try {
+        const userId = req.params.userId
+        const user = await UserService.banUser(userId)
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+} 
+
+const followPlayer = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const playerId = req.params.playerId; 
+        const updatedUser = await UserService.followPlayer(userId, playerId);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+const unfollowPlayer = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const playerId = req.params.playerId; 
+        const updatedUser = await UserService.unfollowPlayer(userId, playerId);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+const logout = async (req, res) => {
+    try {
+      res.clearCookie('AccessToken');
+      res.clearCookie('RefreshToken');
+      res.status(200).json({
+        message: "Logout successful"
+      })
+    } catch (error) {
+      res.status(500).json({
+        message: error.toString()
+      })
+    }
+  }
+
 export default {
     register,
     login,
@@ -374,5 +443,11 @@ export default {
     getPlayerByServiceId,
     updatePlayerInfo,
     getPlayerById,
-    changePassword
+    changePassword,
+    getAllUsers,
+    banUser,
+    followPlayer,
+    unfollowPlayer,
+    updateOnlySchedule,
+    logout
 }

@@ -1,28 +1,32 @@
-
 .hover-card:hover {
-  border: 1px solid #cccccc90; 
+  border: 1px solid #cccccc90;
   cursor: pointer;
   /* font-family: sans-serif; */
 }
+
 .active {
   background-color: #20202b;
   border-radius: 20px;
 }
-.carousel-control-prev-icon{
+
+.carousel-control-prev-icon {
   margin-right: 50px;
 }
-.carousel-control-next-icon{
+
+.carousel-control-next-icon {
   margin-left: 50px;
 }
-.list-item{
+
+.list-item {
   padding: 8px 10px;
 }
+
 .scrollbar {
-  overflow-y: hidden; 
+  overflow-y: hidden;
 }
 
 .scrollbar:hover {
-  overflow-y: auto; 
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #cccccc transparent;
 }
@@ -52,17 +56,35 @@
   cursor: grabbing;
 }
 
-.player::placeholder{
+.player::placeholder {
   color: white !important;
   opacity: 0.5 !important;
 }
 
 
-.App{
+.App {
   background-color: #1f1f22;
-  position: relative;;
+  position: relative;
+  ;
 }
 
-.numberMoney::placeholder{
+.numberMoney::placeholder {
   color: #cccccc;
+}
+
+.bInactive {
+  width: "550px";
+  height: "50px";
+  background-color: "#333345";
+  transition: "background-color 0.5s ease-in-out"
+}
+
+.bActive {
+  width: "550px";
+  height: "50px";
+  background-color: "#8d68f2"
+}
+
+.notification:hover {
+  background-color: #4d4d59;
 }

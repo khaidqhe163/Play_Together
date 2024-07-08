@@ -1,0 +1,29 @@
+#snav {
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    font-weight: bold;
+    color: rgb(185, 185, 185);
+    padding-left: 10px !important;
+}
+
+#snav div {
+    margin: 10px 20px;
+    cursor: pointer;
+}
+
+.snav-active {
+    position: relative;
+    color: white;
+}
+
+.snav-active::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    width: 24px;
+    height: 4px;
+    margin-left: -12px;
+    background-color: #7b47ff;
+}
