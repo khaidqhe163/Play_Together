@@ -113,7 +113,7 @@ function Services({ player, setOpenHire }) {
 
                 </div>
             </div>
-            <PiRight id={player?._id} setOpenHire={setOpenHire} />
+            <PiRight id={player?._id} setOpenHire={setOpenHire} player={player}/>
         </div>
     )
 }
