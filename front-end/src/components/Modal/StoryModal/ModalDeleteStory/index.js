@@ -20,8 +20,8 @@ const ModalDeleteStory = ({ open, onCancel, onOk }) => {
     }
     
     const footer = () => (
-        <div className="d-flex justify-content-center">
-            <Button className="mr-10" onClick={onCancel}>
+        <div className="d-flex justify-content-center ">
+            <Button className="mr-10 mb-10" onClick={onCancel}>
                 Đóng
             </Button>
             <Button onClick={handleDeleteStory} danger type="primary">
