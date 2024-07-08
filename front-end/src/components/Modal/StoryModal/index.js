@@ -449,6 +449,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             {!!openDeleteStory && (
                 <ModalDeleteStory
                     open={openDeleteStory}
+                    
                     onCancel={() => setOpenDeleteStory(false)}
                     onOk={onOk}
                 />
