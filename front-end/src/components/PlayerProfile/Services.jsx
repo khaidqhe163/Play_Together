@@ -7,7 +7,7 @@ import { baseUrl, getId } from '../../utils/service';
 import axios from 'axios'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs';
-function Services({ player, setOpenHire }) {
+function Services({ player, setOpenHire, setShowDonate}) {
     const [linkYoutube, setLinkYoutube] = useState("")
     const [services, setService] = useState();
     const [reviews, setReviews] = useState(null);
@@ -113,7 +113,7 @@ function Services({ player, setOpenHire }) {
 
                 </div>
             </div>
-            <PiRight id={player?._id} setOpenHire={setOpenHire} />
+            <PiRight id={player?._id} setOpenHire={setOpenHire} setShowDonate={setShowDonate}/>
         </div>
     )
 }

@@ -10,6 +10,7 @@ import ScheduleService from './ScheduleService.js';
 import NotificationService from './NotificationService.js';
 import ReportReasonService from './ReportReasonService.js';
 import ReportService from './ReportService.js'
+import DonateService from './DonateService.js'
 
 export {
     UserService,
@@ -24,5 +25,6 @@ export {
     NotificationService,
     ReportReasonService,
     ReportService,
+    DonateService,
 }
 

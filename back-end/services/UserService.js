@@ -2,6 +2,8 @@ import User from '../models/User.js'
 import Service from '../models/Service.js';
 import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
+import Booking from '../models/Booking.js';
+import Comment from '../models/Comment.js';
 
 var salt = bcrypt.genSaltSync(10);
 const register = async (email, username, dateOfBirth, gender, password) => {
@@ -73,7 +75,7 @@ const getAllPlayer = async () => {
     try {
         const players = await User.find({
             'player.duoSettings': true,
-            'player.totalHiredHour': { $gte: 155 },
+            // 'player.totalHiredHour': { $gte: 155 },
         }).populate("player.serviceType", "-_id image");
         return players;
     } catch (error) {
@@ -81,9 +83,45 @@ const getAllPlayer = async () => {
     }
 };
 
-const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) => {
+// const searchPlayerByCriteria = async (gender, category, playerName, gameName, priceRange) => {
+//     try {
+//         const query = {};
+
+//         if (gender) {
+//             query.gender = gender;
+//         }
+
+//         if (playerName) {
+//             query.username = { $regex: playerName, $options: 'i' };
+//         }
+
+//         if (priceRange && priceRange.length === 2) {
+//             query['player.rentCost'] = { $gte: priceRange[0], $lte: priceRange[1] };
+//         }
+//         console.log(query);
+//         // let players = await User.find(query).populate({
+//         //     path: 'player.serviceType',
+//         //     match: { name: { $regex: gameName, $options: 'i' } },
+//         // }).exec();
+
+//         // players = players.filter(user => user.player.serviceType.length > 0);
+//         let players = await User.find(query).populate('player.serviceType').exec();
+//         // Lọc lại các player có serviceType khớp với gameName
+//         players = players.filter(user =>
+//             user.player.serviceType.some(service =>
+//                 new RegExp(gameName, 'i').test(service.name)
+//             )
+//         );
+
+//         return players;
+//     } catch (error) {
+//         throw new Error(error.toString());
+//     }
+// }
+
+const searchPlayerByCriteria = async (gender, category, playerName, gameName, priceRange) => {
     try {
-        const query = {};
+        const query = { 'player.duoSettings': true };
 
         if (gender) {
             query.gender = gender;
@@ -96,26 +134,75 @@ const searchPlayerByCriteria = async (gender, playerName, gameName, priceRange) 
         if (priceRange && priceRange.length === 2) {
             query['player.rentCost'] = { $gte: priceRange[0], $lte: priceRange[1] };
         }
-        console.log(query);
-        // let players = await User.find(query).populate({
-        //     path: 'player.serviceType',
-        //     match: { name: { $regex: gameName, $options: 'i' } },
-        // }).exec();
 
-        // players = players.filter(user => user.player.serviceType.length > 0);
+        if (category) {
+            if (category === "1") {
+                // Người mới: Tạo tài khoản trong vòng 1 tháng trở lại đây
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                query.createdAt = { $gte: oneMonthAgo };
+            }
+        }
+
+        console.log(query);
+
         let players = await User.find(query).populate('player.serviceType').exec();
-        // Lọc lại các player có serviceType khớp với gameName
-        players = players.filter(user =>
-            user.player.serviceType.some(service =>
-                new RegExp(gameName, 'i').test(service.name)
-            )
-        );
+
+        if (gameName) {
+            players = players.filter(user =>
+                user.player.serviceType.some(service =>
+                    new RegExp(gameName, 'i').test(service.name)
+                )
+            );
+        }
+
+        if (category === "2") {
+            // Hot player: Số giờ thuê cao nhất và tỉ lệ hoàn thành cao trong 7 ngày
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            players = await Promise.all(players.map(async player => {
+                const bookings = await Booking.find({ playerId: player._id, createdAt: { $gte: oneWeekAgo } }).exec();
+                const completedBookings = bookings.filter(booking => booking.bookingStatus === 2).length;
+                const totalBookings = bookings.filter(booking => booking.bookingStatus === 2 || booking.bookingStatus === 3).length;
+                const completionRate = totalBookings === 0 ? 0 : (completedBookings / totalBookings);
+                // player = player.toObject();
+                player.totalHiredHours = player.player.totalHiredHour;
+                player.completionRate = completionRate;
+
+                // Tính điểm tổng hợp dựa trên totalHiredHours và completionRate
+                player.score = player.totalHiredHours + player.completionRate;
+
+                return player;
+            }));
+
+            players = players.sort((a, b) => b.score - a.score);
+        }else if (category === "3") {
+            // Vip player: Số giờ thuê cao nhất từ trước đến giờ và đánh giá từ 4.5 đến 5.0
+            players = await Promise.all(players.map(async player => {
+
+                const comments = await Comment.find({ userId: player._id, storyId: null }).exec();
+                // console.log(comments);
+                const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.rating, 0) / comments.length;
+                player = player.toObject();
+                player.totalHiredHours = player.player.totalHiredHour;
+
+                player.averageStars = averageStars;
+
+                return player;
+            }));
+            players = players.filter(player => player.averageStars >= 4.5 && player.averageStars <= 5.0);
+            players = players.sort((a, b) => b.totalHiredHours - a.totalHiredHours);
+        }
 
         return players;
     } catch (error) {
         throw new Error(error.toString());
     }
-}
+};
+
+
+
 const getPlayerByServiceId = async (serviceId) => {
     try {
 

@@ -9,7 +9,8 @@ import ConversationController from './ConversationController.js';
 import ScheduleController from './ScheduleController.js';
 import NotificationController from './NotificationController.js';
 import ReportReasonController from './ReportReasonController.js';
-import ReportController from './ReportController.js'
+import ReportController from './ReportController.js';
+import DonateController from './DonateController.js';
 
 export {
     UserController,
@@ -24,4 +25,5 @@ export {
     NotificationController,
     ReportReasonController,
     ReportController,
+    DonateController,
 }
