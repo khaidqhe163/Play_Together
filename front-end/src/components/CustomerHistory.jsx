@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/axiosConfig'
 import { formatDate } from '../utils/service'
-import '../css/CustomSpinner.css'
+// import '../css/CustomSpinner.css'
+import LoadingSpinner from './LoadingSpinner';
 
 export default function CustomerHistory() {
   const [transactions, setTransactions] = useState([]);
   const [flg, setFlg] = useState(false);
+  const [loading, setLoading] = useState(true);
   const fetchData = async () => {
     try {
       const response = await api.get('http://localhost:3008/api/transaction');
       setTransactions(response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error fetching data:', error);
     }
   };
@@ -39,37 +43,37 @@ export default function CustomerHistory() {
   return (
     <>
       <h1 className="text-white">Lịch sử giao dịch</h1>
-      {transactions.length !== 0 ? <div className="mt-4">
-        <table className="min-w-full bg-gray-800 text-white">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 text-left">Tên người chơi</th>
-              <th className="px-6 py-3 text-left">Kiểu giao dịch</th>
-              <th className="px-6 py-3 text-left">Số tiền (VNĐ)</th>
-              <th className="px-6 py-3 text-left">Ngày giao dịch</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((transaction, index) => {
-              const { type, money } = getStatusDetails(transaction.status, transaction.money);
-              return (
-                <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
-                  <td className="px-6 py-4">{transaction.userName}</td>
-                  <td className="px-6 py-4">{type}</td>
-                  <td className={`px-6 py-4 ${(transaction.status === 1 || transaction.status === 3) ? `text-red-500` : `text-green-500`}`}>{money} VNĐ</td>
-                  <td className="px-6 py-4">{formatDate(transaction.createdAt)}</td>
+      {loading ? <LoadingSpinner/> : <>
+        {
+          transactions.length !== 0 ? <div className="mt-4">
+            <table className="min-w-full bg-gray-800 text-white">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-left">Tên người chơi</th>
+                  <th className="px-6 py-3 text-left">Kiểu giao dịch</th>
+                  <th className="px-6 py-3 text-left">Số tiền (VNĐ)</th>
+                  <th className="px-6 py-3 text-left">Ngày giao dịch</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <div class="d-flex justify-content-center">
-          <div class="spinner-border custom-spinner" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
+              </thead>
+              <tbody>
+                {transactions.map((transaction, index) => {
+                  const { type, money } = getStatusDetails(transaction.status, transaction.money);
+                  return (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
+                      <td className="px-6 py-4">{transaction.userName}</td>
+                      <td className="px-6 py-4">{type}</td>
+                      <td className={`px-6 py-4 ${(transaction.status === 1 || transaction.status === 3) ? `text-red-500` : `text-green-500`}`}>{money} VNĐ</td>
+                      <td className="px-6 py-4">{formatDate(transaction.createdAt)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
 
-      </div> : <h4 className='text-white fw-normal text-center mt-28'>Hiện không có dữ liệu!</h4>}
+          </div> : <h4 className='text-white fw-normal text-center mt-28'>Hiện không có dữ liệu!</h4>
+        }
+      </>}
+
     </>
   );
 }
