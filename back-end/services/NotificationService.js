@@ -120,7 +120,7 @@ const sendBookingNotification = async (userId, bookingId, playerId, onlySchedule
             content = "muốn chơi cùng bạn. Đơn thuê này hiệu lực trong vòng 5 phút!"
             url = "/booking-online/" + bookingId;
         } else {
-            content = "đã đặt lịch chơi cùng bạn vào ngày"
+            content = "đã đặt lịch chơi cùng bạn"
             url = "/booking-schedule/" + bookingId;
         }
         const type = "booking";

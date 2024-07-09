@@ -121,12 +121,12 @@ function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
                     }
                 </div>
                 {
-                    report.status && report.status === 2 && (
+                    report?.status && report?.status === 2 && (
                         <p><b>Hình thức xử lý</b>: {report.formsProcessing}</p>
                     )
                 }
                 {
-                    report.status && report?.status === 1 && (
+                    report?.status && report?.status === 1 && (
                         <>
                             <h5 className='mt-20'>Xử lý khiếu nại</h5>
                             <Form.Label className='mt-10' style={{ color: "black" }}>Hình thức xử lý</Form.Label>

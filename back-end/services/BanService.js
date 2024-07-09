@@ -51,6 +51,15 @@ const banUser = async (userId, endDate, reason) => {
     }
 }
 
+const getBanByUserId = async (id) => {
+    try {
+        const ban = await Ban.findOne({ userId: id, expired: false }).sort({ createdAt: -1 })
+        return ban
+    } catch (error) {
+        throw new Error(error);
+    }
+}
 export default {
-    banUser
+    banUser,
+    getBanByUserId
 }

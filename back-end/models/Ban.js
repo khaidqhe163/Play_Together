@@ -6,6 +6,8 @@ const banSchema = new Schema({
     endTime: { type: Date, required: true },
     reason: { type: String, required: true },
     expired: { type: String, default: false }
+}, {
+    timestamps: true
 });
 
 const Ban = mongoose.model('Ban', banSchema);

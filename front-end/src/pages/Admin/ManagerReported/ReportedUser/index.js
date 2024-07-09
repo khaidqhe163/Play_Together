@@ -49,7 +49,7 @@ const ReportedUser = () => {
                                         return (
                                             <tr>
                                                 <td className="px-6 py-3">
-                                                    {r.owner.username}
+                                                    <b>{r.owner.username}</b>
                                                 </td>
                                                 <td className="px-6 py-3 text-danger">
                                                     {r.reportReason.content}</td>

@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 import * as path from 'path'
 import fs from "fs"
+import Ban from "../models/Ban.js";
 
 const register = async (req, res) => {
     try {
@@ -38,14 +39,29 @@ const login = async (req, res) => {
         const user = await UserService.findUserByEmail(req.body.email);
         if (!user) {
             return res.status(401).json({
-                message: "Wrong email"
+                message: "Email chưa được đăng ký"
             })
         }
         const hashPassword = bcrypt.compareSync(req.body.password, user.password);
         if (!hashPassword) {
             return res.status(401).json({
-                message: "Wrong password"
+                message: "Sai mật khẩu"
             })
+        }
+        if (user.status) {
+            console.log("zoday");
+            const ban = await BanService.getBanByUserId(user._id);
+            const endTime = new Date(ban.endTime);
+            console.log(endTime);
+            console.log(Date.now() < endTime);
+            if (Date.now() < endTime) {
+                console.log("ban");
+                return res.status(401).json({
+                    message: "Tài khoản của bạn đã bị cấm"
+                })
+            } else {
+                await UserService.unban(user._id);
+            }
         }
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
@@ -66,9 +82,25 @@ const login = async (req, res) => {
 
 const autoLogin = async (req, res) => {
     try {
-        const user = await UserService.autoLogin(req.payload.email);
+        const user = await UserService.findUserByEmail(req.payload.email);
         const refreshToken = req.cookies.RefreshToken;
-        const { password, ...returnUser } = user.user;
+        if (user.status) {
+            const ban = await BanService.getBanByUserId(user._id);
+            const endTime = new Date(ban.endTime);
+            console.log(endTime);
+            console.log(Date.now() < endTime);
+            if (Date.now() < endTime) {
+                console.log("ban");
+                return res.status(401).json({
+                    message: "Tài khoản của bạn đã bị cấm"
+                })
+            } else {
+                await UserService.unban(user._id);
+            }
+        }
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const { password, ...returnUser } = user;
+        res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json({
             user: returnUser,
             accessToken: user.accessToken,
@@ -91,7 +123,10 @@ const loginPassport = async (req, res) => {
         }
         console.log(tokenElements);
         const user = await UserService.autoLogin(tokenElements[0]);
-        res.cookie("jwt", user.accessToken, { maxAge: 60000, httpOnly: true });
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
+        res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
+        res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json(user)
     } catch (error) {
         res.status(500).json({
