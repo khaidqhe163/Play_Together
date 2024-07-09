@@ -360,10 +360,10 @@ const updateDuoSetting = async (req, res) => {
 const updateOnlySchedule = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const { isOnlySchedule} = req.body;
+        const { isOnlySchedule } = req.body;
 
         const updatedUser = await UserService.updateOnlySchedule(userId, isOnlySchedule);
-        const {password, ...rest} = updatedUser._doc;
+        const { password, ...rest } = updatedUser._doc;
         res.status(200).json(rest);
     } catch (error) {
         res.status(500).json({ message: error.toString() });
@@ -388,12 +388,12 @@ const banUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.toString() });
     }
-} 
+}
 
 const followPlayer = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const playerId = req.params.playerId; 
+        const playerId = req.params.playerId;
         const updatedUser = await UserService.followPlayer(userId, playerId);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -404,7 +404,7 @@ const followPlayer = async (req, res) => {
 const unfollowPlayer = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const playerId = req.params.playerId; 
+        const playerId = req.params.playerId;
         const updatedUser = await UserService.unfollowPlayer(userId, playerId);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -413,17 +413,18 @@ const unfollowPlayer = async (req, res) => {
 };
 const logout = async (req, res) => {
     try {
-      res.clearCookie('AccessToken');
-      res.clearCookie('RefreshToken');
-      res.status(200).json({
-        message: "Logout successful"
-      })
+        res.clearCookie('AccessToken');
+        res.clearCookie('RefreshToken');
+        res.status(200).json({
+            message: "Logout successful"
+        })
     } catch (error) {
-      res.status(500).json({
-        message: error.toString()
-      })
+        res.status(500).json({
+            message: error.toString()
+        })
     }
-  }
+};
+
 
 export default {
     register,

@@ -11,6 +11,7 @@ import NotificationController from './NotificationController.js';
 import ReportReasonController from './ReportReasonController.js';
 import ReportController from './ReportController.js';
 import DonateController from './DonateController.js';
+import TransactionController from './TransactionController.js';
 
 export {
     UserController,
@@ -26,4 +27,5 @@ export {
     ReportReasonController,
     ReportController,
     DonateController,
+    TransactionController,
 }
