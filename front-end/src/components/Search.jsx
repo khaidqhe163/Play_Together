@@ -168,7 +168,7 @@ export default function Search() {
             <div className='row'>
               {listSearch.map(p => (
                 <div className='col-md-3 mb-4'>
-                  <Link className='text-decoration-none'>
+                  <Link className='text-decoration-none' to={`/player-profile/${p._id}`}>
                     <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
                       <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
                       <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>
@@ -179,7 +179,8 @@ export default function Search() {
                       </div>
                       <div className="card-body">
                         <h3 className="card-title text-lg text-white d-flex align-items-center">
-                          <Link className='text-decoration-none text-white'>{p.username}</Link>
+                          {/* <Link className='text-decoration-none text-white'>{p.username}</Link> */}
+                          <p className='text-decoration-none text-white mb-0'>{p.username}</p>
                           <IoIosCheckmarkCircle size={20} className='ml-1 text-bgButton' />
                           <div className="player-status ready"> </div>
                         </h3>

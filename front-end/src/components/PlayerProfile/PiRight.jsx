@@ -3,7 +3,7 @@ import { SocketContext } from '../../context/SocketContext'
 import api from '../../utils/axiosConfig'
 import { userInfor } from '../../features/userSlice';
 import { useSelector } from 'react-redux';
-function PiRight({ id, setOpenHire, player }) {
+function PiRight({ id, setOpenHire, player, setShowDonate }) {
     const { setOpenChatCanvas, setReceiverId, newChat, setNewChat } = useContext(SocketContext)
     const userInfo = useSelector(userInfor);
     const handleOpenChat = async () => {
@@ -47,7 +47,7 @@ function PiRight({ id, setOpenHire, player }) {
     return (
         <div className='pi-right pi'>
             <button onClick={handleOpenChat}>Chat</button>
-            <button>Donate</button>
+            <button onClick={setShowDonate}>Donate</button>
             <button onClick={setOpenHire}>Thuê</button>
         </div>
     )

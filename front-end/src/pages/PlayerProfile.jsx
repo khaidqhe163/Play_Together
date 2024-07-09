@@ -10,6 +10,7 @@ import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl, formatMoney } from '../utils/service';
 import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
+import Feeds from '../components/PlayerProfile/Feeds';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
 import CanvasHire from '../components/CanvasHire';
@@ -17,6 +18,7 @@ import { Bounce, ToastContainer } from 'react-toastify';
 import api from '../utils/axiosConfig'
 import { SocketContext } from '../context/SocketContext';
 import ReportPlayer from '../components/Modal/ReportPlayerModal/ReportPlayer';
+import DonateModal from '../components/Modal/DonateModal/DonateModal';
 
 function PlayerProfile() {
     const { id } = useParams();
@@ -28,6 +30,8 @@ function PlayerProfile() {
     const [playerOnline, setPlayerOnline] = useState(false);
     const [openModalBlock, setOpenModalBlock] = useState(false);
     const [openHire, setOpenHire] = useState(false);
+    const [showDonate, setShowDonate] = useState(false);
+
     const author = useSelector((state) => state.user);
     const [blocked, setBlocked] = useState(author?.value?.blockedUsers?.includes(id))
     const [following, setFollowing] = useState(false);
@@ -189,13 +193,16 @@ function PlayerProfile() {
                     </Row>
                 </Container>
                 {
-                    subnav === 1 && <Achivement player={player} setOpenHire={() => { setOpenHire(true) }} />
+                    subnav === 1 && <Achivement player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={()=>setShowDonate(true)}/>
                 }
                 {
-                    subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} />
+                    subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={()=>setShowDonate(true)}/>
                 }
                 {
-                    subnav === 3 && <Album player={player} />
+                    subnav === 3 && <Album player={player}/>
+                }
+                {
+                    subnav === 4 && <Feeds/>
                 }
             </div>
 
@@ -210,6 +217,7 @@ function PlayerProfile() {
             <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} playerOnline={playerOnline} />
             {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
             <ReportPlayer show={showReport} handleClose={handleCloseReport} id={id} />
+            <DonateModal showDonate={showDonate} handleClose={()=>setShowDonate(false)} player={player}/>
         </>
     )
 }

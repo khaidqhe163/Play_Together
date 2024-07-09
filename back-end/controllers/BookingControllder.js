@@ -233,6 +233,7 @@ const changeStatusToProgress = async (req, res) => {
         const now = new Date().getTime();
         let restU = {};
         const b = await BookingService.getBookingById(idBooking);
+        const aPlayer = await UserService.getPlayerById(playerId);
         if (status == 1) {
             let createA = new Date(b.createdAt).getTime();
             createA += (5 * 60 * 1000);
@@ -242,19 +243,23 @@ const changeStatusToProgress = async (req, res) => {
                 return res.status(400).json({ error: "Lịch này đã hết hạn! ❌📆", d });
             }
 
-            const aPlayer = await UserService.getPlayerById(playerId);
+            // const aPlayer = await UserService.getPlayerById(playerId);
             aPlayer.accountBalance += (parseInt(b.price) * 0.9);
             await aPlayer.save();
             const { password, ...restUser } = aPlayer._doc;
             restU = restUser;
         } else if (status == 2) {
+            // const playerInFor = await UserService.getPlayerById()
+
             const checkB = b.hours.length;
             if (!checkB) {
                 let endTime = new Date(b.createdAt).getTime();
                 endTime += (b.unit * 30 * 60 * 1000);
                 const decision = now <= endTime;
                 if (decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc! ❌" });
-            } else {
+                aPlayer.player.totalHiredHour += (parseInt(b.unit)/2);
+                await aPlayer.save();
+            }else{
                 const { _id,
                     userId,
                     playerId,
@@ -284,9 +289,10 @@ const changeStatusToProgress = async (req, res) => {
                 ));
 
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
-
-                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
-
+         
+                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
+                aPlayer.player.totalHiredHour += (parseInt(checkB)/2);
+                await aPlayer.save();
             }
         } else if (status == 3) {
             const { userId } = req.body;

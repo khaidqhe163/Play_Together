@@ -252,8 +252,8 @@ const getAllPlayer = async (req, res) => {
 
 const searchPlayerByCriteria = async (req, res) => {
     try {
-        const { gender, playerName, gameName, priceRange } = req.body;
-        const players = await UserService.searchPlayerByCriteria(gender, playerName, gameName, priceRange);
+        const { gender, category, playerName, gameName, priceRange } = req.body;
+        const players = await UserService.searchPlayerByCriteria(gender, category, playerName, gameName, priceRange);
         res.status(200).json(players);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
