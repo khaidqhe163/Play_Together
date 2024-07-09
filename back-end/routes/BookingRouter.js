@@ -8,7 +8,7 @@ BookingRouter.get('/', BookingController.getTop10Lessees);
 BookingRouter.get('/my-booking', jwt.verifyAccessToken, BookingController.getMyBooking);
 BookingRouter.get('/booking-online', jwt.verifyAccessToken, BookingController.getBookingOnlineOfPlayer);
 BookingRouter.get('/booking-schedule', jwt.verifyAccessToken, BookingController.getBookingScheduleOfPlayer);
-// BookingRouter.get('/booking-schedules', BookingController.getBookingS);
+BookingRouter.get('/booking-success', jwt.verifyAccessToken, BookingController.getListBookingSuccess);
 // BookingRouter.get('/booking-online', BookingController.getBookingOnlineOfPlayer);
 BookingRouter.put('/booking-online', jwt.verifyAccessToken, BookingController.changeStatusToProgress);
 BookingRouter.post('/', BookingController.createBooking);

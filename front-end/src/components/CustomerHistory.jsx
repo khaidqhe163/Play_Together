@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/axiosConfig'
 import { formatDate } from '../utils/service'
+import { format, startOfWeek, addDays } from 'date-fns';
 // import '../css/CustomSpinner.css'
 import LoadingSpinner from './LoadingSpinner';
 
@@ -63,7 +64,7 @@ export default function CustomerHistory() {
                       <td className="px-6 py-4">{transaction.userName}</td>
                       <td className="px-6 py-4">{type}</td>
                       <td className={`px-6 py-4 ${(transaction.status === 1 || transaction.status === 3) ? `text-red-500` : `text-green-500`}`}>{money} VNĐ</td>
-                      <td className="px-6 py-4">{formatDate(transaction.createdAt)}</td>
+                      <td className="px-6 py-4">{format(new Date(transaction.createdAt), "dd-MM-yyyy")}</td>
                     </tr>
                   );
                 })}
