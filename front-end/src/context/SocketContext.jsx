@@ -11,6 +11,7 @@ export const SocketProvider = ({ user, children }) => {
     const [receiverId, setReceiverId] = useState(null);
     const [newChat, setNewChat] = useState(null);
     const [newNotification, setNewNotification] = useState(null);
+    const [newMessage, setNewMessage] = useState(null);
     useEffect(() => {
         const newSocket = io("http://localhost:5000")
         setSocket(newSocket)
@@ -23,6 +24,9 @@ export const SocketProvider = ({ user, children }) => {
         socket.emit("addNewUser", user?._id)
         socket.on("getOnlineUsers", (res) => {
             setOnlineUsers(res)
+        })
+        socket.on("getNewMessagePrivate", (res) => {
+            setNewMessage(res)
         })
     }, [socket, user])
     return (
@@ -37,7 +41,9 @@ export const SocketProvider = ({ user, children }) => {
             newChat,
             setNewChat,
             newNotification,
-            setNewNotification
+            setNewNotification,
+            newMessage,
+            setNewMessage
         }}>
             {children}
         </SocketContext.Provider>

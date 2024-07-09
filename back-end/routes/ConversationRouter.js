@@ -7,7 +7,7 @@ const ConversationRouter = express.Router();
 ConversationRouter.post("/create-conversation", jwt.verifyAccessToken, ConversationController.createConversation)
 ConversationRouter.get("/get-all/:id", jwt.verifyAccessToken, ConversationController.getConversationByUserId)
 ConversationRouter.get("/:type", ConversationController.getConverByType)
-ConversationRouter.get("/:firstId/:secondId", ConversationController.getConversation)
+ConversationRouter.get("/get-conversation-by-id/:firstId/:secondId", jwt.verifyAccessToken, ConversationController.getConversation)
 
 
 export default ConversationRouter

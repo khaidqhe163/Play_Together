@@ -1,0 +1,107 @@
+#report-modal {
+    z-index: 10;
+}
+
+#report-modal .modal-content {
+    border-radius: 15px;
+
+}
+
+#report-modal .modal-body {
+    width: 600px;
+    border-radius: 15px;
+    padding: 30px;
+}
+
+#type {
+    background-color: #2c2c3c;
+    padding: 12px 20px;
+    color: white;
+}
+
+#type:required:invalid {
+    color: gray !important;
+}
+
+#type option {
+    color: white;
+}
+
+#type option[value=""][disabled] {
+    display: none;
+}
+
+#report-modal .form-control {
+    background-color: #2c2c3c;
+    color: white;
+}
+
+#report-modal .form-control::placeholder {
+    color: gray;
+}
+
+.report-action {
+    text-align: end;
+}
+
+.report-action button {
+    padding: 10px 25px;
+    border-radius: 25px;
+}
+
+.report-action button:first-child {
+    background-color: #333345;
+}
+
+.report-action .disable-btn {
+    background-color: #2c2c3c;
+    margin-left: 20px;
+    cursor: not-allowed
+}
+
+#import-screenshot {
+    width: 100px;
+    height: 100px;
+    background-color: #333345;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    cursor: pointer;
+}
+
+.screen-shot {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    border: 1px solid white;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+.screen-shot-img {
+    width: 80px;
+    height: 80px;
+}
+
+.screen-shot-action {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(128, 128, 128, 0.304);
+    visibility: hidden;
+}
+
+.screen-shot-action svg {
+    cursor: pointer;
+}
+
+.screen-shot:hover .screen-shot-action {
+    visibility: visible;
+}
+
+.activeBtn{
+    background-color: #6123d2;
+    color: white;
+    margin-left: 20px;
+}

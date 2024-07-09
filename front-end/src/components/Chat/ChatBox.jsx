@@ -12,15 +12,16 @@ import { userInfor } from '../../features/userSlice';
 import { baseUrl } from '../../utils/service';
 import ChatBoxDual from './ChatBoxDual';
 import { SocketContext } from '../../context/SocketContext';
+import axios from 'axios';
 function ChatBox() {
     const userInfo = useSelector(userInfor);
     const { onlineUsers, openChatCanvas, handleClose, setOpenChatCanvas,
-        receiverId, newChat, setReceiverId } = useContext(SocketContext)
+        receiverId, newChat, setReceiverId, newMessage, setNewMessage } = useContext(SocketContext)
     const [messageType, setMessageType] = useState(1);
     const [conversations, setConversation] = useState();
     const [currentConver, setCurrentConvers] = useState(null);
     const [totalUnread, setTotalUnread] = useState(0);
-    const [newMessage, setNewMessage] = useState(null)
+    // const [newMessage, setNewMessage] = useState(null)
     useEffect(() => {
         const getConversations = async () => {
             try {
@@ -46,7 +47,9 @@ function ChatBox() {
             const conversation = conversations.find((c) => {
                 return c?.members[0]._id === receiverId || c?.members[1]._id === receiverId
             })
-            setTotalUnread(totalUnread - conversation.unread)
+            if (totalUnread !== 0) {
+                setTotalUnread(totalUnread - conversation.unread)
+            }
             const updateConvers = conversations.map((c) => {
                 if (c._id === conversation._id)
                     c.unread = 0;
@@ -67,15 +70,34 @@ function ChatBox() {
     }
     useEffect(() => {
         if (newChat !== null) {
-            setOpenChatCanvas(true)
+            setOpenChatCanvas(true);
             setMessageType(2);
-            setCurrentConvers(newChat);
-            setConversation([newChat, ...conversations]);
+            if (newChat._id !== "newchat") {
+                conversations.forEach((c) => {
+                    if (c._id === newChat._id) {
+                        setCurrentConvers(c);
+                    }
+                })
+            } else {
+                setCurrentConvers(newChat);
+                setConversation([newChat, ...conversations]);
+            }
         }
     }, [newChat])
+
+    useEffect(() => {
+        if (!openChatCanvas) {
+            setReceiverId(null);
+            setConversation(conversations?.filter((c) => {
+                return c._id !== "newchat"
+            }))
+            setMessageType(1);
+        }
+    }, [openChatCanvas])
     const handleChangeChat = (index) => {
         setCurrentConvers(conversations[index]);
-        setTotalUnread(totalUnread - conversations[index].unread)
+        if (totalUnread !== 0)
+            setTotalUnread(totalUnread - conversations[index].unread)
         const updateConvers = conversations.map((c) => {
             if (c._id === conversations[index]._id)
                 c.unread = 0;
@@ -88,33 +110,56 @@ function ChatBox() {
 
     useEffect(() => {
         if (newMessage === null) return;
-        if (newMessage?.senderId !== userInfo._id && currentConver._id === newMessage?.message?.conversationId) {
-            const updateConversation = conversations.find((c) => {
-                return c._id === newMessage.message.conversationId;
-            })
-            if (updateConversation) {
-                updateConversation.lastestMessage = newMessage.message.text;
-                const filterConvers = conversations.filter((c) => {
-                    return c._id !== newMessage.message.conversationId;
-                })
-                setConversation([updateConversation, ...filterConvers])
-            }
-        } else {
-            const updateConversation = conversations.find((c) => {
-                return c._id === newMessage.message.conversationId;
-            })
-            if (updateConversation) {
-                updateConversation.lastestMessage = newMessage.message.text;
-                updateConversation.unread = updateConversation.unread + 1;
-                const filterConvers = conversations.filter((c) => {
-                    return c._id !== newMessage.message.conversationId;
-                })
-                setConversation([updateConversation, ...filterConvers])
-            }
+
+        const newConvers = conversations?.some((c) => {
+            return c._id === newMessage?.message?.conversationId
+        })
+        console.log("newConvers", newConvers);
+        if (!newConvers) {
+            getConversationById(newMessage?.senderId);
         }
-        if (newMessage.message.conversationId !== currentConver._id)
-            setTotalUnread(totalUnread + 1);
+        else {
+            if (newMessage?.senderId !== userInfo._id && currentConver._id === newMessage?.message?.conversationId) {
+                const updateConversation = conversations?.find((c) => {
+                    return c._id === newMessage.message.conversationId;
+                })
+                if (updateConversation) {
+                    updateConversation.lastestMessage = newMessage.message.text;
+                    const filterConvers = conversations.filter((c) => {
+                        return c._id !== newMessage.message.conversationId;
+                    })
+                    setConversation([updateConversation, ...filterConvers])
+                }
+            } else {
+                const updateConversation = conversations?.find((c) => {
+                    return c._id === newMessage.message.conversationId;
+                })
+                if (updateConversation) {
+                    updateConversation.lastestMessage = newMessage.message.text;
+                    updateConversation.unread = updateConversation.unread + 1;
+                    const filterConvers = conversations.filter((c) => {
+                        return c._id !== newMessage.message.conversationId;
+                    })
+                    setConversation([updateConversation, ...filterConvers])
+                }
+            }
+            if (newMessage.message.conversationId !== currentConver._id)
+                setTotalUnread(totalUnread + 1);
+        }
     }, [newMessage])
+
+    const getConversationById = async (id) => {
+        try {
+            console.log("new message");
+            const chat = await api.get(`/api/conversation/get-conversation-by-id/${userInfo._id}/${id}`)
+            console.log(chat.data);
+            setCurrentConvers(chat.data)
+            setConversation([chat.data, ...conversations])
+            return chat.data
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <div className='message-box'>
             <div>
@@ -131,7 +176,7 @@ function ChatBox() {
                         <div key={index} className="receiver" style={{ backgroundImage: `url(${url})` }}
                             onClick={() => setReceiverId(avatar._id)}>
                             {
-                                a?.unread !== 0 && <span className='unread-message um-position'>{a?.unread}</span>
+                                a.unread !== undefined && a?.unread !== 0 && <span className='unread-message um-position'>{a?.unread}</span>
                             }
                             {
                                 onlineUsers?.some((o) => {
@@ -170,6 +215,7 @@ function ChatBox() {
                                         })
                                         let converted_path = avatar?.avatar.replaceAll("\\", "/")
                                         const url = baseUrl + converted_path;
+                                        console.log(avatar);
                                         const username = avatar?.username
                                         return (
                                             <div className={`receiver-boxchat ${currentConver && currentConver._id === a._id && messageType === 2 ? "chat-active" : ""}`}
@@ -185,8 +231,8 @@ function ChatBox() {
                                                 </div>
                                                 <div className='time-receipt' style={{ width: "56px" }}>
                                                     {
-                                                        a?.unread !== 0 &&
-                                                        <span className='unread-message' style={{ marginLeft: "40px" }}>{a?.unread}</span>
+                                                        a.unread !== undefined && a.unread !== 0 &&
+                                                        <span className='unread-message' style={{ marginLeft: "40px" }}>{a.unread}</span>
                                                     }
                                                 </div>
                                             </div>
@@ -201,7 +247,7 @@ function ChatBox() {
                                 {
                                     messageType === 2 && <ChatBoxDual currentConversation={currentConver}
                                         setConversation={setConversation} conversations={conversations}
-                                        newMessage={newMessage} setNewMessage={setNewMessage} />
+                                        newMessage={newMessage} setNewMessage={setNewMessage} setCurrentConvers={setCurrentConvers} />
                                 }
 
                             </Col>

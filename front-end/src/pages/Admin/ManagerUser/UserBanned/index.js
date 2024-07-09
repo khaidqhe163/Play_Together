@@ -8,9 +8,9 @@ import { ContainerPage } from "../Users/styled";
 import ModalBanUser from "../Modal/ModalBanUser";
 
 const UserBanned = () => {
-    const [usersBan, setUsersBan] = useState([]) 
-    const [openModalBlockUser, setOpenModalBlockUser] = useState(false)
-
+    const [usersBan, setUsersBan] = useState(null)
+    const [openModal, setOpenModal] = useState(false);
+    const [currentPlayer, setCurrentPlayer] = useState(0);
     const getList = async () => {
         try {
             const res = await axios.post("http://localhost:3008/api/user/users")
@@ -24,7 +24,7 @@ const UserBanned = () => {
         getList()
     }, [])
 
-    return (  
+    return (
         <LayoutAdmin>
             <ContainerPage>
 
@@ -32,7 +32,7 @@ const UserBanned = () => {
                     <h6>Danh sách người dùng đã bị khóa</h6>
                 </div>
                 <div className="table">
-                    <div style={{height: '80px'}}></div>
+                    <div style={{ height: '80px' }}></div>
                     <div>
                         <table className="data_table">
                             <thead>
@@ -47,7 +47,7 @@ const UserBanned = () => {
                             </thead>
                             <tbody>
                                 {
-                                    usersBan.filter(u => u.status).map((u, i) => (
+                                    usersBan?.filter(u => u.status).map((u, i) => (
                                         <tr key={i}>
                                             <td className="px-6 py-3">
                                                 <div className="d-flex">
@@ -70,7 +70,7 @@ const UserBanned = () => {
                                             <td>Ngày</td>
                                             <td>Lý do</td>
                                             <td className="px-6 py-3">
-                                                <Button className="ml-20" type="primary" danger onClick={() => setOpenModalBlockUser(u)}>
+                                                <Button className="ml-20" type="primary" danger onClick={() => { setCurrentPlayer(i); setOpenModal(true) }}>
                                                     Mở khóa
                                                 </Button>
                                             </td>
@@ -82,16 +82,18 @@ const UserBanned = () => {
                     </div>
                 </div>
 
-                {!!openModalBlockUser && (
+                {usersBan && (
                     <ModalBanUser
-                        open={openModalBlockUser}
-                        onCancel={() => setOpenModalBlockUser(false)}
-                        onOk={getList}
+                        show={openModal}
+                        players={usersBan}
+                        onCancel={() => setOpenModal(false)}
+                        player={usersBan[currentPlayer]}
+                        setPlayers={setUsersBan}
                     />
                 )}
             </ContainerPage>
         </LayoutAdmin>
     );
 }
- 
+
 export default UserBanned;

@@ -8,9 +8,9 @@ import { baseUrl } from "../../../../utils/service";
 import ModalBanUser from "../Modal/ModalBanUser";
 
 const ManagerUser = () => {
-    const [users, setUsers] = useState([])
-    const [openModalBlockUser, setOpenModalBlockUser] = useState(false)
-
+    const [users, setUsers] = useState(null)
+    const [openModal, setOpenModal] = useState(false);
+    const [currentPlayer, setCurrentPlayer] = useState(0);
     const getAllUsers = async () => {
         try {
             const res = await axios.post("http://localhost:3008/api/user/users")
@@ -44,7 +44,7 @@ const ManagerUser = () => {
                             </thead>
                             <tbody>
                                 {
-                                    users.map((u, i) => (
+                                    users?.map((u, i) => (
                                         <tr key={i}>
                                             <td className="px-6 py-3">
                                                 <div className="d-flex">
@@ -65,7 +65,7 @@ const ManagerUser = () => {
                                             <td className="px-6 py-3">{i % 2 === 0 ? <span className="onl">Online</span> : <span className="off">Offline</span>}</td>
                                             <td className="px-6 py-3 created-user">{dayjs(u?.createdAt).format('DD-MM-YYYY')}</td>
                                             <td className="px-6 py-3">
-                                                <Button className="ml-20" type="primary" danger onClick={() => setOpenModalBlockUser(u)}>
+                                                <Button className="ml-20" type="primary" danger onClick={() => { setCurrentPlayer(i); setOpenModal(true) }}>
                                                     {u?.status === false ? "Khóa" : "Mở khóa"}
                                                 </Button>
                                             </td>
@@ -77,11 +77,13 @@ const ManagerUser = () => {
                     </div>
                 </div>
 
-                {!!openModalBlockUser && (
+                {users && (
                     <ModalBanUser
-                        open={openModalBlockUser}
-                        onCancel={() => setOpenModalBlockUser(false)}
-                        onOk={getAllUsers}
+                        show={openModal}
+                        players={users}
+                        onCancel={() => setOpenModal(false)}
+                        player={users[currentPlayer]}
+                        setPlayers={setUsers}
                     />
                 )}
             </ContainerPage>

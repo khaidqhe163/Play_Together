@@ -23,7 +23,21 @@ const createConversation = async (type, member1, member2) => {
 
 const getConversation = async (member1, member2) => {
     try {
-        const conversation = await Conversation.findOne({ members: { $all: [member1, member2] } });
+        console.log(member1);
+        const conversation = await Conversation.findOne({ members: { $all: [member1, member2] } }).populate('members', ["username", "avatar"]);
+        if (conversation) {
+            const unreadMessage = await MessageService.getUnreadMessage(member1, conversation._id);
+            let latestMessage = null;
+            if (unreadMessage.length === 0) {
+                latestMessage = await MessageService.getLatestMessage(conversation._id);
+            }
+            const returnMessage = {
+                ...conversation._doc,
+                unread: unreadMessage.length,
+                lastestMessage: unreadMessage[unreadMessage.length - 1]?.text || latestMessage.text || null
+            }
+            return returnMessage;
+        }
         return conversation;
     } catch (error) {
         throw new Error(error)
