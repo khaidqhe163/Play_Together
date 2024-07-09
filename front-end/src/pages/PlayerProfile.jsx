@@ -10,6 +10,7 @@ import Achivement from '../components/PlayerProfile/Achivement';
 import { baseUrl, formatMoney } from '../utils/service';
 import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
+import Feeds from '../components/PlayerProfile/Feeds';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateBlockedUsers } from '../features/userSlice';
 import CanvasHire from '../components/CanvasHire';
@@ -194,6 +195,9 @@ function PlayerProfile() {
                 }
                 {
                     subnav === 3 && <Album player={player}/>
+                }
+                {
+                    subnav === 4 && <Feeds/>
                 }
             </div>
 

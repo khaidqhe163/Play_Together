@@ -71,10 +71,22 @@ const getStoryDetail = async (storyId) => {
     }
   }
 
-export default {
-    getAllStories,
-    uploadVideo,
-    getStoryDetail,
-    likeOrUnlikeStory,
-    viewStory,
+// In StoryService.js
+const getStoriesByUser = async (userId) => {
+  try {
+      const stories = await Story.find({ author: userId }).populate("author", "_id username avatar").exec();
+      return stories;
+  } catch (error) {
+      throw new Error(error.toString());
+  }
 }
+
+export default {
+  getAllStories,
+  uploadVideo,
+  getStoryDetail,
+  likeOrUnlikeStory,
+  viewStory,
+  getStoriesByUser, // Add this line
+}
+
