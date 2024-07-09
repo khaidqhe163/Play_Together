@@ -126,6 +126,7 @@ export default function NavBar() {
       )
       socket.emit("logout", userInfo._id)
       dispatch(setUserInformation(null));
+      dispatch(setActiveButton("home"));
       toast("Đăng xuất thành công!");
       nav('/login')
     } catch (error) {

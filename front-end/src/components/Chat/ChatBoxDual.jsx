@@ -9,23 +9,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { userInfor } from '../../features/userSlice.js';
 import { PiDotsThreeBold } from "react-icons/pi";
 import { SocketContext } from '../../context/SocketContext.jsx';
-function ChatBoxDual({ currentConversation, setConversation, conversations, newMessage, setNewMessage }) {
+function ChatBoxDual({ currentConversation, setConversation, conversations, newMessage, setNewMessage, setCurrentConvers }) {
     const chatbox = useRef(null);
     const { socket } = useContext(SocketContext);
     const [textMessage, setTextMessage] = useState("")
     const userInfo = useSelector(userInfor)
     const [messages, setMessages] = useState([]);
-    // const [newMessage, setNewMessage] = useState(null);
-    console.log(currentConversation);
     const [receiver, setReceiver] = useState();
-    const [messageSetting, setMessageSetting] = useState(false);
 
     useEffect(() => {
         if (currentConversation !== null) {
             const handleGetMessage = async () => {
                 try {
                     const mes = await axios.get("http://localhost:3008/api/message/" + currentConversation._id);
-                    console.log(mes.data);
                     setMessages(mes.data);
                 } catch (error) {
                     console.log(error);
@@ -39,27 +35,46 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
         }
     }, [currentConversation])
 
-    useEffect(() => {
-        if (socket === null) return;
-        socket.on("getNewMessagePrivate", (res) => {
-            setNewMessage(res)
-        })
-    }, [socket, currentConversation])
+    // useEffect(() => {
+    //     if (socket === null) return;
+    //     socket.on("getNewMessagePrivate", (res) => {
+    //         console.log(res);
+    //         setNewMessage(res)
+    //     })
+    // }, [socket])
 
     useEffect(() => {
-        if (newMessage?.senderId !== userInfo._id && currentConversation._id === newMessage?.message?.conversationId) {
+        if (newMessage?.senderId !== userInfo._id && currentConversation?._id === newMessage?.message?.conversationId) {
             setMessages([...messages, newMessage?.message])
         }
-
     }, [newMessage])
     useEffect(() => {
         chatbox.current.scrollTop = chatbox.current.scrollHeight;
     }, [messages])
     const handleSendMessage = async () => {
         try {
+            let chatId;
+            let chat;
+            if (currentConversation._id === "newchat") {
+                const member = currentConversation.members.find((c) => {
+                    return c._id !== userInfo._id;
+                })
+                chat = (await api.post("/api/conversation/create-conversation", { member: member })).data
+                chatId = chat._id;
+                // setConversation(conversations.map((c) => {
+                //     if (c._id === "newchat") {
+                //         c._id = chat.data._id;
+                //     }
+                //     return c;
+                // }))
+                // setCurrentConvers(chat.data)
+            } else {
+                chatId = currentConversation._id
+            }
+            console.log("chatId", chatId);
             const message = {
                 messageType: 1,
-                conversationId: currentConversation._id,
+                conversationId: chatId,
                 text: textMessage
             }
             const mes = await api.post("/api/message", message);
@@ -69,18 +84,30 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                 senderId: userInfo._id,
                 receiverId: receiver._id
             }
+            console.log(socketMes);
             socket.emit("sendPrivateMessage", socketMes)
-            currentConversation.lastestMessage = mes.data.text;
-            const filterConvers = conversations.filter((c) => {
-                return c._id !== currentConversation._id;
-            })
-            setConversation([currentConversation, ...filterConvers])
+            if (currentConversation._id === "newchat") {
+                setConversation(conversations.map((c) => {
+                    if (c._id === "newchat") {
+                        c._id = chat._id;
+                    }
+                    return c;
+                }))
+                chat.lastestMessage = mes.data.text;
+                setCurrentConvers(chat)
+            } else {
+                currentConversation.lastestMessage = mes.data.text;
+                const filterConvers = conversations.filter((c) => {
+                    return c._id !== currentConversation._id;
+                })
+                setConversation([currentConversation, ...filterConvers])
+            }
             setTextMessage("")
         } catch (error) {
             console.log(error);
         }
     }
-    console.log("hello1");
+
     return (
         <Stack direction='vertical' className='chatbox' gap={2}>
             <div className='chat-box-header d-flex align-items-center justify-content-between'>

@@ -33,11 +33,9 @@ io.on("connection", (socket) => {
     })
 
     socket.on("logout", (userId) => {
-        console.log(userId);
         onlineUsers = onlineUsers.filter((o) => {
             return o.userId !== userId
         })
-        console.log(onlineUsers);
         io.emit("getOnlineUsers", onlineUsers)
     })
 

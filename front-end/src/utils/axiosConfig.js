@@ -67,7 +67,7 @@ instance.interceptors.response.use(function (response) {
 async function refreshAccessToken() {
     try {
         const response = await instance.post('/api/user/refresh-token', { refreshToken: store.getState().refreshToken.value });
-        console.log("refreshToken", response);
+        console.log('call: ',response.accessToken);
         return response.accessToken;
     } catch (error) {
         console.error('Failed to refresh access token:', error);

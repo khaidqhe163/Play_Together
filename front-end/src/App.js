@@ -20,6 +20,7 @@ function App() {
             withCredentials: true,
             headers: { 'Content-Type': 'multipart/form-data' },
           });
+          console.log('access:',autoLogin.data.accessToken);
           dispatch(setUserInformation(autoLogin.data.user))
           dispatch(setAccessToken(autoLogin.data.accessToken))
           dispatch(setRefreshToken(autoLogin.data.refreshToken))
@@ -32,7 +33,7 @@ function App() {
       }
     }
     autoLogin();
-  }, [])
+  }, []);
 
   return (
     <div className="App">
@@ -48,8 +49,16 @@ function App() {
 
 function MainRoutes({ userInfo }) {
   const location = useLocation();
-  const hideSidebarPaths = ['/login', '/register'];
-  const shouldHideSidebar = hideSidebarPaths.includes(location.pathname);
+  const hideSidebarPaths = ['/login', '/register', '/admin'];
+  console.log(location.pathname);
+  let shouldHideSidebar = false;
+  for (let i = 0; i < hideSidebarPaths.length; i++) {
+    if (location.pathname.includes(hideSidebarPaths[i])) {
+      shouldHideSidebar = true;
+      break;
+    }
+  }
+  // hideSidebarPaths.includes(location.pathname);
 
   return (
     <>

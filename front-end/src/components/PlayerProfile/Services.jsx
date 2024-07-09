@@ -113,7 +113,7 @@ function Services({ player, setOpenHire, setShowDonate}) {
 
                 </div>
             </div>
-            <PiRight id={player?._id} setOpenHire={setOpenHire} setShowDonate={setShowDonate}/>
+            <PiRight id={player?._id} setOpenHire={setOpenHire} player={player} setShowDonate={setShowDonate}/>
         </div>
     )
 }

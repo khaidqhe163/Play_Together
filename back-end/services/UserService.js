@@ -2,6 +2,7 @@ import User from '../models/User.js'
 import Service from '../models/Service.js';
 import bcrypt from 'bcryptjs'
 import jwt from '../middleware/jwt.js';
+import Ban from '../models/Ban.js';
 import Booking from '../models/Booking.js';
 import Comment from '../models/Comment.js';
 
@@ -28,13 +29,8 @@ const findUserByEmail = async (email) => {
 
 const autoLogin = async (email) => {
     try {
-        const user = await User.findOne({ email: email }).exec();
-        const token = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
-        const { password, ...returnInfo } = user._doc;
-        return {
-            user: returnInfo,
-            accessToken: token
-        };
+        const user = await User.findOne({ email: email });
+        return user
     } catch (error) {
         throw new Error(error.toString());
     }
@@ -375,31 +371,42 @@ const getFollowerById = async (id) => {
 // UserService.js
 
 const followPlayer = async (userId, playerId) => {
-  try {
-      const user = await User.findByIdAndUpdate(
-          playerId,
-          { $addToSet: { followers: userId } }, 
-          { new: true }
-      );
-      return user;
-  } catch (error) {
-      throw new Error(error.toString());
-  }
+    try {
+        const user = await User.findByIdAndUpdate(
+            playerId,
+            { $addToSet: { followers: userId } },
+            { new: true }
+        );
+        return user;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
 };
 
 const unfollowPlayer = async (userId, playerId) => {
-  try {
-      const user = await User.findByIdAndUpdate(
-          playerId,
-          { $pull: { followers: userId } }, 
-          { new: true }
-      );
-      return user;
-  } catch (error) {
-      throw new Error(error.toString());
-  }
+    try {
+        const user = await User.findByIdAndUpdate(
+            playerId,
+            { $pull: { followers: userId } },
+            { new: true }
+        );
+        return user;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
 };
 
+const unban = async (userId) => {
+    try {
+        const user = await User.findOneAndUpdate({ _id: userId }, { $set: { status: false } },
+            { new: true }
+        );
+        const ban = await Ban.updateMany({ userId: userId, expired: false }, { $set: { expired: true } });
+        return user;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
+}
 export default {
     register,
     findUserByEmail,
@@ -422,5 +429,6 @@ export default {
     followPlayer,
     unfollowPlayer,
     updateOnlySchedule,
-    getFollowerById
+    getFollowerById,
+    unban
 }

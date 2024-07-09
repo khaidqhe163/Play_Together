@@ -5,48 +5,39 @@ import TableBooking from '../components/TableBooking';
 import { useSelector } from 'react-redux';
 import { userInfor } from '../features/userSlice';
 import { useNavigate, useParams } from 'react-router-dom';
+import { refreshToken } from '../features/refreshTokenSlice';
+import { accessToken } from '../features/accessTokenSlice';
+
+
 
 function ListBookingPage() {
   const userInfo = useSelector(userInfor);
-  const [subnav, setSubnav] = useState(2);
   const { url } = useParams();
+  const refresh = useSelector(refreshToken);
+  const access = useSelector(accessToken);
+  console.log('url:' + url);
+  console.log('refresh:', refresh);
+  console.log('access:', access);
   const nav = useNavigate();
-  const [endpoint, setEndpoint] = useState('booking-online');
 
   const handleClick = (number) => {
-    setSubnav(number);
+    nav('/list-booking/' + number);
+    console.log('refresh:', refresh);
+    console.log('access:', access);
   };
-
-  useEffect(() => {
-    const getEndpoint = (subnav) => {
-      switch (subnav) {
-        case 1:
-          return 'my-booking';
-        case 2:
-          return 'booking-online';
-        case 3:
-          return 'booking-schedule';
-        default:
-          return '';
-      }
-    };
-    const newEndpoint = getEndpoint(subnav);
-    setEndpoint(newEndpoint);
-    nav(`/list-booking/${newEndpoint}`);
-  }, [subnav, nav]);
 
   return (
     <DefaultNavbar>
       <Row>
         <Col md={12} id='snav'>
-          <div className={subnav === 1 ? 'snav-active' : ''}
-            onClick={() => handleClick(1)}>Lịch của tôi đã đặt</div>
-          <div className={subnav === 2 ? 'snav-active' : ''}
-            onClick={() => handleClick(2)}>Lịch online</div>
-          <div className={subnav === 3 ? 'snav-active' : ''}
-            onClick={() => handleClick(3)}>Lịch schedule</div>
+          <div className={url === 'my-booking' ? 'snav-active' : ''}
+            onClick={() => handleClick('my-booking')}>Lịch của tôi đã đặt</div>
+          <div className={url === 'booking-online' ? 'snav-active' : ''}
+            onClick={() => handleClick('booking-online')}>Lịch online</div>
+          <div className={url === 'booking-schedule' ? 'snav-active' : ''}
+            onClick={() => handleClick('booking-schedule')}>Lịch schedule</div>
         </Col>
-        <TableBooking endPoint={endpoint} />
+        <TableBooking endPoint={url} />
       </Row>
     </DefaultNavbar>
   );

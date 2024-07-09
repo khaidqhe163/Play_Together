@@ -1,6 +1,7 @@
 export const baseUrl = 'http://localhost:3008/';
 
 export const formatDate = (date) => {
+    if (!date) return;
     const dateObject = new Date(date);
     const formattedDate = dateObject.toISOString().split('T')[0];
     return formattedDate

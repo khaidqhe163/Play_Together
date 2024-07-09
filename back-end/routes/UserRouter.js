@@ -68,7 +68,8 @@ UserRouter.put('/update-duo-setting', jwt.verifyAccessToken, UserController.upda
 UserRouter.put('/update-only-schedule', jwt.verifyAccessToken, UserController.updateOnlySchedule);
 
 UserRouter.post('/users', UserController.getAllUsers);
-UserRouter.put('/ban/:userId', UserController.banUser)
+UserRouter.post('/ban', UserController.banUser)
+UserRouter.put('/unban', UserController.unbanUser)
 
 UserRouter.post('/follow-player/:playerId', jwt.verifyAccessToken, UserController.followPlayer);
 UserRouter.post('/unfollow-player/:playerId', jwt.verifyAccessToken, UserController.unfollowPlayer);
