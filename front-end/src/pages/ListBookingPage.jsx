@@ -15,15 +15,11 @@ function ListBookingPage() {
   const { url } = useParams();
   const refresh = useSelector(refreshToken);
   const access = useSelector(accessToken);
-  console.log('url:' + url);
-  console.log('refresh:', refresh);
-  console.log('access:', access);
   const nav = useNavigate();
 
+  console.log("access", access);
   const handleClick = (number) => {
     nav('/list-booking/' + number);
-    console.log('refresh:', refresh);
-    console.log('access:', access);
   };
 
   return (

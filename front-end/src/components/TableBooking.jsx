@@ -25,6 +25,7 @@ function TableBooking({ endPoint }) {
         try {
             const s = await api.get(`/api/booking/${endPoint}`);
             setListBooking(s.data);
+            console.log(s.data);
         } catch (error) {
             console.log(error);
         }

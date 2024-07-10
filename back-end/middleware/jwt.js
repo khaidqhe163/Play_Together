@@ -6,7 +6,7 @@ function signAccessToken(user) {
     };
     const secret = process.env.PRIVATE_KEY;
     const options = {
-        expiresIn: "1h"
+        expiresIn: "15m"
     };
     let token = null;
     try {
@@ -86,7 +86,6 @@ function verifyRefreshToken(req, res) {
             })
         }
         const accessToken = signAccessToken(payload);
-        res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         return res.status(201).json({
             accessToken: accessToken
         })
