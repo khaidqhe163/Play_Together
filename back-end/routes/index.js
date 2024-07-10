@@ -12,8 +12,10 @@ import NotificationRouter from './NotificationRouter.js'
 import ReportReasonRouter from './ReportReasonRouter.js'
 import ReportRouter from './ReportRouter.js'
 import DonateRouter from './DonateRouter.js'
+import TransactionRouter from './TransactionRouter.js'
 
 const routes = (app) => {
+    app.use('/api/transaction' ,TransactionRouter);
     app.use('/api/user', UserRouter);
     app.use('/api/stories', StoryRouter);
     
@@ -22,15 +24,17 @@ const routes = (app) => {
     app.use('/api/payment', PlaymentRouter);
     app.use('/api/schedule', ScheduleRouter);
 
-    app.use('/api/comment', CommentRouter)
-    app.use('/api/message', MessageRouter)
-    app.use('/api/conversation', ConversationRouter)
-    app.use('/api/notification', NotificationRouter)
+    app.use('/api/comment', CommentRouter);
+    app.use('/api/message', MessageRouter);
+    app.use('/api/conversation', ConversationRouter);
+    app.use('/api/notification', NotificationRouter);
 
     app.use('/api/admin', AdminRouter);
-    app.use('/api/report-reason', ReportReasonRouter)
-    app.use('/api/report', ReportRouter)
+    app.use('/api/report-reason', ReportReasonRouter);
+    app.use('/api/report', ReportRouter);
 
-    app.use('/api/donate' ,DonateRouter)
+    app.use('/api/donate' ,DonateRouter);
+
+    
 }
 export default routes

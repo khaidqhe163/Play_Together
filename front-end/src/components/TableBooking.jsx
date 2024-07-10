@@ -20,18 +20,25 @@ function TableBooking({ endPoint }) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [player, setPlayer] = useState(null);
+    console.log(endPoint);
     const fetchBooking = async () => {
         try {
             const s = await api.get(`/api/booking/${endPoint}`);
             setListBooking(s.data);
+            console.log(s.data);
         } catch (error) {
             console.log(error);
         }
     };
 
     useEffect(() => {
+        // if(userInfo == null) return;
         fetchBooking();
-    }, [endPoint, updateBooking]);
+    }, [endPoint,updateBooking, userInfo]);
+
+    useEffect(()=>{
+        fetchBooking();
+    },[]);
 
     useEffect(() => {
         const timer = setInterval(() => {

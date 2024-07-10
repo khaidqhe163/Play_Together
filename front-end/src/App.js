@@ -32,7 +32,7 @@ function App() {
       }
     }
     autoLogin();
-  }, [])
+  }, []);
 
   return (
     <div className="App">

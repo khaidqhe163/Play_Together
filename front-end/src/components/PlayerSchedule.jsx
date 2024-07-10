@@ -69,7 +69,7 @@ export default function PlayerSchedule() {
         try {
             const response = await api.delete(`/api/schedule/${id}`);
             if (response.status === 200) {
-                toast('Xoá lịch thành công!');
+                toast('Xoá lịch thành công! ✔️');
                 fetchData(schedule.date);
             }
         } catch (error) {
@@ -235,7 +235,7 @@ export default function PlayerSchedule() {
                                     <td className="px-6 py-4">{formatTime(s.start)} </td>
                                     <td className="px-6 py-4">{formatTime(s.end)} </td>
                                     <td className="px-6 py-4">
-                                        {s.bookingId !== null ? <button
+                                        {s.bookingId === null ? <button
                                             className="btn btn-danger"
                                             onClick={() => handleDelete(s._id)}
                                         >

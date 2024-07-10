@@ -87,6 +87,15 @@ const deleteBookingById = async (idBooking) => {
     }
 };
 
+const getListBookingSuccess = async (userId, status) => {
+    try {
+        const b = await Booking.find({playerId:userId, bookingStatus:status}).populate("userId","username").exec();
+        return b;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 export default {
     getAllBooking,
     getLatestBooking,
@@ -97,4 +106,5 @@ export default {
     getBookingById,
     getMyBooking,
     deleteBookingById,
+    getListBookingSuccess,
 }

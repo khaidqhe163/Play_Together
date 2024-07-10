@@ -101,7 +101,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             if (error.response.status === 400) {
                 toast(error.response.data.error);
             } else {
-                toast('Có lỗi trong việc thiết lập thời gian Duo!');
+                toast(error.toString());
             }
         }
     };

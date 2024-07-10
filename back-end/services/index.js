@@ -12,6 +12,7 @@ import ReportReasonService from './ReportReasonService.js';
 import ReportService from './ReportService.js'
 import BanService from './BanService.js'
 import DonateService from './DonateService.js'
+import TransactionService from './TransactionService.js';
 
 export {
     UserService,
@@ -26,7 +27,8 @@ export {
     NotificationService,
     ReportReasonService,
     ReportService,
+    DonateService,
+    TransactionService,
     BanService,
-    DonateService
 }
 

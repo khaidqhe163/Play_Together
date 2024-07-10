@@ -86,7 +86,7 @@ export default function AccountSettings() {
                     <NavLink to="/player-history" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaHistory style={{ marginRight: "5px" }} />
-                            <span>Lịch sử nhận Duo, Donate</span>
+                            <span>Lịch sử nhận Duo</span>
                         </div>
                     </NavLink>
                     <br />

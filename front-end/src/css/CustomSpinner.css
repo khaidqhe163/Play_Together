@@ -1,0 +1,10 @@
+.custom-spinner {
+    color: #8D68F2; /* Chỉ thay đổi màu của spinner */
+  }
+  
+  .custom-spinner .spinner-border {
+    border-color: #8D68F2; /* Màu của spinner */
+    border-right-color: transparent; /* Để tạo hiệu ứng quay */
+    border-top-color: #8D68F2; /* Màu của spinner */
+    border-bottom-color: #8D68F2; /* Màu của spinner */
+  }

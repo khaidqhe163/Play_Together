@@ -85,6 +85,7 @@ const createBooking = async (req, res) => {
 const createBookingT = async (req, res) => {
     try {
         const { userId, playerId, price, hours, unit, bookingStatus } = req.body;
+        // console.log(req.body);
         const aUser = await UserService.findUserById(userId);
         const aPlayer = await UserService.getPlayerById(playerId);
         aUser.accountBalance -= parseInt(price);
@@ -289,8 +290,9 @@ const changeStatusToProgress = async (req, res) => {
                 ));
 
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
+
          
-                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
+                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc cc. ❌" });
                 aPlayer.player.totalHiredHour += (parseInt(checkB)/2);
                 await aPlayer.save();
             }
@@ -318,6 +320,26 @@ const deleteBookingById = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Internal server error delete booking online', error });
     }
+};
+
+
+const getListBookingSuccess = async(req,res)=>{
+    try {
+        const userId = req.payload.id;
+        const status = 2;
+        const booking = await BookingService.getListBookingSuccess(userId,status);
+        const transf = booking.map(b=>{
+            return{
+                userName: b.userId.username,
+                totalHiredHour: (b.hours.length + b.unit)/2,
+                price: b.price,
+                createdAt: b.createdAt
+            }
+        })
+        res.status(200).json(transf);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error get list booking success', error });
+    }
 }
 
 export default {
@@ -329,4 +351,5 @@ export default {
     getBookingScheduleOfPlayer,
     getMyBooking,
     deleteBookingById,
+    getListBookingSuccess,
 }

@@ -103,7 +103,7 @@ const autoLogin = async (req, res) => {
         res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json({
             user: returnUser,
-            accessToken: user.accessToken,
+            accessToken: accessToken,
             refreshToken: refreshToken
         });
     } catch (error) {
@@ -526,7 +526,7 @@ const logout = async (req, res) => {
             message: error.toString()
         })
     }
-}
+};
 
 export default {
     register,

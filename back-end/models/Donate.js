@@ -1,13 +1,14 @@
 import mongoose, { Schema } from "mongoose";
+import User from "./User.js"
 const donateSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: "user",
+        ref: User,
         required: true
     },
     playerId: {
         type: Schema.Types.ObjectId,
-        ref: "user",
+        ref: User,
         required: true
     },
     money: {
