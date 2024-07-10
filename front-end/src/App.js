@@ -49,7 +49,6 @@ function App() {
 function MainRoutes({ userInfo }) {
   const location = useLocation();
   const hideSidebarPaths = ['/login', '/register', '/admin'];
-  console.log(location.pathname);
   let shouldHideSidebar = false;
   for (let i = 0; i < hideSidebarPaths.length; i++) {
     if (location.pathname.includes(hideSidebarPaths[i])) {
