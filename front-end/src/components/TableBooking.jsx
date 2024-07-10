@@ -114,7 +114,7 @@ function TableBooking({ endPoint }) {
     const handleDeny = async (idBooking, userId) => {
         try {
             const status = 3;
-            const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
+            const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status, userId});
             const notification = await api.post(`/api/notification/process-booking-notification`, {
                 userId: bookingUpdate.data.u.userId,
                 status: 3,
