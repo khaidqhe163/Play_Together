@@ -114,7 +114,6 @@ function ChatBox() {
         const newConvers = conversations?.some((c) => {
             return c._id === newMessage?.message?.conversationId
         })
-        console.log("newConvers", newConvers);
         if (!newConvers) {
             getConversationById(newMessage?.senderId);
         }
@@ -150,9 +149,7 @@ function ChatBox() {
 
     const getConversationById = async (id) => {
         try {
-            console.log("new message");
             const chat = await api.get(`/api/conversation/get-conversation-by-id/${userInfo._id}/${id}`)
-            console.log(chat.data);
             setCurrentConvers(chat.data)
             setConversation([chat.data, ...conversations])
             return chat.data
@@ -215,7 +212,6 @@ function ChatBox() {
                                         })
                                         let converted_path = avatar?.avatar.replaceAll("\\", "/")
                                         const url = baseUrl + converted_path;
-                                        console.log(avatar);
                                         const username = avatar?.username
                                         return (
                                             <div className={`receiver-boxchat ${currentConver && currentConver._id === a._id && messageType === 2 ? "chat-active" : ""}`}

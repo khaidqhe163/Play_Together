@@ -118,10 +118,10 @@ const sendBookingNotification = async (userId, bookingId, playerId, onlySchedule
         let url;
         if (!onlySchedule) {
             content = "muốn chơi cùng bạn. Đơn thuê này hiệu lực trong vòng 5 phút!"
-            url = "/booking-online/" + bookingId;
+            url = "/list-booking/booking-online";
         } else {
             content = "đã đặt lịch chơi cùng bạn"
-            url = "/booking-schedule/" + bookingId;
+            url = "/list-booking/booking-schedule";
         }
         const type = "booking";
         const notification = (await Notification.create({ userId, receivers: playerId, type, content, url, sendDate: Date.now() })).populate("userId", ["username", "avatar"])
@@ -137,7 +137,7 @@ const processBookingNotification = async (userId, bookingId, playerId, status) =
         let url = "";
         if (status === 1) {
             content = "yêu cầu thuê của bạn được chấp nhận. Hãy nhắn tin với tôi để bắt đầu cuộc chơi"
-            url = `/my-booking/` + bookingId;
+            url = `/list-booking/my-booking`;
         }
         if (status === 3) {
             content = "yêu cầu thuê của bạn bị từ chối. Xin lỗi vì sự bất tiện này"
@@ -154,7 +154,7 @@ const processBookingNotification = async (userId, bookingId, playerId, status) =
 const completeBookingNotification = async (userId, bookingId, playerId) => {
     try {
         const content = "cuộc chơi của bạn đã kết thúc. Hãy cho tôi đánh giá của bạn nhé!"
-        const url = "/my-booking/" + bookingId;
+        const url = "/list-booking/my-booking";
         const type = "complete booking"
         const notification = (await Notification.create({ userId: playerId, receivers: userId, type, content, url, sendDate: Date.now() })).populate("userId", ["username", "avatar"])
         return notification

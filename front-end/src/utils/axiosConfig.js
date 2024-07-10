@@ -27,10 +27,11 @@ instance.interceptors.response.use(function (response) {
     return response;
 }, async function (error) {
     const originalRequest = error.config;
-
+    console.log(error.config);
     if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-
+        console.log("call again");
+        console.log(error.config);
         if (!isRefreshing) {
             isRefreshing = true;
             try {
@@ -67,8 +68,8 @@ instance.interceptors.response.use(function (response) {
 async function refreshAccessToken() {
     try {
         const response = await instance.post('/api/user/refresh-token', { refreshToken: store.getState().refreshToken.value });
-        console.log('call: ',response.accessToken);
-        return response.accessToken;
+        console.log('call: ', response.data.accessToken);
+        return response.data.accessToken;
     } catch (error) {
         console.error('Failed to refresh access token:', error);
         throw error;
