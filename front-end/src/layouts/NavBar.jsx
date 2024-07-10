@@ -22,6 +22,7 @@ import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { SocketContext } from "../context/SocketContext.jsx";
 import api from '../utils/axiosConfig'
 import NotificationBox from "../components/Modal/NotificationModal/NotificationBox.jsx";
+import { setService } from "../features/serviceSlice.js";
 export default function NavBar() {
   // const [activeButton, setActiveButton] = useState(null);
   const dispatch = useDispatch();
@@ -127,6 +128,7 @@ export default function NavBar() {
       socket.emit("logout", userInfo._id)
       dispatch(setUserInformation(null));
       dispatch(setActiveButton("home"));
+      dispatch(setService(null));
       toast("Đăng xuất thành công!");
       nav('/login')
     } catch (error) {
