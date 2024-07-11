@@ -20,8 +20,6 @@ import { SocketContext } from '../context/SocketContext';
 import ReportPlayer from '../components/Modal/ReportPlayerModal/ReportPlayer';
 import DonateModal from '../components/Modal/DonateModal/DonateModal';
 
-import { SocketContext } from '../context/SocketContext';
-import api from '../utils/axiosConfig';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
