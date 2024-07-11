@@ -40,6 +40,10 @@ function DonateModal({ showDonate, handleClose, player }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            if(objDonate.money > userInfo.accountBalance){
+                toast("Số tiền trong tài khoản của bạn không đủ để donate. ❌");
+                return;
+            }
             const response = await api.post(`/api/donate`, objDonate);
             console.log(response);
             
@@ -113,7 +117,7 @@ function DonateModal({ showDonate, handleClose, player }) {
                     <Modal.Footer className="custom-modal-footer" id='fot'>
                         <div className='col-md-12 d-flex justify-end'>
                             <button className='w-36 mt-2 mx-2 fw-medium cancel bg-bgSecondButton text-white px-4 py-2 rounded-xl' type='button' onClick={handleClose}>Huỷ</button>
-                            <button className='w-32 mt-2 mx-2 fw-medium cancel text-white rounded-xl hover:bg-bgButtonHover' type='submit'>Xác nhận</button>
+                            <button className='w-32 mt-2 mx-2 fw-medium cancel text-white rounded-xl hover:bg-bgButtonHover' type='submit' disabled={objDonate.money === 0}>Xác nhận</button>
                         </div>
                     </Modal.Footer>
                 </form>
