@@ -43,7 +43,17 @@ export default function ListService() {
     // console.log(`serviceId: ${service._id}`);
     const handleClickService = (s) => {
         console.log(s);
-        dispatch(setService(s));
+        if (service) {
+            const checked = service._id === s._id;
+            if (checked) {
+                dispatch(setService(null));
+            } else {
+                dispatch(setService(s));
+            }
+        } else {
+            dispatch(setService(s));
+        }
+        // dispatch(setService(s));
     };
 
 
