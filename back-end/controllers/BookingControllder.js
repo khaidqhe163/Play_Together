@@ -84,8 +84,9 @@ const createBooking = async (req, res) => {
 
 const createBookingT = async (req, res) => {
     try {
-        const { userId, playerId, price, hours, unit, bookingStatus } = req.body;
-        // console.log(req.body);
+        const { playerId, price, hours, unit, bookingStatus } = req.body;
+        console.log(req.body);
+        const userId = req.payload.id;
         const aUser = await UserService.findUserById(userId);
         const aPlayer = await UserService.getPlayerById(playerId);
         aUser.accountBalance -= parseInt(price);

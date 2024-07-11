@@ -31,6 +31,8 @@ function TableBooking({ endPoint }) {
         }
     };
 
+    console.log(listBooking);
+
     useEffect(() => {
         // if(userInfo == null) return;
         fetchBooking();
