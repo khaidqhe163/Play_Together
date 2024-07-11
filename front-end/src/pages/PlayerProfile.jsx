@@ -52,6 +52,10 @@ function PlayerProfile() {
 
     useEffect(() => {
         getPlayerInformation();
+    }, [id])
+
+    useEffect(() => {
+        getPlayerInformation();
     }, [author])
 
     useEffect(() => {
@@ -199,7 +203,7 @@ function PlayerProfile() {
                     subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={()=>setShowDonate(true)}/>
                 }
                 {
-                    subnav === 3 && <Album player={player}/>
+                    subnav === 3 && <Album player={player} id={id}/>
                 }
                 {
                     subnav === 4 && <Feeds/>

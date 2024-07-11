@@ -528,6 +528,46 @@ const logout = async (req, res) => {
     }
 };
   
+const addImagesToAlbum = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const images = req.files.map(file => file.path);
+        console.log(images);
+        const updatedUser = await UserService.addImagesToAlbum(userId, images);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.toString() });
+    }
+};
+
+const getImagesFromAlbum = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const user = await UserService.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const images = user.player.images; 
+        res.status(200).json({ images });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching images', error: error.message });
+    }
+};
+
+const deleteImageToAlbum = async (req, res) => {
+    try{
+        const image = req.body.image;
+        const userId = req.payload.id;
+console.log(image);
+       
+        const user = await UserService.deleteImageToAlbum(image, userId)
+        fs.unlinkSync(image)
+        res.status(200).json(user);
+    }catch (error){
+        res.status(500).json({ message: 'Error fetching images', error: error.message });
+    }
+}
 
 export default {
     register,
@@ -545,7 +585,6 @@ export default {
     updateUser,
     updateDuoSetting,
     getPlayerByServiceId,
-    updatePlayerInfo,
     getPlayerById,
     changePassword,
     getAllUsers,
@@ -555,5 +594,8 @@ export default {
     updateOnlySchedule,
     logout,
     unbanUser,
-    logout
+    logout,
+    addImagesToAlbum,
+    getImagesFromAlbum,
+    deleteImageToAlbum
 }

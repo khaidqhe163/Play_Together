@@ -75,4 +75,21 @@ UserRouter.put('/ban/:userId', UserController.banUser)
 UserRouter.post('/follow-player/:playerId', jwt.verifyAccessToken, UserController.followPlayer);
 UserRouter.post('/unfollow-player/:playerId', jwt.verifyAccessToken, UserController.unfollowPlayer);
 UserRouter.post('/logout', UserController.logout)
+
+const storageAlbum = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/album/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.payload.id + Date.now() + file.originalname);
+    }
+});
+
+const uploadAlbum = multer({
+    storage: storageAlbum,
+    limits: { fileSize: 1024 * 1024 * 3 }
+});
+
+UserRouter.post('/album', jwt.verifyAccessToken,uploadAlbum.array('images', 10), UserController.addImagesToAlbum);
+UserRouter.put('/delete-image', jwt.verifyAccessToken, UserController.deleteImageToAlbum);
 export default UserRouter
