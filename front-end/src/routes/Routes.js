@@ -30,6 +30,7 @@ import ListBookingPage from "../pages/ListBookingPage"
 import ReportedStory from "../pages/Admin/ManagerReported/ReportedStory"
 import ReportedUser from "../pages/Admin/ManagerReported/ReportedUser"
 import ReportReason from "../pages/Admin/ManagerReportReason"
+import ReportedBooking from "../pages/Admin/ManagerReported/ReportedBooking"
 const routes = [
     {
         path: '/',
@@ -139,6 +140,10 @@ const routes = [
     {
         path: '/admin/reports/users',
         element: ReportedUser
+    },
+    {
+        path: '/admin/reports/bookings',
+        element: ReportedBooking
     },
     {
         path: '/admin/report-reason',

@@ -7,6 +7,7 @@ import { setUserInformation, userInfor } from '../features/userSlice';
 import '../css/table-booking.css';
 import { SocketContext } from '../context/SocketContext';
 import ReviewModal from './Modal/ReviewModal/ReviewModal';
+import ReportBooking from './Modal/ReportPlayerModal/ReportBooking';
 
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
@@ -21,6 +22,10 @@ function TableBooking({ endPoint }) {
     const handleShow = () => setShow(true);
     const [player, setPlayer] = useState(null);
     console.log(endPoint);
+    const [showReport, setShowReport] = useState(false);
+    const handleCloseReport = () => setShowReport(false);
+    const handleShowReport = () => setShowReport(true);
+    const [currentBooking, setCurrentBooking] = useState(null);
     const fetchBooking = async () => {
         try {
             const s = await api.get(`/api/booking/${endPoint}`);
@@ -39,7 +44,11 @@ function TableBooking({ endPoint }) {
     useEffect(() => {
         fetchBooking();
     }, []);
-
+    useEffect(() => {
+        if (currentBooking !== null) {
+            handleShowReport();
+        }
+    }, [currentBooking])
     useEffect(() => {
         const timer = setInterval(() => {
             listBooking.forEach(async (booking) => {
@@ -213,7 +222,9 @@ function TableBooking({ endPoint }) {
                                                 <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
                                                 <td className='py-2'>
                                                     {l.bookingStatus === 1 ? (
-                                                        <button className='btn btn-success' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>
+                                                        <>
+                                                            <button className='btn btn-success' onClick={() => handleSuccess(l._id)}>Hoàn thành</button>
+                                                        </>
                                                     ) : (
                                                         <>
                                                             <button className='btn btn-primary mr-10' onClick={() => handleAccept(l._id)}>Chấp nhận</button>
@@ -242,6 +253,9 @@ function TableBooking({ endPoint }) {
                                                 {l.bookingStatus === 2 && l.bookingReview === null ? (
                                                     <button className='btn btn-success' onClick={() => { handleShow(); setPlayer(l); setCurrentIndex(index) }}>Đánh giá</button>
                                                 ) : null}
+                                                {l.bookingStatus === 2 && endPoint === "my-booking" && l.reported !== true ? (
+                                                    <button className='btn btn-warning' onClick={() => { setCurrentBooking(l) }}>Tố cáo</button>
+                                                ) : null}
                                             </td>
                                         </tr>
                                     );
@@ -249,7 +263,8 @@ function TableBooking({ endPoint }) {
                         </tbody>
                     </table>}
             </div>
-            <ReviewModal show={show} handleClose={handleClose} player={player} setListBooking={setListBooking} currentIndex={currentIndex} listBooking={listBooking}/>
+            <ReportBooking show={showReport} handleClose={handleCloseReport} currentBooking={currentBooking} setCurrentBooking={setCurrentBooking} setListBooking={setListBooking} currentIndex={currentIndex} />
+            <ReviewModal show={show} handleClose={handleClose} player={player} setListBooking={setListBooking} currentIndex={currentIndex} listBooking={listBooking} />
         </div>
     );
 }

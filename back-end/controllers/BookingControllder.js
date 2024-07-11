@@ -181,7 +181,7 @@ const getMyBooking = async (req, res) => {
         const userId = req.payload.id;
         // const userId = "665755b517909fecabb76afe";
         const listBooking = await BookingService.getMyBooking(userId);
-        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, bookingReview, createdAt, updatedAt, __v }) => {
+        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, bookingReview, reported, createdAt, updatedAt, __v }) => {
             if (hours.length === 0) {
                 return {
                     _id,
@@ -194,6 +194,7 @@ const getMyBooking = async (req, res) => {
                     unit,
                     bookingStatus,
                     bookingReview: bookingReview ? bookingReview : null,
+                    reported: reported ? reported : false,
                     createdAt,
                     updatedAt,
                     __v
@@ -214,6 +215,7 @@ const getMyBooking = async (req, res) => {
                     unit,
                     bookingStatus,
                     bookingReview: bookingReview ? bookingReview : null,
+                    reported: reported ? reported : false,
                     createdAt,
                     updatedAt,
                     __v
@@ -258,9 +260,9 @@ const changeStatusToProgress = async (req, res) => {
                 endTime += (b.unit * 30 * 60 * 1000);
                 const decision = now <= endTime;
                 if (decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc! ❌" });
-                aPlayer.player.totalHiredHour += (parseInt(b.unit)/2);
+                aPlayer.player.totalHiredHour += (parseInt(b.unit) / 2);
                 await aPlayer.save();
-            }else{
+            } else {
                 const { _id,
                     userId,
                     playerId,
@@ -291,9 +293,9 @@ const changeStatusToProgress = async (req, res) => {
 
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
 
-         
-                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc cc. ❌" });
-                aPlayer.player.totalHiredHour += (parseInt(checkB)/2);
+
+                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc cc. ❌" });
+                aPlayer.player.totalHiredHour += (parseInt(checkB) / 2);
                 await aPlayer.save();
             }
         } else if (status == 3) {
@@ -323,15 +325,15 @@ const deleteBookingById = async (req, res) => {
 };
 
 
-const getListBookingSuccess = async(req,res)=>{
+const getListBookingSuccess = async (req, res) => {
     try {
         const userId = req.payload.id;
         const status = 2;
-        const booking = await BookingService.getListBookingSuccess(userId,status);
-        const transf = booking.map(b=>{
-            return{
+        const booking = await BookingService.getListBookingSuccess(userId, status);
+        const transf = booking.map(b => {
+            return {
                 userName: b.userId.username,
-                totalHiredHour: (b.hours.length + b.unit)/2,
+                totalHiredHour: (b.hours.length + b.unit) / 2,
                 price: b.price,
                 createdAt: b.createdAt
             }
