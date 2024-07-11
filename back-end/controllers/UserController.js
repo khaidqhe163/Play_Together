@@ -126,8 +126,11 @@ const loginPassport = async (req, res) => {
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
-        res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
-        res.status(200).json(user)
+        res.status(200).json({
+            user: user,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        });
     } catch (error) {
         res.status(500).json({
             message: error.toString()

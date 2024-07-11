@@ -222,6 +222,7 @@ const getMyBooking = async (req, res) => {
                 };
             }
         }));
+        console.log(listBooking);
         return res.status(200).json(transformedBookings);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error get booking', error });
