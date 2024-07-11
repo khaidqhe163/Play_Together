@@ -1,4 +1,4 @@
-import { ReportService } from "../services/index.js";
+import { ReportService, UserService } from "../services/index.js";
 
 const createReport = async (req, res) => {
     try {
@@ -77,11 +77,11 @@ const processReportPlayer = async (req, res) => {
             reportId,
             complaint,
             reason,
-            playerId,
-            userId
+            playerId
         } = req.body;
         console.log(complaint);
-        const report = await ReportService.processReportPlayer(reportId, Number(complaint), reason, playerId, userId);
+        const report = await ReportService.processReportPlayer(reportId, Number(complaint), reason, playerId);
+        const player = await UserService.findByUserId(playerId);
         if (complaint == 1) {
             const transporter = nodemailer.createTransport({
                 host: "smtp.gmail.com",
