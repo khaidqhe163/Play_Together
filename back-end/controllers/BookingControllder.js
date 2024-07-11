@@ -318,6 +318,9 @@ const deleteBookingById = async (req, res) => {
     try {
         const { bookingId } = req.params;
         const d = await BookingService.deleteBookingById(bookingId);
+        const aUser = await UserService.findUserById(d.userId);
+        aUser.accountBalance += parseInt(d.price);
+        await aUser.save();
         res.status(200).json(d);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error delete booking online', error });
