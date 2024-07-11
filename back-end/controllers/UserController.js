@@ -527,6 +527,7 @@ const logout = async (req, res) => {
         })
     }
 };
+  
 
 export default {
     register,
@@ -553,5 +554,6 @@ export default {
     unfollowPlayer,
     updateOnlySchedule,
     logout,
-    unbanUser
+    unbanUser,
+    logout
 }

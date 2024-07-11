@@ -20,6 +20,8 @@ import { SocketContext } from '../context/SocketContext';
 import ReportPlayer from '../components/Modal/ReportPlayerModal/ReportPlayer';
 import DonateModal from '../components/Modal/DonateModal/DonateModal';
 
+import { SocketContext } from '../context/SocketContext';
+import api from '../utils/axiosConfig';
 function PlayerProfile() {
     const { id } = useParams();
     const [player, setPlayer] = useState();
@@ -218,6 +220,9 @@ function PlayerProfile() {
             {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
             <ReportPlayer show={showReport} handleClose={handleCloseReport} id={id} />
             <DonateModal showDonate={showDonate} handleClose={()=>setShowDonate(false)} player={player}/>
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
+            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
+
         </>
     )
 }
