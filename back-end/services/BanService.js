@@ -14,37 +14,39 @@ const banUser = async (userId, endDate, reason) => {
             },
             bookingStatus: { $in: [1, 0] }
         }).populate("hours");
+        console.log(bookings.length);
         if (bookings.length !== 0) {
             const filterBookings = bookings.filter((b) => {
                 if (b.hours.length !== 0) {
                     const date = new Date(b.hours[b.hours.length - 1].date).getTime();
                     const end = b.hours[b.hours.length - 1].end * 1000 * 60 * 60 + date;
-                    console.log(end);
-                    console.log(endDate.getTime());
-                    console.log(today.getTime());
-                    if (end > today.getTime() && end < endDate.getTime()) {
+                    if (endDate.getTime() > today.getTime() && end < endDate.getTime()) {
                         return b;
                     }
                 } else {
-                    const end = new Date(b.createdAt).getMilliseconds() + b.unit * 1000 * 60 * 60 + date;
-                    if (end > today.getMilliseconds() && end < endDate.getMilliseconds()) {
+                    const end = new Date(b.createdAt).getMilliseconds() + b.unit * 1000 * 60 * 30;
+                    console.log(end);
+                    console.log(today.getTime());
+                    if (endDate.getTime() > today.getTime() && end < endDate.getTime()) {
                         return b;
                     }
                 }
             })
-            console.log(filterBookings);
-            await Promise.all(filterBookings.map(async (f) => {
-                return await Booking.updateOne({ _id: f._id }, { $set: { bookingStatus: 3 } })
-            }))
-            await Promise.all(filterBookings.map(async (f) => {
-                return await User.updateOne({ _id: f.userId }, { $inc: { accountBalance: f.price } })
-            }))
-            await Promise.all(filterBookings.map(async (f) => {
-                return await User.updateOne({ _id: f.playerId }, { $inc: { accountBalance: -f.price } })
-            }))
+            console.log("filterBoooking", filterBookings);
+            if (filterBookings && filterBookings.length !== 0) {
+                await Promise.all(filterBookings.map(async (f) => {
+                    return await Booking.updateOne({ _id: f._id }, { $set: { bookingStatus: 3 } })
+                }))
+                await Promise.all(filterBookings.map(async (f) => {
+                    return await User.updateOne({ _id: f.userId }, { $inc: { accountBalance: f.price } })
+                }))
+                await Promise.all(filterBookings.map(async (f) => {
+                    return await User.updateOne({ _id: f.playerId }, { $inc: { accountBalance: -f.price } })
+                }))
+            }
         }
         const user = await User.findOneAndUpdate({ _id: userId }, { $set: { status: true } }, { new: true })
-        const ban = Ban.create({ userId: userId, startTime: Date.now(), endTime: endDate, reason: reason })
+        const ban = await Ban.create({ userId: userId, startTime: Date.now(), endTime: endDate, reason: reason })
         return user;
     } catch (error) {
         throw new Error(error.toString());

@@ -63,7 +63,6 @@ const updateComment = async (req, res) => {
 const reviewPlayer = async (req, res) => {
     try {
         const commentor = req.payload.id;
-        console.log(commentor);
         const {
             userId,
             rating,

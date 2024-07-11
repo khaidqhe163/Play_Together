@@ -7,7 +7,7 @@ import { TiStarFullOutline } from "react-icons/ti";
 import api from '../../../utils/axiosConfig'
 import { toast } from 'react-toastify';
 
-function ReviewModal({ show, handleClose, player }) {
+function ReviewModal({ show, handleClose, player, setListBooking, currentIndex, listBooking }) {
     const [rating, setRating] = useState(0);
     const content = useRef();
     console.log(player);
@@ -20,6 +20,13 @@ function ReviewModal({ show, handleClose, player }) {
                 bookingId: player._id
             })
             content.current.value = "";
+            const updatedArr = listBooking.map((l, index) => {
+                if (index === currentIndex) {
+                    l.bookingReview = review._id;
+                }
+                return l;
+            })
+            setListBooking(updatedArr);
             setRating(0);
             handleClose();
             toast("Đánh giá thành công")

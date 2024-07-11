@@ -5,7 +5,6 @@ import { LuEye } from 'react-icons/lu';
 import axios from 'axios';
 import { baseUrl, formatDate } from '../../../../utils/service';
 import ImageGallery from '../../../../components/ImageGallery';
-import api from '../../../../utils/axiosConfig'
 function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
     const [complaint, setComplaint] = useState(null);
     const des = useRef();
@@ -60,8 +59,7 @@ function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
     const processReport = async () => {
         try {
             const res = await axios.post("http://localhost:3008/api/report/process-report-player", {
-                userId: report.userId,
-                playerId: report.playerId,
+                playerId: report.accused._id,
                 complaint: complaint,
                 reason: des.current.value,
                 reportId: report._id

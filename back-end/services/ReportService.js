@@ -49,7 +49,7 @@ const getReportPlayerById = async (id) => {
         throw new Error(error.toString);
     }
 }
-const processReportPlayer = async (reportId, complaint, reason, playerId, userId) => {
+const processReportPlayer = async (reportId, complaint, reason, playerId) => {
     try {
         let report;
         let endDate;
