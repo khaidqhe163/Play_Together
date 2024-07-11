@@ -11,7 +11,7 @@ import ReviewModal from './Modal/ReviewModal/ReviewModal';
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
     const [updateBooking, setUpdateBooking] = useState(null);
-
+    const [currentIndex, setCurrentIndex] = useState(0);
     const dispatch = useDispatch();
     const userInfo = useSelector(userInfor);
     const { socket } = useContext(SocketContext);
@@ -34,11 +34,11 @@ function TableBooking({ endPoint }) {
     useEffect(() => {
         // if(userInfo == null) return;
         fetchBooking();
-    }, [endPoint,updateBooking, userInfo]);
+    }, [endPoint, updateBooking, userInfo]);
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchBooking();
-    },[]);
+    }, []);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -114,7 +114,7 @@ function TableBooking({ endPoint }) {
     const handleDeny = async (idBooking, userId) => {
         try {
             const status = 3;
-            const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status, userId});
+            const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status, userId });
             const notification = await api.post(`/api/notification/process-booking-notification`, {
                 userId: bookingUpdate.data.u.userId,
                 status: 3,
@@ -240,7 +240,7 @@ function TableBooking({ endPoint }) {
                                             <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
                                             <td className='py-2'>
                                                 {l.bookingStatus === 2 && l.bookingReview === null ? (
-                                                    <button className='btn btn-success' onClick={() => { handleShow(); setPlayer(l) }}>Đánh giá</button>
+                                                    <button className='btn btn-success' onClick={() => { handleShow(); setPlayer(l); setCurrentIndex(index) }}>Đánh giá</button>
                                                 ) : null}
                                             </td>
                                         </tr>
@@ -249,7 +249,7 @@ function TableBooking({ endPoint }) {
                         </tbody>
                     </table>}
             </div>
-            <ReviewModal show={show} handleClose={handleClose} player={player} />
+            <ReviewModal show={show} handleClose={handleClose} player={player} setListBooking={setListBooking} currentIndex={currentIndex} listBooking={listBooking}/>
         </div>
     );
 }
