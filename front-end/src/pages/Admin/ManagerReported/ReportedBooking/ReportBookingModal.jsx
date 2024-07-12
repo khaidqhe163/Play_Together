@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
 import "../../../../css/reportdetail.css"
 import { LuEye } from 'react-icons/lu';
 import axios from 'axios';
@@ -35,12 +35,17 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
 
     useEffect(() => {
         const getReport = async () => {
-            const report = await axios.get("http://localhost:3008/api/report/report-booking/" + id)
-            console.log(report.data);
-            setReport(report.data)
+            try {
+                const report = await axios.get("http://localhost:3008/api/report/report-booking/" + id)
+                console.log(report.data);
+                setReport(report.data)
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
         getReport();
-    }, [])
+    }, [id])
     useEffect(() => {
         if (complaint === null) return;
         disableSubmit();
@@ -58,17 +63,19 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
 
     const processReport = async () => {
         try {
-            const res = await axios.post("http://localhost:3008/api/report/process-report-player", {
-                playerId: report.accused._id,
+            const res = await axios.post("http://localhost:3008/api/report/process-report-booking", {
+                bookingId: report.bookingId,
                 complaint: complaint,
-                reason: des.current.value,
                 reportId: report._id
             });
             console.log(res.status);
             const updatedReports = reports.map((r) => {
                 if (r._id !== report._id) {
                     return r;
-                } else return report
+                } else {
+                    return res.data
+                }
+
             })
             setReports(updatedReports);
             setReport(null);
@@ -78,6 +85,44 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
             console.log(error);
         }
     }
+    const formatTimeH = (time) => {
+        time = Number(time);
+        const hours = Math.floor(time);
+        const minutes = (time - hours) * 60;
+        const formattedMinutes = minutes === 0 ? `0${minutes}` : minutes;
+        return `${hours}:${formattedMinutes}`;
+    };
+
+    const formatTime = (d) => {
+        const t = new Date(d);
+        let hours = t.getHours();
+        let minutes = t.getMinutes();
+        if (hours < 10) {
+            hours = `0${hours}`;
+        }
+        if (minutes < 10) {
+            minutes = `0${minutes}`;
+        }
+        return `${hours}:${minutes}`;
+    };
+
+    const formatEndTime = (d, unit) => {
+        console.log(unit);
+        console.log(d);
+        const t = new Date(d).getTime();
+        const end = t + (unit * 30 * 60 * 1000);
+        const endTime = new Date(end);
+        let hours = endTime.getHours();
+        let minutes = endTime.getMinutes();
+        if (hours < 10) {
+            hours = `0${hours}`;
+        }
+        if (minutes < 10) {
+            minutes = `0${minutes}`;
+        }
+        return `${hours}:${minutes}`;
+    };
+
     console.log(report);
     return (
         <Modal
@@ -93,14 +138,65 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p><b>Người tố cáo</b>: {report?.owner.username} ({report?.owner._id})</p>
-                <p><b>Người bị tố cáo</b>: {report?.accused.username} ({report?.accused._id})</p>
-                <p><b>Lý do tố cáo</b>: {report?.reportReason.content}</p>
-                <p><b>Ngày tố cáo</b>: {formatDate(report?.createdAt)}</p>
-                <p><b>Số tiền</b>: {formatMoney(report?.bookingId.price)}</p>
-                {
-                    // <p><b>Ngày thuê</b>: {formatDate(report?.bookingId.)} </p>
-                }
+                <Container>
+                    <Row>
+                        <Col md={3}><p><b>Người tố cáo</b>: </p></Col>
+                        <Col md={9}>{report?.owner.username} ({report?.owner._id})</Col>
+                    </Row>
+                    <Row>
+                        <Col md={3}><p><b>Người bị tố cáo</b>: </p></Col>
+                        <Col md={9}>{report?.accused.username} ({report?.accused._id})</Col>
+                    </Row>
+                    <Row>
+                        <Col md={3}><p><b>Lý do tố cáo</b>: </p></Col>
+                        <Col md={9}>{report?.reportReason.content}</Col>
+                    </Row>
+                    <Row>
+                        <Col md={3}><p><b>Ngày tố cáo</b>: </p></Col>
+                        <Col md={9}>{report?.bookingId.hours.length === 0 ? formatDate(report?.bookingId.createdAt) : formatDate(report?.bookingId.hours[0].date)}</Col>
+                    </Row>
+                    <Row>
+                        <Col md={3}><p><b>Số tiền</b>: </p></Col>
+                        <Col md={9}>{formatMoney(report?.bookingId.price)}</Col>
+                    </Row>
+                    {report?.bookingId.hours.length !== 0 && (
+                        <>
+                            <Row>
+                                <Col md={3}> <p><b>Ngày thuê</b>: </p></Col>
+                                <Col md={9}>{formatDate(report?.bookingId.createdAt)}</Col>
+                            </Row>
+                            <Row>
+
+                                <Col md={3}> <p><b>Khung giờ thuê</b>: </p></Col>
+                                <Col md={9}> {
+                                    report?.bookingId.hours.map((h) => {
+                                        return (
+                                            <p> {formatTimeH(h.start)} - {formatTimeH(h.end)}</p>
+                                        )
+                                    })
+                                }</Col>
+                            </Row>
+
+                        </>
+                    )
+                    }
+                    {report?.bookingId.hours.length === 0 && (
+                        <>
+                            <Row>
+                                <Col md={3}> <p><b>Ngày thuê</b>: </p></Col>
+                                <Col md={9}>{formatDate(report?.bookingId.createdAt)}</Col>
+                            </Row>
+                            <Row>
+
+                                <Col md={3}> <p><b>Khung giờ thuê</b>: </p></Col>
+                                <Col md={9}> <p>{formatTime(report?.bookingId.createdAt)} - {formatEndTime(report?.bookingId.createdAt, report?.bookingId.unit)}</p></Col>
+                            </Row>
+
+                        </>
+                    )
+                    }
+                </Container>
+
                 <h5>{report?.title}</h5>
                 <p>{report?.description}</p>
                 <div className='d-flex flex-wrap'>
@@ -136,30 +232,8 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
                             <Form.Select style={{ color: "black" }} onChange={(e) => { setComplaint(e.target.value) }}>
                                 <option value="" disabled selected hidden>Chọn hình thức xử lý</option>
                                 <option value={0} style={{ color: "black" }}>Từ chối đơn tố cáo</option>
-                                <option value={1} style={{ color: "black" }}>Gửi cảnh cáo</option>
-                                <option value={2} style={{ color: "black" }}>Cấm tài khoản 3 ngày</option>
-                                <option value={3} style={{ color: "black" }}>Cấm tài khoản 7 ngày</option>
-                                <option value={4} style={{ color: "black" }}>Cấm tài khoản 1 tháng</option>
-                                <option value={5} style={{ color: "black" }}>Cấm tài khoản vĩnh viễn</option>
+                                <option value={1} style={{ color: "black" }}>Hoàn tiền</option>
                             </Form.Select>
-
-                            {
-                                complaint >= 1 && (
-                                    <>
-                                        <Form.Label htmlFor="des" className='mt-10' style={{ color: "black" }}>
-                                            {complaint == 1 ? "Nội dung" : "Lý do cấm tài khoản"}
-                                        </Form.Label>
-                                        <Form.Control
-                                            as="textarea"
-                                            id="des"
-                                            rows={5}
-                                            defaultValue=""
-                                            ref={des}
-                                            onChange={disableSubmit}
-                                        />
-                                    </>
-                                )
-                            }
                             <Button variant='success' style={{
                                 padding: "10px 30px",
                                 marginTop: "20px"
@@ -172,7 +246,7 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
             {
                 report && report?.screenShot && <ImageGallery image={report.screenShot[currentImageIndex]} isOpen={isOpen} closeModal={closeModal} previousImage={previousImage} nextImage={nextImage} />
             }
-        </Modal>
+        </Modal >
     )
 }
 

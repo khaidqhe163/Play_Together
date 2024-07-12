@@ -84,7 +84,8 @@ const createBooking = async (req, res) => {
 
 const createBookingT = async (req, res) => {
     try {
-        const { userId, playerId, price, hours, unit, bookingStatus } = req.body;
+        const { playerId, price, hours, unit, bookingStatus } = req.body;
+        const userId = req.payload.id;
         // console.log(req.body);
         const aUser = await UserService.findUserById(userId);
         const aPlayer = await UserService.getPlayerById(playerId);
@@ -134,8 +135,8 @@ const getBookingOnlineOfPlayer = async (req, res) => {
 
 const getBookingScheduleOfPlayer = async (req, res) => {
     try {
-        // const playerId = req.payload.id;
-        const playerId = "6651fbbb25f49e2ff935d699";
+        const playerId = req.payload.id;
+        // const playerId = "6651fbbb25f49e2ff935d699";
         const listBooking = await BookingService.getBookingScheduleOfPlayer(playerId);
         const transformedBookings = await Promise.all(listBooking.map(async ({
             _id,

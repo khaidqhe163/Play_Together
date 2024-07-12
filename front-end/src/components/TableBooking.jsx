@@ -253,7 +253,7 @@ function TableBooking({ endPoint }) {
                                                 {l.bookingStatus === 2 && l.bookingReview === null ? (
                                                     <button className='btn btn-success' onClick={() => { handleShow(); setPlayer(l); setCurrentIndex(index) }}>Đánh giá</button>
                                                 ) : null}
-                                                {l.bookingStatus === 2 && endPoint === "my-booking" && l.reported !== true ? (
+                                                {(l.bookingStatus === 1 || l.bookingStatus === 2) && endPoint === "my-booking" && l.reported !== true ? (
                                                     <button className='btn btn-warning' onClick={() => { setCurrentBooking(l) }}>Tố cáo</button>
                                                 ) : null}
                                             </td>
@@ -263,7 +263,7 @@ function TableBooking({ endPoint }) {
                         </tbody>
                     </table>}
             </div>
-            <ReportBooking show={showReport} handleClose={handleCloseReport} currentBooking={currentBooking} setCurrentBooking={setCurrentBooking} setListBooking={setListBooking} currentIndex={currentIndex} />
+            <ReportBooking show={showReport} handleClose={handleCloseReport} currentBooking={currentBooking} listBooking={listBooking} setCurrentBooking={setCurrentBooking} setListBooking={setListBooking} currentIndex={currentIndex} />
             <ReviewModal show={show} handleClose={handleClose} player={player} setListBooking={setListBooking} currentIndex={currentIndex} listBooking={listBooking} />
         </div>
     );

@@ -1,4 +1,4 @@
-import { ReportService, UserService, BookingService } from "../services/index.js";
+import { ReportService, UserService, BookingService, ScheduleService } from "../services/index.js";
 
 const createReport = async (req, res) => {
     try {
@@ -74,9 +74,16 @@ const getReportBookingById = async (req, res) => {
     try {
         const id = req.params.id;
         const report = await ReportService.getReportBookingById(id);
-        // const booking = await BookingService.getBookingByReport(report.bookingId);
-        // report.booking = booking;
-        // console.log(booking);
+        if (report.bookingId.hours.length !== 0) {
+            const transformedHours = await Promise.all(report.bookingId.hours.map(async (scheduleId) => {
+                const schedule = await ScheduleService.getScheduleById(scheduleId);
+                return schedule;
+            }));
+            const reportObj = report.toObject();
+            reportObj.bookingId.hours = transformedHours;
+            console.log(reportObj.bookingId.hours);
+            return res.status(200).json(reportObj);
+        }
         res.status(200).json(report);
     } catch (error) {
         res.status(500).json(error)
@@ -135,6 +142,23 @@ const processReportPlayer = async (req, res) => {
     }
 }
 
+
+const processReportBooking = async (req, res) => {
+    try {
+        const {
+            reportId,
+            complaint,
+            bookingId
+        } = req.body;
+        console.log(complaint);
+        const report = await ReportService.processReportBooking(reportId, Number(complaint), bookingId);
+        res.status(200).json(report)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+
 const createReportBooking = async (req, res) => {
     try {
         let screenShot = [];
@@ -173,5 +197,6 @@ export default {
     processReportPlayer,
     createReportBooking,
     getReportBooking,
-    getReportBookingById
+    getReportBookingById,
+    processReportBooking
 }

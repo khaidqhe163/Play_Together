@@ -9,7 +9,7 @@ import ImageGallery from '../../ImageGallery'
 import axios from 'axios';
 import api from '../../../utils/axiosConfig'
 import { toast } from 'react-toastify';
-function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking }) {
+function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking, listBooking, setListBooking }) {
     const inputFile = useRef();
     const [files, setFiles] = useState(null);
     const [images, setImages] = useState(null);
@@ -112,9 +112,16 @@ function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking })
                 }
             })
             toast("Report của bạn đã được gửi thành công")
+            const updatedBookings = listBooking.map((l) => {
+                if (l._id === currentBooking._id) {
+                    l.bookingStatus = 4;
+                    return l;
+                } else return l;
+            })
             setFiles(null);
             setImages(null);
             setDisabledBtn(true);
+            setListBooking(updatedBookings)
             handleClose();
         } catch (error) {
             console.log(error);

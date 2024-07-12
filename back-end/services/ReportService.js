@@ -1,6 +1,8 @@
 import Booking from '../models/Booking.js'
 import Report from '../models/Report.js'
+import User from '../models/User.js'
 import BanService from './BanService.js'
+import ScheduleService from './ScheduleService.js'
 const createReport = async (data) => {
     try {
         const report = await Report.create(data)
@@ -41,7 +43,7 @@ const getReportPlayer = async () => {
 }
 const getReportBooking = async () => {
     try {
-        const report = await Report.find({ bookingId: { $exists: true } }).populate("owner", "username").populate("reportReason", "content")
+        const report = await Report.find({ bookingId: { $exists: true } }).populate("owner", "username").populate("reportReason", "content").sort({ createdAt: -1 })
         return report
     } catch (error) {
         throw new Error(error.toString);
@@ -68,13 +70,8 @@ const getReportBookingById = async (id) => {
             .populate("bookingId")
             .populate("accused", "username");
 
-        if (report.bookingId.hours.length !== 0) {
-            const transformedHours = await Promise.all(report.bookingId.hours.map(async (scheduleId) => {
-                const schedule = await ScheduleService.getScheduleById(scheduleId);
-                return schedule;
-            }));
-            report.bookingId.hours = transformedHours;
-        }
+        // console.log(report);
+
         return report
     } catch (error) {
         throw new Error(error.toString);
@@ -114,6 +111,26 @@ const processReportPlayer = async (reportId, complaint, reason, playerId) => {
         throw new Error(error.toString);
     }
 }
+const processReportBooking = async (reportId, complaint, bookingId) => {
+    try {
+        let report;
+        console.log("booking", bookingId);
+        if (complaint === 0) {
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Đơn bị từ chối" }, { new: true })
+                .populate("owner", "username").populate("reportReason", "content")
+        }
+        if (complaint === 1) {
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Hoàn tiền" }, { new: true })
+                .populate("owner", "username").populate("reportReason", "content")
+            const booking = await Booking.findOneAndUpdate({ _id: bookingId }, { $set: { bookingStatus: 4 } });
+            await User.updateOne({ _id: booking.userId }, { $inc: { accountBalance: booking.price } })
+            await User.updateOne({ _id: booking.playerId }, { $inc: { accountBalance: -booking.price } })
+        }
+        return report
+    } catch (error) {
+        throw new Error(error.toString);
+    }
+}
 
 const createReportBooking = async (userId, screenShot, type, title, description, bookingId, playerId) => {
     try {
@@ -133,5 +150,6 @@ export default {
     processReportPlayer,
     createReportBooking,
     getReportBooking,
-    getReportBookingById
+    getReportBookingById,
+    processReportBooking
 }

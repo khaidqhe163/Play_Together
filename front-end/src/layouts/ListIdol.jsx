@@ -6,6 +6,8 @@ import avatar2 from '../assets/avatar2.jpg';
 import avatar3 from '../assets/avatar3.jpg';
 import { useState } from 'react';
 import StoryCreation from '../components/StoryCreation';
+import { userInfor } from '../features/userSlice';
+import { useSelector } from 'react-redux';
 
 export default function ListIdol({ stories, setStory }) {
     const idols = [
@@ -97,7 +99,7 @@ export default function ListIdol({ stories, setStory }) {
         margin: 0,
         fontSize: "16px",
     };
-
+    const userInfo = useSelector(userInfor);
     const [openModalCreate, setOpenModalCreate] = useState(false);
     const handleShowOpenCreate = () => {
         setOpenModalCreate(true);
@@ -107,18 +109,22 @@ export default function ListIdol({ stories, setStory }) {
     }
     return (
         <div style={containerStyle}>
-            <div>
-                <p style={headingStyle}>Tin của bạn</p>
-                <div style={buttonContainerStyle}>
-                    <button style={buttonStyle} onClick={handleShowOpenCreate}>
-                        <ion-icon name="add-outline"></ion-icon>
-                    </button>
-                    <div style={textContainerStyle}>
-                        <h5 style={{ color: "#fff", margin: "0" }}>Tạo tin</h5>
-                        <p style={{ color: "#bcbcbc", margin: "0" }}>Bạn có thể tạo tin ở đây</p>
+            {
+                userInfo && (
+                    <div>
+                        <p style={headingStyle}>Tin của bạn</p>
+                        <div style={buttonContainerStyle}>
+                            <button style={buttonStyle} onClick={handleShowOpenCreate}>
+                                <ion-icon name="add-outline"></ion-icon>
+                            </button>
+                            <div style={textContainerStyle}>
+                                <h5 style={{ color: "#fff", margin: "0" }}>Tạo tin</h5>
+                                <p style={{ color: "#bcbcbc", margin: "0" }}>Bạn có thể tạo tin ở đây</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                )
+            }
             <div>
                 <p style={headingStyle}>Thịnh hành</p>
                 <div style={storyContainerStyle}>

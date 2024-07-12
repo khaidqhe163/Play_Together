@@ -26,5 +26,6 @@ ReportRouter.get("/report-booking", ReportController.getReportBooking)
 ReportRouter.get("/report-player/:id", ReportController.getReportPlayerById)
 ReportRouter.get("/report-booking/:id", ReportController.getReportBookingById)
 ReportRouter.post("/process-report-player", ReportController.processReportPlayer)
+ReportRouter.post("/process-report-booking", ReportController.processReportBooking)
 ReportRouter.post("/report-booking", jwt.verifyAccessToken, upload.array("images", 10), ReportController.createReportBooking)
 export default ReportRouter

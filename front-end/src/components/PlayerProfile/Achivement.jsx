@@ -16,6 +16,9 @@ function Achivement({ player, setOpenHire ,setShowDonate}) {
             <div className='pi-left pi'>
                 <h5 style={{ color: "white", fontWeight: "bold", textAlign: "left", marginLeft: "10px" }}>Thành tựu</h5>
                 {
+                    player?.player?.achivements.length === 0 && <p className='text-white'>Người dùng chưa thêm thành tựu</p>
+                }
+                {
                     player?.player?.achivements?.map((a) => {
                         return (
                             <OverlayTrigger
