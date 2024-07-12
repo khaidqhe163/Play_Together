@@ -41,7 +41,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             // toast('Có lỗi trong việc lấy lịch!');
         }
     };
-
+    console.log(scheduleUpdate);
     useEffect(() => {
         if (player?._id) {
             const newPlayerId = player._id;
@@ -153,6 +153,11 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             };
         });
     };
+
+    const checkMoreThanNow = (dateSchedule, start) => {
+        const dateS = new Date(dateSchedule).getTime() + (start*60*60*1000);
+        const dateN = today.getTime() >= dateS;
+    }
 
     const renderScheduleButtons = () => {
         return scheduleUpdate.map(slot => {

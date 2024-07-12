@@ -73,7 +73,7 @@ function ChatBox() {
             setOpenChatCanvas(true);
             setMessageType(2);
             if (newChat._id !== "newchat") {
-                conversations.forEach((c) => {
+                conversations?.forEach((c) => {
                     if (c._id === newChat._id) {
                         setCurrentConvers(c);
                     }

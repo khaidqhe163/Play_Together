@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import NavBar from '../layouts/NavBar'
 import '../css/player-profile.css'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { IoMdMale } from "react-icons/io";
 import Services from '../components/PlayerProfile/Services';
@@ -12,7 +12,7 @@ import BlockUserModal from '../components/Modal/BlockUserModal';
 import Album from '../components/PlayerProfile/Album';
 import Feeds from '../components/PlayerProfile/Feeds';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateBlockedUsers } from '../features/userSlice';
+import { updateBlockedUsers, userInfor } from '../features/userSlice';
 import CanvasHire from '../components/CanvasHire';
 import { Bounce, ToastContainer } from 'react-toastify';
 import api from '../utils/axiosConfig'
@@ -21,6 +21,7 @@ import ReportPlayer from '../components/Modal/ReportPlayerModal/ReportPlayer';
 import DonateModal from '../components/Modal/DonateModal/DonateModal';
 
 function PlayerProfile() {
+    const userInfo = useSelector(userInfor);
     const { id } = useParams();
     const [player, setPlayer] = useState();
     const [subnav, setSubnav] = useState(2);
@@ -38,7 +39,7 @@ function PlayerProfile() {
     const dispatch = useDispatch();
     const [online, setOnline] = useState(false);
     const [showReport, setShowReport] = useState(false);
-
+    const nav = useNavigate();
     const handleCloseReport = () => setShowReport(false);
     const handleShowReport = () => setShowReport(true);
     useEffect(() => {
@@ -177,10 +178,10 @@ function PlayerProfile() {
                             {following ? (
                                 <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={unfollowPlayer}>Bỏ theo dõi</button>
                             ) : (
-                                <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={followPlayer}>Theo dõi</button>
+                                <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={() => { userInfo === null ? nav("/login") : followPlayer() }}>Theo dõi</button>
                             )}
-                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => setOpenModalBlock(player)}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
-                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }} onClick={handleShowReport}>Báo cáo</button>
+                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => { userInfo === null ? nav("/login") : setOpenModalBlock(player) }}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
+                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }} onClick={() => { userInfo === null ? nav("/login") : handleShowReport() }}>Báo cáo</button>
                         </Col>
                     </Row>
                     <Row>
@@ -197,16 +198,16 @@ function PlayerProfile() {
                     </Row>
                 </Container>
                 {
-                    subnav === 1 && <Achivement player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={()=>setShowDonate(true)}/>
+                    subnav === 1 && <Achivement player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={() => setShowDonate(true)} />
                 }
                 {
-                    subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={()=>setShowDonate(true)}/>
+                    subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={() => setShowDonate(true)} />
                 }
                 {
                     subnav === 3 && <Album player={player} id={id}/>
                 }
                 {
-                    subnav === 4 && <Feeds/>
+                    subnav === 4 && <Feeds />
                 }
             </div>
 

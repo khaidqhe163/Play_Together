@@ -23,6 +23,9 @@ const reportSchema = new Schema({
     formsProcessing: {
         type: String
     },
+    bookingId: {
+        type: Schema.Types.ObjectId, ref: 'booking'
+    },
     status: {
         type: Number,
         default: 1

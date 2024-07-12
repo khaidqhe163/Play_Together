@@ -21,9 +21,10 @@ const createMessage = async (messageType, conversationId, senderId, text) => {
     }
 }
 
-const getMessageByConId = async (id) => {
+const getMessageByConId = async (id, userId) => {
     try {
-        const messages = await Message.find({ conversationId: id })
+        const messages = await Message.find({ conversationId: id }).populate("senderId", ['username', 'avatar', 'blockedUsers'])
+        console.log(messages);
         return messages
     } catch (error) {
         throw new Error(error.toString());

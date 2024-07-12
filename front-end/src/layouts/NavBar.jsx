@@ -222,7 +222,7 @@ export default function NavBar() {
               </div>
             </Link>
             {userInfo !== null && (<div className="btn mx-2 text-white d-flex text-center justify-content-center align-items-center" style={bgButtonMoney} onClick={() => setOpenModalPayment(true)}>
-              <MdOutlineAdd size={22} className='font-black' /><span className='font-bold'> {userInfo?.accountBalance?.toLocaleString("vi-VN")} đ</span>
+              <MdOutlineAdd size={22} className='font-black' /><span className='font-bold'> {userInfo?.accountBalance.toLocaleString("vi-VN")} đ</span>
             </div>)}
           </>
         ) : null}

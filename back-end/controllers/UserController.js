@@ -6,7 +6,6 @@ import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 import * as path from 'path'
 import fs from "fs"
-import Ban from "../models/Ban.js";
 
 const register = async (req, res) => {
     try {
@@ -20,12 +19,12 @@ const register = async (req, res) => {
         const existEmail = await UserService.findUserByEmail(email);
         if (existEmail) {
             return res.status(400).json({
-                message: "Your email has registered!"
+                message: "Email của bạn đã được đăng ký"
             })
         }
         await UserService.register(email, username, dob, gender, password);
         res.status(201).json({
-            message: "Register successfully"
+            message: "Đăng ký thành công"
         })
     } catch (error) {
         res.status(500).json({
@@ -48,6 +47,12 @@ const login = async (req, res) => {
                 message: "Sai mật khẩu"
             })
         }
+        console.log(user.role);
+        if (user.role === 2) {
+            return res.status(401).json({
+                message: "Sai thông tin tài khoản!"
+            }) 
+        }
         if (user.status) {
             console.log("zoday");
             const ban = await BanService.getBanByUserId(user._id);
@@ -63,6 +68,7 @@ const login = async (req, res) => {
                 await UserService.unban(user._id);
             }
         }
+
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
         const { password, ...returnUser } = user;
@@ -126,8 +132,11 @@ const loginPassport = async (req, res) => {
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
-        res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
-        res.status(200).json(user)
+        res.status(200).json({
+            user: user,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        });
     } catch (error) {
         res.status(500).json({
             message: error.toString()

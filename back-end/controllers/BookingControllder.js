@@ -84,7 +84,8 @@ const createBooking = async (req, res) => {
 
 const createBookingT = async (req, res) => {
     try {
-        const { userId, playerId, price, hours, unit, bookingStatus } = req.body;
+        const { playerId, price, hours, unit, bookingStatus } = req.body;
+        const userId = req.payload.id;
         // console.log(req.body);
         const aUser = await UserService.findUserById(userId);
         const aPlayer = await UserService.getPlayerById(playerId);
@@ -134,8 +135,8 @@ const getBookingOnlineOfPlayer = async (req, res) => {
 
 const getBookingScheduleOfPlayer = async (req, res) => {
     try {
-        // const playerId = req.payload.id;
-        const playerId = "6651fbbb25f49e2ff935d699";
+        const playerId = req.payload.id;
+        // const playerId = "6651fbbb25f49e2ff935d699";
         const listBooking = await BookingService.getBookingScheduleOfPlayer(playerId);
         const transformedBookings = await Promise.all(listBooking.map(async ({
             _id,
@@ -181,7 +182,7 @@ const getMyBooking = async (req, res) => {
         const userId = req.payload.id;
         // const userId = "665755b517909fecabb76afe";
         const listBooking = await BookingService.getMyBooking(userId);
-        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, bookingReview, createdAt, updatedAt, __v }) => {
+        const transformedBookings = await Promise.all(listBooking.map(async ({ _id, userId, playerId, price, hours, unit, bookingStatus, bookingReview, reported, createdAt, updatedAt, __v }) => {
             if (hours.length === 0) {
                 return {
                     _id,
@@ -194,6 +195,7 @@ const getMyBooking = async (req, res) => {
                     unit,
                     bookingStatus,
                     bookingReview: bookingReview ? bookingReview : null,
+                    reported: reported ? reported : false,
                     createdAt,
                     updatedAt,
                     __v
@@ -214,12 +216,14 @@ const getMyBooking = async (req, res) => {
                     unit,
                     bookingStatus,
                     bookingReview: bookingReview ? bookingReview : null,
+                    reported: reported ? reported : false,
                     createdAt,
                     updatedAt,
                     __v
                 };
             }
         }));
+        console.log(listBooking);
         return res.status(200).json(transformedBookings);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error get booking', error });
@@ -258,9 +262,9 @@ const changeStatusToProgress = async (req, res) => {
                 endTime += (b.unit * 30 * 60 * 1000);
                 const decision = now <= endTime;
                 if (decision) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc! ❌" });
-                aPlayer.player.totalHiredHour += (parseInt(b.unit)/2);
+                aPlayer.player.totalHiredHour += (parseInt(b.unit) / 2);
                 await aPlayer.save();
-            }else{
+            } else {
                 const { _id,
                     userId,
                     playerId,
@@ -291,9 +295,9 @@ const changeStatusToProgress = async (req, res) => {
 
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
 
-         
-                if(isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc cc. ❌" });
-                aPlayer.player.totalHiredHour += (parseInt(checkB)/2);
+
+                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc cc. ❌" });
+                aPlayer.player.totalHiredHour += (parseInt(checkB) / 2);
                 await aPlayer.save();
             }
         } else if (status == 3) {
@@ -316,6 +320,9 @@ const deleteBookingById = async (req, res) => {
     try {
         const { bookingId } = req.params;
         const d = await BookingService.deleteBookingById(bookingId);
+        const aUser = await UserService.findUserById(d.userId);
+        aUser.accountBalance += parseInt(d.price);
+        await aUser.save();
         res.status(200).json(d);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error delete booking online', error });
@@ -323,15 +330,15 @@ const deleteBookingById = async (req, res) => {
 };
 
 
-const getListBookingSuccess = async(req,res)=>{
+const getListBookingSuccess = async (req, res) => {
     try {
         const userId = req.payload.id;
         const status = 2;
-        const booking = await BookingService.getListBookingSuccess(userId,status);
-        const transf = booking.map(b=>{
-            return{
+        const booking = await BookingService.getListBookingSuccess(userId, status);
+        const transf = booking.map(b => {
+            return {
                 userName: b.userId.username,
-                totalHiredHour: (b.hours.length + b.unit)/2,
+                totalHiredHour: (b.hours.length + b.unit) / 2,
                 price: b.price,
                 createdAt: b.createdAt
             }
