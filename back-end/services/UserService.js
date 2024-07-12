@@ -160,7 +160,7 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
             players = await Promise.all(players.map(async player => {
                 const bookings = await Booking.find({ playerId: player._id, createdAt: { $gte: oneWeekAgo } }).exec();
                 const completedBookings = bookings.filter(booking => booking.bookingStatus === 2).length;
-                const totalBookings = bookings.filter(booking => booking.bookingStatus === 2 || booking.bookingStatus === 3).length;
+                const totalBookings = bookings.filter(booking => booking.bookingStatus === 2 || booking.bookingStatus === 4).length;
                 const completionRate = totalBookings === 0 ? 0 : (completedBookings / totalBookings);
                 // player = player.toObject();
                 player.totalHiredHours = player.player.totalHiredHour;
