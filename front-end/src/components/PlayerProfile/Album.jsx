@@ -18,6 +18,8 @@ const Album = ({ player, id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showCreate, setShowCreate] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [imageToDelete, setImageToDelete] = useState(null);
   const userInfo = useSelector(userInfor);
   const dispatch = useDispatch();
 
@@ -29,16 +31,26 @@ const Album = ({ player, id }) => {
     setShowCreate(false);
   };
 
-  const handleDeleteImage = async  (index) => {
+  const handleDeleteImage = async () => {
     try {
-        const user = await api.put(`http://localhost:3008/api/user/delete-image`, {
-            image: index
-        });
-        dispatch(setUserInformation(user.data))
-        
+      const user = await api.put(`http://localhost:3008/api/user/delete-image`, {
+        image: imageToDelete,
+      });
+      dispatch(setUserInformation(user.data));
+      toast.success("Xóa thành công");
+      setShowDeleteModal(false);
     } catch (error) {
-        console.log(error, "Xóa thất bại");
+      console.log(error, "Xóa thất bại");
     }
+  };
+
+  const openDeleteModal = (image) => {
+    setImageToDelete(image);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
   const openModal = (index) => {
@@ -96,15 +108,20 @@ const Album = ({ player, id }) => {
                 borderRadius: "15px",
                 backgroundSize: "cover",
               }}
-             
             >
               <div className="image-item-action d-flex justify-content-center align-items-center">
-                <LuEye style={{fontSize: "30px"}}
+                <LuEye
+                  style={{ fontSize: "30px" }}
                   onClick={() => {
                     openModal(index);
                   }}
                 />
-                {userInfo?._id === id && <MdDeleteOutline style={{fontSize: "30px"}} onClick={() => handleDeleteImage(i)} />}
+                {userInfo?._id === id && (
+                  <MdDeleteOutline
+                    style={{ fontSize: "30px" }}
+                    onClick={() => openDeleteModal(i)}
+                  />
+                )}
               </div>
             </div>
           );
@@ -124,6 +141,28 @@ const Album = ({ player, id }) => {
         images={images}
         setShowCreate={setShowCreate}
       />
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-xl font-semibold mb-4">Xác nhận xóa ảnh</h3>
+            <p className="mb-4">Bạn có chắc chắn muốn xóa ảnh này không?</p>
+            <div className="flex justify-end">
+              <button
+                onClick={handleDeleteImage}
+                className="bg-red-600 text-white px-4 py-2 rounded mr-2 hover:bg-red-700"
+              >
+                Xóa
+              </button>
+              <button
+                onClick={closeDeleteModal}
+                className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
