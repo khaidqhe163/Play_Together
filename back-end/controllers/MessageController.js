@@ -28,7 +28,8 @@ const createMessage = async (req, res) => {
 const getMessageByConId = async (req, res) => {
     try {
         const conId = req.params.id;
-        const messages = await MessageService.getMessageByConId(conId);
+        const userId = req.payload.id;
+        const messages = await MessageService.getMessageByConId(conId, userId);
         res.status(200).json(messages)
     } catch (error) {
         res.status(500).json(error)

@@ -1,4 +1,4 @@
-import { ReportService, UserService } from "../services/index.js";
+import { ReportService, UserService, BookingService, ScheduleService } from "../services/index.js";
 
 const createReport = async (req, res) => {
     try {
@@ -64,7 +64,26 @@ const getReportPlayer = async (req, res) => {
 const getReportPlayerById = async (req, res) => {
     try {
         const id = req.params.id;
-        const report = await ReportService.getReportPlayerById(id);
+        const report = await ReportService.getReportBookingById(id);
+        res.status(200).json(report);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+const getReportBookingById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const report = await ReportService.getReportBookingById(id);
+        if (report.bookingId.hours.length !== 0) {
+            const transformedHours = await Promise.all(report.bookingId.hours.map(async (scheduleId) => {
+                const schedule = await ScheduleService.getScheduleById(scheduleId);
+                return schedule;
+            }));
+            const reportObj = report.toObject();
+            reportObj.bookingId.hours = transformedHours;
+            console.log(reportObj.bookingId.hours);
+            return res.status(200).json(reportObj);
+        }
         res.status(200).json(report);
     } catch (error) {
         res.status(500).json(error)
@@ -122,11 +141,62 @@ const processReportPlayer = async (req, res) => {
         res.status(500).json(error)
     }
 }
+
+
+const processReportBooking = async (req, res) => {
+    try {
+        const {
+            reportId,
+            complaint,
+            bookingId
+        } = req.body;
+        console.log(complaint);
+        const report = await ReportService.processReportBooking(reportId, Number(complaint), bookingId);
+        res.status(200).json(report)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+
+const createReportBooking = async (req, res) => {
+    try {
+        let screenShot = [];
+        const userId = req.payload.id;
+        console.log(req.files);
+        if (req.files) {
+            req.files.forEach((file) => {
+                screenShot.push(file.path);
+            })
+        }
+        const {
+            type, title, description, bookingId, playerId
+        } = req.body;
+        const report = await ReportService.createReportBooking(userId, screenShot, type, title, description, bookingId, playerId);
+        res.status(201).json(report);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+const getReportBooking = async (req, res) => {
+    try {
+        const reports = await ReportService.getReportBooking();
+        res.status(200).json(reports);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
 export default {
     createReport,
     getAllReports,
     createReportPlayer,
     getReportPlayer,
     getReportPlayerById,
-    processReportPlayer
+    processReportPlayer,
+    createReportBooking,
+    getReportBooking,
+    getReportBookingById,
+    processReportBooking
 }

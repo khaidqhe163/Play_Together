@@ -5,9 +5,9 @@ const MessageRouter = express.Router();
 
 MessageRouter.get("/:id", MessageController.getMessage);
 
-MessageRouter.post("/", jwt.verifyAccessToken ,MessageController.createMessage)
+MessageRouter.post("/", jwt.verifyAccessToken, MessageController.createMessage)
 
-MessageRouter.get("/:id", MessageController.getMessageByConId)
+MessageRouter.get("/private-message/:id", jwt.verifyAccessToken, MessageController.getMessageByConId)
 
 MessageRouter.post("/:id", jwt.verifyAccessToken, MessageController.handleReadMess)
 export default MessageRouter

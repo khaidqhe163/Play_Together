@@ -39,9 +39,9 @@ const deleteReportReason = async (reportReasonId) => {
     }
 }
 
-const getPlayerReport = async () => {
+const getPlayerReport = async (type) => {
     try {
-        const reportReason = await ReportReason.find({ type: 2 });
+        const reportReason = await ReportReason.find({ type: type });
         return reportReason;
     } catch (error) {
         throw new Error(error.toString());

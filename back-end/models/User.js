@@ -83,6 +83,10 @@ const UserSchema = new Schema({
     status: {
         type: Boolean,
         default: false
+    },
+    role: {
+        type: Number,
+        default: 1
     }
 }, {
     timestamps: true
