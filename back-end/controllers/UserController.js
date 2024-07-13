@@ -1,6 +1,8 @@
 import { UserService, BanService } from "../services/index.js"
 import jwt from '../middleware/jwt.js';
 import bcrypt from 'bcryptjs'
+import User from "../models/User.js";
+import Booking from "../models/Booking.js";
 // import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
@@ -578,6 +580,68 @@ console.log(image);
     }
 }
 
+const getHotPlayers = async (req, res) => {
+    try {
+      // Define the time frame (last 7 days)
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
+      // Query to find players who have bookings in the last 7 days
+      const players = await User.find({ "player.duoSettings": true }).populate("player.serviceType").exec();
+  
+      // Calculate completion rate and total hired hours for each player
+      const hotPlayers = await Promise.all(
+        players.map(async (player) => {
+          const bookings = await Booking.find({
+            playerId: player._id,
+            createdAt: { $gte: oneWeekAgo },
+          }).exec();
+          const completedBookings = bookings.filter(
+            (booking) => booking.bookingStatus === 2
+          ).length;
+          const totalBookings = bookings.filter(
+            (booking) => booking.bookingStatus === 2 || booking.bookingStatus === 3
+          ).length;
+          const completionRate = totalBookings === 0 ? 0 : completedBookings / totalBookings;
+  
+          player = player.toObject();
+          player.totalHiredHours = player.player.totalHiredHour;
+          player.completionRate = completionRate;
+  
+          // Calculate a score based on total hired hours and completion rate
+          player.score = player.totalHiredHours + player.completionRate;
+  
+          return player;
+        })
+      );
+  
+      // Sort players by score in descending order
+      const sortedHotPlayers = hotPlayers.sort((a, b) => b.score - a.score);
+  
+      // Respond with the sorted hot players
+      res.status(200).json(sortedHotPlayers);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching hot players.', error: error.message });
+    }
+  };
+
+  const getFollowedPlayers = async (req, res) => {
+    try {
+        const userId = req.payload.id; // Assuming the user ID is stored in the payload after JWT verification
+        const user = await User.findById(userId).populate('followers').exec();
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        const followedPlayers = await User.find({ _id: { $in: user.followers } }).exec();
+
+        res.status(200).json(followedPlayers);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching followed players.', error: error.message });
+    }
+};
+
 export default {
     register,
     login,
@@ -606,5 +670,7 @@ export default {
     logout,
     addImagesToAlbum,
     getImagesFromAlbum,
-    deleteImageToAlbum
+    deleteImageToAlbum,
+    getHotPlayers ,
+    getFollowedPlayers
 }

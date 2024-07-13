@@ -49,6 +49,8 @@ UserRouter.put('/change-password', jwt.verifyAccessToken, UserController.changeP
 
 UserRouter.post('/blockOrUnBlockUser/:id', jwt.verifyAccessToken, UserController.blockOrUnBlock)
 
+UserRouter.get('/hot-players', UserController.getHotPlayers);
+UserRouter.get('/followed-players', jwt.verifyAccessToken, UserController.getFollowedPlayers);
 UserRouter.get('/:userId', UserController.getUserById); 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -74,6 +76,7 @@ UserRouter.put('/ban/:userId', UserController.banUser)
 
 UserRouter.post('/follow-player/:playerId', jwt.verifyAccessToken, UserController.followPlayer);
 UserRouter.post('/unfollow-player/:playerId', jwt.verifyAccessToken, UserController.unfollowPlayer);
+
 UserRouter.post('/logout', UserController.logout)
 
 const storageAlbum = multer.diskStorage({
@@ -92,4 +95,7 @@ const uploadAlbum = multer({
 
 UserRouter.post('/album', jwt.verifyAccessToken,uploadAlbum.array('images', 10), UserController.addImagesToAlbum);
 UserRouter.put('/delete-image', jwt.verifyAccessToken, UserController.deleteImageToAlbum);
+
+
+
 export default UserRouter
