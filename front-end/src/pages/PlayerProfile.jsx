@@ -53,6 +53,10 @@ function PlayerProfile() {
 
     useEffect(() => {
         getPlayerInformation();
+    }, [id])
+
+    useEffect(() => {
+        getPlayerInformation();
     }, [author])
 
     useEffect(() => {
@@ -200,7 +204,7 @@ function PlayerProfile() {
                     subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={() => setShowDonate(true)} />
                 }
                 {
-                    subnav === 3 && <Album player={player} />
+                    subnav === 3 && <Album player={player} id={id}/>
                 }
                 {
                     subnav === 4 && <Feeds />
@@ -218,7 +222,10 @@ function PlayerProfile() {
             <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} playerOnline={playerOnline} />
             {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
             <ReportPlayer show={showReport} handleClose={handleCloseReport} id={id} />
-            <DonateModal showDonate={showDonate} handleClose={() => setShowDonate(false)} player={player} />
+            <DonateModal showDonate={showDonate} handleClose={()=>setShowDonate(false)} player={player}/>
+            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
+            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
+
         </>
     )
 }

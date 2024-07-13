@@ -98,7 +98,7 @@ export default function StoryPage() {
             <ListIdol stories={stories} setStory={setStories} />
           </div>
         </div>
-        <div className="col-10" style={{ backgroundColor: "#20202b" }}>
+        <div className="col-10" style={{ backgroundColor: "#13131a" }}>
           <div className="row d-flex justify-content-center">
             <div className="col-12 col-md-10 py-3">
               <ListStoryPage

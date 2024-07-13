@@ -36,5 +36,7 @@ const routes = (app) => {
     app.use('/api/donate' ,DonateRouter);
 
     
+    app.use('/api/report-reason', ReportReasonRouter)
+    app.use('/api/report', ReportRouter)
 }
 export default routes

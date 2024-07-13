@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import avatarls1 from '../assets/avatals1.jpg'
-import avatarls2 from '../assets/avatals2.jpg'
-import avatarls3 from '../assets/avatals3.jpg'
-import avatarls4 from '../assets/avatals4.jpg'
+
 import { Link } from 'react-router-dom'
 import pubg from '../assets/pubg.jpg'
 import { IoIosCheckmarkCircle } from "react-icons/io";
