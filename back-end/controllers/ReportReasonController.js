@@ -50,7 +50,8 @@ const deleteReportReason = async (req, res) => {
 
 const getPlayerReport = async (req, res) => {
     try {
-        const reportReason = await ReportReasonService.getPlayerReport();
+        const type = req.params.type;
+        const reportReason = await ReportReasonService.getPlayerReport(type);
         return res.status(200).json(reportReason);
     } catch (error) {
         res.status(500).json(error)

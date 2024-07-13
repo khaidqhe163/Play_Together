@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Col, Container, Row, Form } from 'react-bootstrap'
 import LoginLeft from './LoginLeft'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import '../css/register.css'
 import { useFormik } from 'formik';
 import axios from 'axios'
@@ -98,9 +98,11 @@ function Register() {
                 <Col md={6} id='login-rightside'>
                     <div id='login-header'>
                         <button onClick={() => { nav('/login') }}>Đăng nhập</button>
-                        <div id='login-close'>
-                            <ion-icon name="close-outline"></ion-icon>
-                        </div>
+                        <Link to="/">
+                            <div id='login-close'>
+                                <ion-icon name="close-outline"></ion-icon>
+                            </div>
+                        </Link>
                     </div>
                     <div id='formRegister'>
                         <h1>Đăng ký</h1>

@@ -7,7 +7,6 @@ import axios from 'axios';
 import { baseUrl } from '../../utils/service.js'
 import { useSelector, useDispatch } from 'react-redux';
 import { userInfor } from '../../features/userSlice.js';
-import { PiDotsThreeBold } from "react-icons/pi";
 import { SocketContext } from '../../context/SocketContext.jsx';
 function ChatBoxDual({ currentConversation, setConversation, conversations, newMessage, setNewMessage, setCurrentConvers }) {
     const chatbox = useRef(null);
@@ -16,13 +15,24 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
     const userInfo = useSelector(userInfor)
     const [messages, setMessages] = useState([]);
     const [receiver, setReceiver] = useState();
-
+    const [block, setBlock] = useState(0);
     useEffect(() => {
         if (currentConversation !== null) {
             const handleGetMessage = async () => {
                 try {
-                    const mes = await axios.get("http://localhost:3008/api/message/" + currentConversation._id);
+                    const mes = await api.get("http://localhost:3008/api/message/private-message/" + currentConversation._id);
                     setMessages(mes.data);
+                    const otherPerson = mes.data.find((m) => {
+                        return m.senderId._id !== userInfo._id
+                    })
+                    console.log("otherPerson", otherPerson);
+                    if (otherPerson.senderId.blockedUsers.includes(userInfo._id)) {
+                        setBlock(1)
+                    } else if (userInfo.blockedUsers.includes(otherPerson.senderId._id)) {
+                        setBlock(2);
+                    } else {
+                        setBlock(0)
+                    }
                 } catch (error) {
                     console.log(error);
                 }
@@ -35,13 +45,6 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
         }
     }, [currentConversation])
 
-    // useEffect(() => {
-    //     if (socket === null) return;
-    //     socket.on("getNewMessagePrivate", (res) => {
-    //         console.log(res);
-    //         setNewMessage(res)
-    //     })
-    // }, [socket])
 
     useEffect(() => {
         if (newMessage?.senderId !== userInfo._id && currentConversation?._id === newMessage?.message?.conversationId) {
@@ -61,13 +64,6 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                 })
                 chat = (await api.post("/api/conversation/create-conversation", { member: member })).data
                 chatId = chat._id;
-                // setConversation(conversations.map((c) => {
-                //     if (c._id === "newchat") {
-                //         c._id = chat.data._id;
-                //     }
-                //     return c;
-                // }))
-                // setCurrentConvers(chat.data)
             } else {
                 chatId = currentConversation._id
             }
@@ -107,7 +103,7 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
             console.log(error);
         }
     }
-
+    console.log(block, "block");
     return (
         <Stack direction='vertical' className='chatbox' gap={2}>
             <div className='chat-box-header d-flex align-items-center justify-content-between'>
@@ -120,20 +116,6 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                     } alt='' />
                     <p className='text-white m-0 ml-10' style={{ fontSize: "20px", fontWeight: "bold" }}>{receiver?.username}</p>
                 </div>
-                {
-                    //     <div className='rounded-circle chat-options d-flex align-items-center justify-content-between' style={{
-                    //     cursor: "pointer",
-                    //     width: "48px",
-                    //     height: "48px"
-                    // }} onClick={() => setMessageSetting(!messageSetting)}>
-                    //     <PiDotsThreeBold style={{ color: "white", fontSize: "30px", margin: "auto" }} />
-                    //     {messageSetting && (
-                    //         <div className='message-setting'>
-
-                    //         </div>
-                    //     )}
-                    // </div>
-                }
             </div>
             <hr style={{ color: "white" }}></hr>
             <Stack direction='vertical' gap={3} ref={chatbox} style={{ overflow: "auto" }}>
@@ -183,25 +165,41 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                 }
             </Stack>
             <Stack direction='horizontal' gap={3} className='chat-input'>
-                <InputEmoji value={textMessage}
-                    onChange={setTextMessage}
-                    fontFamily='sans-serif'
-                    borderColor='rgba(72, 122, 232, 0.2)'
-                    onEnter={handleSendMessage}
-                />
-                <button className='send-btn' style={{
-                    background: "#8d68f2",
-                    color: "white",
-                    width: "40px",
-                    height: "40px",
-                    padding: "5px",
-                    boxSizing: "border-box",
-                    borderRadius: "50%",
-                    textAlign: "center"
-                }}
-                    onClick={handleSendMessage}
-                >
-                    <LuSend style={{ fontSize: "20px" }} /></button>
+                {
+                    block === 0 && (
+                        <>
+                            <InputEmoji value={textMessage}
+                                onChange={setTextMessage}
+                                fontFamily='sans-serif'
+                                borderColor='rgba(72, 122, 232, 0.2)'
+                                onEnter={handleSendMessage}
+                            />
+                            <button className='send-btn' style={{
+                                background: "#8d68f2",
+                                color: "white",
+                                width: "40px",
+                                height: "40px",
+                                padding: "5px",
+                                boxSizing: "border-box",
+                                borderRadius: "50%",
+                                textAlign: "center"
+                            }}
+                                onClick={handleSendMessage}
+                            >
+                                <LuSend style={{ fontSize: "20px" }} /></button>
+                        </>
+                    )
+                }
+                {
+                    block === 1 && (
+                        <p className='text-white' style={{ textAlign: "center", width: "100%" }}>Bạn đã bị chặn</p>
+                    )
+                }
+                {
+                    block === 2 && (
+                        <p className='text-white' style={{ textAlign: "center", width: "100%" }}>Bạn đã chặn người dùng này</p>
+                    )
+                }
             </Stack>
         </Stack >
     )

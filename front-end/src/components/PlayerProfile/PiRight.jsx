@@ -3,13 +3,17 @@ import { SocketContext } from '../../context/SocketContext'
 import api from '../../utils/axiosConfig'
 import { userInfor } from '../../features/userSlice';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 function PiRight({ id, setOpenHire, player, setShowDonate }) {
     const { setOpenChatCanvas, setReceiverId, newChat, setNewChat } = useContext(SocketContext)
     const userInfo = useSelector(userInfor);
+    const nav = useNavigate();
     const handleOpenChat = async () => {
         try {
-            // setOpenChatCanvas(true);
-            // const chat = await api.post("/api/conversation/create-conversation", { member: id })
+            if (userInfo === null) {
+                nav("/login")
+                return;
+            }
             const chat = await api.get(`/api/conversation/get-conversation-by-id/${userInfo._id}/${id}`)
             console.log(chat.data);
             if (chat.data) {
@@ -47,8 +51,8 @@ function PiRight({ id, setOpenHire, player, setShowDonate }) {
     return (
         <div className='pi-right pi'>
             <button onClick={handleOpenChat}>Chat</button>
-            <button onClick={setShowDonate}>Donate</button>
-            <button onClick={setOpenHire}>Thuê</button>
+            <button onClick={() => { userInfo === null ? nav("/login") : setShowDonate() }}>Donate</button>
+            <button onClick={() => { userInfo === null ? nav("/login") : setOpenHire() }}>Thuê</button>
         </div>
     )
 }

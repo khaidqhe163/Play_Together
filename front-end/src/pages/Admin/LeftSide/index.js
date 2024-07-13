@@ -52,6 +52,10 @@ const items = [
         key: '/admin/reports/users',
         label: 'Người dùng bị báo cáo',
       },
+      {
+        key: '/admin/reports/bookings',
+        label: 'Booking bị báo cáo',
+      },
     ],
   },
   {

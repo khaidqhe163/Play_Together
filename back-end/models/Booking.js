@@ -30,6 +30,10 @@ const bookingSchema = new Schema({
     bookingReview: {
         type: Schema.Types.ObjectId,
         ref: "comment"
+    },
+    reported: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

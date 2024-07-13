@@ -68,6 +68,15 @@ const getBookingById = async (idBooking) => {
         throw new Error(error.message);
     }
 };
+const getBookingByReport = async (idBooking) => {
+    try {
+        console.log(idBooking);
+        const b = await Booking.findOne({ _id: idBooking }).populate("playerId", "username");
+        return b;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 
 const changeStatusToProgress = async (idBooking, status) => {
     try {
@@ -89,13 +98,21 @@ const deleteBookingById = async (idBooking) => {
 
 const getListBookingSuccess = async (userId, status) => {
     try {
-        const b = await Booking.find({playerId:userId, bookingStatus:status}).populate("userId","username").exec();
+        const b = await Booking.find({ playerId: userId, bookingStatus: status }).populate("userId", "username").exec();
         return b;
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
+const getBookingByPlayerId = async (playerId) => {
+    try {
+        const b = await Booking.find({ playerId: playerId, bookingStatus: { $in: [3, 4] } });
+        return b;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
 export default {
     getAllBooking,
     getLatestBooking,
@@ -107,4 +124,6 @@ export default {
     getMyBooking,
     deleteBookingById,
     getListBookingSuccess,
+    getBookingByReport,
+    getBookingByPlayerId
 }

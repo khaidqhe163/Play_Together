@@ -1,20 +1,47 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { FaFacebook, FaYoutube } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import PiRight from './PiRight';
 import { formatDate } from '../../utils/service';
-function Achivement({ player, setOpenHire ,setShowDonate}) {
+import axios from 'axios';
+function Achivement({ player, setOpenHire, setShowDonate }) {
     const renderTooltip = (props, content) => (
         <Tooltip id="button-tooltip" {...props}>
             {content}
         </Tooltip>
     );
+    const [booking, setBooking] = useState(null);
+    useEffect(() => {
+        getBooking();
+    }, [])
+    const getBooking = async () => {
+        try {
+            const bookings = await axios.get("http://localhost:3008/api/booking/private-booking/" + player._id)
+            setBooking(bookings.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getComplete = () => {
+        let total = 0;
+        if (booking && booking.length !== 0) {
+            booking.forEach((r) => {
+                if (r.bookingStatus === 3) total++;
+            })
+            return Math.floor(total / booking.length * 100);
+        }
+        return 0;
+    }
     return (
         <div className='player-infor-container'>
             <div className='pi-left pi'>
                 <h5 style={{ color: "white", fontWeight: "bold", textAlign: "left", marginLeft: "10px" }}>Thành tựu</h5>
+                {
+                    player?.player?.achivements.length === 0 && <p className='text-white'>Người dùng chưa thêm thành tựu</p>
+                }
                 {
                     player?.player?.achivements?.map((a) => {
                         return (
@@ -44,7 +71,7 @@ function Achivement({ player, setOpenHire ,setShowDonate}) {
                 <div className='d-flex profile-amount justify-content-around'>
                     <div>
                         <p>Người đăng ký</p>
-                        <p className='amounts'>298</p>
+                        <p className='amounts'>{player?.followers.length}</p>
                     </div>
                     <div>
                         <p>Số giờ thuê</p>
@@ -52,7 +79,7 @@ function Achivement({ player, setOpenHire ,setShowDonate}) {
                     </div>
                     <div>
                         <p>Tỉ lệ hoàn thành</p>
-                        <p className='amounts'>298</p>
+                        <p className='amounts'>{getComplete()} %</p>
                     </div>
                 </div>
                 <h5 className='mt-20'>Giới thiệu</h5>
@@ -86,7 +113,7 @@ function Achivement({ player, setOpenHire ,setShowDonate}) {
 
                 </div>
             </div>
-            <PiRight id={player?._id} setOpenHire={setOpenHire} player={player} setShowDonate={setShowDonate}/>
+            <PiRight id={player?._id} setOpenHire={setOpenHire} player={player} setShowDonate={setShowDonate} />
         </div >
     )
 }

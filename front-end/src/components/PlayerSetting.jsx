@@ -153,6 +153,7 @@ export default function PlayerSetting() {
         }),
         serviceType: JSON.stringify(pickGame)
       }
+      console.log(requestObject);
       const update = await api.post("/api/user/update-player-info", requestObject);
       console.log(update.data);
       dispatch(setUserInformation(update.data.user));
@@ -164,7 +165,10 @@ export default function PlayerSetting() {
   }
 
   const handlePickGame = (id) => {
-    if (!pickGame.includes(id)) {
+    if (!pickGame) {
+      setPickGame([id]);
+    }
+    else if (!pickGame.includes(id)) {
       const gameArr = [id, ...pickGame];
       setPickGame(gameArr);
     } else {
@@ -180,7 +184,6 @@ export default function PlayerSetting() {
     return formattedDate
   }
 
-  console.log(userInfo);
   return (
     <Container>
       <Row>
@@ -216,6 +219,8 @@ export default function PlayerSetting() {
               value={formik.values.rentCost}
               name='rentCost'
               onChange={formik.handleChange}
+              min={5000}
+              max={10000000}
             />
             <h6 className='title'>Giới thiệu chi tiết về bạn</h6>
             <textarea
@@ -314,19 +319,6 @@ export default function PlayerSetting() {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce} />
     </Container>
   );
 }
