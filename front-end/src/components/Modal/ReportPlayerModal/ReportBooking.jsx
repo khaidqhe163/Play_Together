@@ -114,7 +114,7 @@ function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking, l
             toast("Report của bạn đã được gửi thành công")
             const updatedBookings = listBooking.map((l) => {
                 if (l._id === currentBooking._id) {
-                    l.bookingStatus = 4;
+                    l.reported = true;
                     return l;
                 } else return l;
             })
