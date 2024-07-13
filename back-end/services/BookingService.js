@@ -96,9 +96,9 @@ const deleteBookingById = async (idBooking) => {
     }
 };
 
-const getListBookingSuccess = async (userId, status) => {
+const getListBookingSuccess = async (userId) => {
     try {
-        const b = await Booking.find({ playerId: userId, bookingStatus: status }).populate("userId", "username").exec();
+        const b = await Booking.find({ playerId: userId, bookingStatus: { $in: [2, 4] } }).populate("userId", "username").exec();
         return b;
     } catch (error) {
         throw new Error(error.message);

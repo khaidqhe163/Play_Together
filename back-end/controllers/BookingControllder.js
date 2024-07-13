@@ -333,13 +333,14 @@ const deleteBookingById = async (req, res) => {
 const getListBookingSuccess = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const status = 2;
-        const booking = await BookingService.getListBookingSuccess(userId, status);
+        // const status = 2;
+        const booking = await BookingService.getListBookingSuccess(userId);
         const transf = booking.map(b => {
             return {
                 userName: b.userId.username,
                 totalHiredHour: (b.hours.length + b.unit) / 2,
                 price: b.price,
+                status: b.bookingStatus,
                 createdAt: b.createdAt
             }
         })
