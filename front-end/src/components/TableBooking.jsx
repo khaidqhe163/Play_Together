@@ -9,6 +9,7 @@ import { SocketContext } from '../context/SocketContext';
 import ReviewModal from './Modal/ReviewModal/ReviewModal';
 import ReportBooking from './Modal/ReportPlayerModal/ReportBooking';
 import LoadingSpinner from './LoadingSpinner';
+import { GrUpdate } from "react-icons/gr";
 
 function TableBooking({ endPoint }) {
     const [listBooking, setListBooking] = useState([]);
@@ -204,11 +205,11 @@ function TableBooking({ endPoint }) {
         <div className='row m-0'>
             <div className='col-12 mt-0'>
                 {loading ? <LoadingSpinner /> : <>
-                    {listBooking.length === 0 || (endPoint === 'booking-online' && listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0) ?
+                    {listBooking.length === 0 || ((endPoint === 'booking-online' || endPoint === 'booking-schedule') && listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0) ?
                         <h5 className='text-white'>Hiện tại không có lịch nào!</h5> :
                         <>
                             <div className='d-flex justify-end mb-6'>
-                                <button className='py-2 px-2 rounded-lg text-white transition ease-in-out active:scale-90' onClick={reloadBooking}>Reload</button>
+                                <button className='py-2 px-2 rounded-lg text-white transition ease-in-out active:scale-90 flex items-center' onClick={reloadBooking}><GrUpdate className='mr-5' /> Reload</button>
                             </div>
                             <table className="min-w-full bg-gray-800 text-white rounded-xl stable">
                                 <thead>
@@ -226,7 +227,7 @@ function TableBooking({ endPoint }) {
                                 </thead>
                                 <tbody>
                                     {endPoint !== 'my-booking' ?
-                                        listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3))
+                                        listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3 && l.bookingStatus !== 4))
                                             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                                             .map((l, index) => {
                                                 if (l.hours.length === 0 && shouldHideRow(l.createdAt) && l.bookingStatus === 0) return null;
@@ -240,7 +241,7 @@ function TableBooking({ endPoint }) {
                                                         </td>
                                                         <td className='py-2'>{format(new Date(l.createdAt), "dd-MM-yyyy")}</td>
                                                         <td className='py-2'>{formatMoney(l.price)} VNĐ</td>
-                                                        <td className='py-2'>{formatStatus(l.bookingStatus)}</td>
+                                                        <td className='py-2'>{formatStatus(l.bookingStatus, l.reported)}</td>
                                                         <td className='py-2'>
                                                             {l.bookingStatus === 1 ? (
                                                                 <>

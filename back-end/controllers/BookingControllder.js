@@ -296,7 +296,7 @@ const changeStatusToProgress = async (req, res) => {
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
 
 
-                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc cc. ❌" });
+                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
                 aPlayer.player.totalHiredHour += (parseInt(checkB) / 2);
                 await aPlayer.save();
             }
