@@ -4,7 +4,7 @@ import fs from 'fs';
 
 const getAllStories = async () => {
     try {
-        const stories = await Story.find().populate("author", "_id username avatar").exec();
+        const stories = await Story.find().populate("author", "_id username avatar").sort({ createdAt: -1 }).exec();
         return stories;
     } catch (error) {
         throw new Error(error.toString());
@@ -27,9 +27,9 @@ const deleteStory = async (id) => {
         if (!story) {
             throw new Error('Story not found');
         }
-        fs.unlinkSync(story.path);  
-        fs.unlinkSync(story.thumbnail);  
-        await Story.findByIdAndDelete(id);  
+        fs.unlinkSync(story.path);
+        fs.unlinkSync(story.thumbnail);
+        await Story.findByIdAndDelete(id);
         return story;
     } catch (error) {
         throw new Error(error.toString());
@@ -50,16 +50,16 @@ const getStoryDetail = async (storyId) => {
 
 const likeOrUnlikeStory = async (userID, storyID) => {
     try {
-        const user = await User.findOne({ _id: userID})
-        if(!user) return ({}, true, "User not available")
+        const user = await User.findOne({ _id: userID })
+        if (!user) return ({}, true, "User not available")
 
         const story = await Story.findOne({ _id: storyID })
 
-        let liked 
+        let liked
         if (!story.like.includes(userID)) {
-            liked = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { like: userID}}, {new: true})
+            liked = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { like: userID } }, { new: true })
         } else {
-            liked = await Story.findByIdAndUpdate({ _id: storyID }, { $pull: { like: userID}}, {new: true})
+            liked = await Story.findByIdAndUpdate({ _id: storyID }, { $pull: { like: userID } }, { new: true })
         }
 
         return liked
@@ -70,15 +70,15 @@ const likeOrUnlikeStory = async (userID, storyID) => {
 
 const viewStory = async (userID, storyID) => {
     try {
-        const user = await User.findOne({ _id: userID})
-        if(!user) return ({}, true, "User not available")
+        const user = await User.findOne({ _id: userID })
+        if (!user) return ({}, true, "User not available")
 
         const story = await Story.findOne({ _id: storyID })
 
-        let viewed 
+        let viewed
         if (!story.view.includes(userID)) {
-            viewed = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { view: userID}} )
-        } 
+            viewed = await Story.findByIdAndUpdate({ _id: storyID }, { $push: { view: userID } })
+        }
 
         return viewed
     } catch (error) {
@@ -88,12 +88,12 @@ const viewStory = async (userID, storyID) => {
 
 // In StoryService.js
 const getStoriesByUser = async (userId) => {
-  try {
-      const stories = await Story.find({ author: userId }).populate("author", "_id username avatar").exec();
-      return stories;
-  } catch (error) {
-      throw new Error(error.toString());
-  }
+    try {
+        const stories = await Story.find({ author: userId }).populate("author", "_id username avatar").exec();
+        return stories;
+    } catch (error) {
+        throw new Error(error.toString());
+    }
 }
 
 export default {

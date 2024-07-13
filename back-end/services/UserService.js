@@ -210,7 +210,7 @@ const searchPlayerByCriteria = async (
             comments.length === 0
               ? 5.0
               : comments.reduce((acc, comment) => acc + comment.rating, 0) /
-                comments.length;
+              comments.length;
           player = player.toObject();
           player.totalHiredHours = player.player.totalHiredHour;
 
@@ -272,23 +272,35 @@ const updatePlayerInfo = async (
 ) => {
   try {
     console.log(achivement);
+    // const updateData = {
+    //   "player.rentCost": rentCost,
+    //   "player.info": info,
+    //   "player.youtubeUrl": youtubeUrl,
+    //   "player.facebookUrl": facebookUrl,
+    //   "player.roomVoice": roomVoice,
+    //   "player.deviceStatus.cam": device.cam,
+    //   "player.deviceStatus.mic": device.mic,
+    //   "player.serviceType": service,
+    //   "player.videoHightlight": videoHightlight,
+    //   "player.achivements": achivement,
+    // };
     const updateData = {
-      "player.rentCost": rentCost,
-      "player.info": info,
-      "player.youtubeUrl": youtubeUrl,
-      "player.facebookUrl": facebookUrl,
-      "player.roomVoice": roomVoice,
-      "player.deviceStatus.cam": device.cam,
-      "player.deviceStatus.mic": device.mic,
-      "player.serviceType": service,
-      "player.videoHightlight": videoHightlight,
-      "player.achivements": achivement,
+      "rentCost": rentCost,
+      "info": info,
+      "youtubeUrl": youtubeUrl,
+      "facebookUrl": facebookUrl,
+      "roomVoice": roomVoice,
+      "deviceStatus.cam": device.cam,
+      "deviceStatus.mic": device.mic,
+      "serviceType": service,
+      "videoHightlight": videoHightlight,
+      "achivements": achivement,
     };
-
+    console.log(updateData);
     const updatedUser = await User.findOneAndUpdate(
       { _id: id },
       {
-        $set: updateData,
+        $set: { player: updateData },
       },
       { new: true, runValidators: true }
     );
@@ -423,8 +435,9 @@ const banUser = async (userId) => {
 
 const getFollowerById = async (id) => {
   try {
-    const followers = await User.findById(id);
-    return followers.followers;
+    const followers = await User.find({ followers: id });
+    console.log(followers);
+    return followers;
   } catch (error) {
     throw new Error(error.toString());
   }
@@ -494,11 +507,11 @@ const deleteImageToAlbum = async (index, userId) => {
     console.log(userId);
     console.log(index);
     const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { $pull: { 'player.images': index } },
-        { new: true } // Return the updated document
-      );
-      const { password, ...returnPlayer } = updatedUser._doc;
+      userId,
+      { $pull: { 'player.images': index } },
+      { new: true } // Return the updated document
+    );
+    const { password, ...returnPlayer } = updatedUser._doc;
     return returnPlayer;
   } catch (error) {
     throw new Error(error.toString());

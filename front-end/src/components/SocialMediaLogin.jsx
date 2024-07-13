@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios';
 import { useDispatch } from 'react-redux'
 import { setUserInformation } from '../features/userSlice';
+import { setAccessToken } from '../features/accessTokenSlice';
 function SocialMediaLogin() {
     const { token } = useParams();
     const nav = useNavigate();
@@ -24,7 +25,8 @@ function SocialMediaLogin() {
             })
             console.log("==========================");
             console.log(user.data);
-            dispatch(setUserInformation(user.data));
+            dispatch(setUserInformation(user.data.user));
+            dispatch(setAccessToken(user.data.accessToken));
             nav("/");
         } catch (error) {
             nav('/login')

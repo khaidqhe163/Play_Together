@@ -68,13 +68,13 @@ function Services({ player, setOpenHire, setShowDonate}) {
                 <h5 className='mt-20'>Tình trạng thiết bị</h5>
                 <div className='devices-status'>
                     {
-                        player?.player?.deviceStatus.mic && <button><IoIosMic style={{ margin: 'auto' }} /></button>
+                        player?.player?.deviceStatus?.mic && <button><IoIosMic style={{ margin: 'auto' }} /></button>
                     }
                     {
-                        player?.player?.deviceStatus.cam && <button> <FaCamera style={{ margin: 'auto' }} /></button>
+                        player?.player?.deviceStatus?.cam && <button> <FaCamera style={{ margin: 'auto' }} /></button>
                     }
                     {
-                        !player?.player?.deviceStatus.cam && !player?.player?.deviceStatus.mic && <button><FaBan style={{ margin: 'auto' }} /></button>
+                        !player?.player?.deviceStatus?.cam && !player?.player?.deviceStatus?.mic && <button><FaBan style={{ margin: 'auto' }} /></button>
                     }
                 </div>
                 {
