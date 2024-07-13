@@ -272,9 +272,6 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                     <div className="heart" onClick={() => handleLikedOrUnliked()}>
                                         <FontAwesomeIcon color={!!likedStatus ? 'red' : ''} icon={faHeart} />
                                     </div>
-                                    <div className="gift mt-10">
-                                        <FontAwesomeIcon icon={faGift} />
-                                    </div>
                                 </div>
                             </Col>
                         </Row>
@@ -299,11 +296,6 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                         </div>
                                     </div>
                                     <div className="thue mr-20 d-flex ">
-                                        <Button danger type="primary" shape="round"
-                                            style={{ color: 'white', height: '34px', width: '84px', fontSize: '16px', fontWeight: 600 }}
-                                        >
-                                            Thuê
-                                        </Button>
 
                                         <div className="ml-20 mt-3" style={{}}>
                                             <Dropdown
@@ -472,7 +464,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             {!!openDeleteStory && (
                 <ModalDeleteStory
                     open={openDeleteStory}
-                    
+                    onCancelStory={onCancel}
                     onCancel={() => setOpenDeleteStory(false)}
                     onOk={onOk}
                 />

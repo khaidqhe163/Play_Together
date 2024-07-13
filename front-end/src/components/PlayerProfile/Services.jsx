@@ -27,7 +27,7 @@ function Services({ player, setOpenHire, setShowDonate }) {
         try {
             const services = await axios.get("http://localhost:3008/api/service");
             const userService = services.data.filter((s) => {
-                return player.player.serviceType.includes(s._id);
+                return player?.player.serviceType.includes(s._id);
             })
             setService(userService);
         } catch (error) {

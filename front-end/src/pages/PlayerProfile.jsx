@@ -44,6 +44,9 @@ function PlayerProfile() {
     const handleShowReport = () => setShowReport(true);
     useEffect(() => {
         const checkOnline = onlineUsers?.some(o => o.userId === id);
+        console.log(checkOnline);
+        console.log("onineUsers", onlineUsers);
+        console.log("id", id);
         setPlayerOnline(checkOnline)
     }, [onlineUsers]);
 
@@ -75,7 +78,10 @@ function PlayerProfile() {
             setPlayer(player);
             const dob = new Date(player.dateOfBirth);
             const currentTime = new Date();
-            setAge(currentTime.getFullYear() - dob.getFullYear())
+            let a = currentTime.getFullYear() - dob.getFullYear();
+            if (isNaN(a)) setAge("")
+            else
+                setAge(currentTime.getFullYear() - dob.getFullYear())
             console.log(author?.value?.followers.includes(id));
             setFollowing(player.followers.includes(author.value?._id)); // Set the initial follow status
         } catch (error) {
@@ -204,7 +210,7 @@ function PlayerProfile() {
                     subnav === 2 && <Services player={player} setOpenHire={() => { setOpenHire(true) }} setShowDonate={() => setShowDonate(true)} />
                 }
                 {
-                    subnav === 3 && <Album player={player} id={id}/>
+                    subnav === 3 && <Album player={player} id={id} />
                 }
                 {
                     subnav === 4 && <Feeds />
@@ -220,12 +226,8 @@ function PlayerProfile() {
                 />
             )}
             <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav} playerOnline={playerOnline} />
-            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
             <ReportPlayer show={showReport} handleClose={handleCloseReport} id={id} />
-            <DonateModal showDonate={showDonate} handleClose={()=>setShowDonate(false)} player={player}/>
-            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
-            {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
-
+            <DonateModal showDonate={showDonate} handleClose={() => setShowDonate(false)} player={player} />
         </>
     )
 }

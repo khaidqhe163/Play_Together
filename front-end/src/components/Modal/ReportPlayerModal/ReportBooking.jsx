@@ -167,7 +167,7 @@ function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking, l
                         defaultValue=""
                         onChange={checkSubmit}
                     />
-                    <Form.Label className='mt-20'>Chụp màn hình <small>(không bắt buộc)</small></Form.Label>
+                    <Form.Label className='mt-20'>Chụp màn hình</Form.Label>
                     <div className='d-flex flex-wrap'>
                         {
                             images?.map((img, index) => {

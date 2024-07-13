@@ -10,7 +10,8 @@ import { toast } from 'react-toastify';
 
 function DonateModal({ showDonate, handleClose, player }) {
     const dispatch = useDispatch();
-    const userInfo = useSelector(userInfor, setUserInformation);
+    const userInfo = useSelector(userInfor);
+    const [money, setMoney] = useState(null);
     const [objDonate, setObjDonate] = useState({
         userId: userInfo?._id,
         playerId: player?._id,
@@ -27,8 +28,16 @@ function DonateModal({ showDonate, handleClose, player }) {
                 content: "",
             });
         }
+        if (userInfo !== null) {
+            const m = formatMoney(userInfo?.accountBalance)
+            if (m !== "")
+                setMoney(m)
+        }
     }, [userInfo, player]);
 
+    useEffect(() => {
+        console.log("change change");
+    }, [money])
     const handleChange = (e) => {
         const { name, value } = e.target;
         setObjDonate((prev) => ({
@@ -40,13 +49,17 @@ function DonateModal({ showDonate, handleClose, player }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            if (objDonate.money > userInfo.accountBalance) {
+                toast("Số tiền trong tài khoản của bạn không đủ để donate. ❌");
+                return;
+            }
             const response = await api.post(`/api/donate`, objDonate);
             console.log(response);
-            
+
             if (response.status === 201) {
                 toast(response.data.message);
                 dispatch(setUserInformation(response.data.restUser));
-                setTimeout(handleClose, 2000);
+                handleClose();
             }
 
         } catch (error) {
@@ -72,7 +85,7 @@ function DonateModal({ showDonate, handleClose, player }) {
                                 </tr>
                                 <tr>
                                     <td className='fw-medium'>Số dư hiện tại:</td>
-                                    <td>{formatMoney(userInfo?.accountBalance)}</td>
+                                    <td>{money}</td>
                                 </tr>
                                 <tr>
                                     <td className='fw-medium'>Số tiền muốn Donate:</td>
@@ -113,7 +126,7 @@ function DonateModal({ showDonate, handleClose, player }) {
                     <Modal.Footer className="custom-modal-footer" id='fot'>
                         <div className='col-md-12 d-flex justify-end'>
                             <button className='w-36 mt-2 mx-2 fw-medium cancel bg-bgSecondButton text-white px-4 py-2 rounded-xl' type='button' onClick={handleClose}>Huỷ</button>
-                            <button className='w-32 mt-2 mx-2 fw-medium cancel text-white rounded-xl hover:bg-bgButtonHover' type='submit'>Xác nhận</button>
+                            <button className='w-32 mt-2 mx-2 fw-medium cancel text-white rounded-xl hover:bg-bgButtonHover' type='submit' disabled={objDonate.money === 0}>Xác nhận</button>
                         </div>
                     </Modal.Footer>
                 </form>

@@ -38,6 +38,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const user = await UserService.findUserByEmail(req.body.email);
+        console.log(user);
         if (!user) {
             return res.status(401).json({
                 message: "Email chưa được đăng ký"
@@ -69,6 +70,7 @@ const login = async (req, res) => {
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
         const { password, ...returnUser } = user;
+        console.log(returnUser);
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
         res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json({

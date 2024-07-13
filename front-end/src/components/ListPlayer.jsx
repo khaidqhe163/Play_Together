@@ -6,15 +6,22 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { baseUrl } from '../utils/service.js'
 import { TfiMoreAlt } from "react-icons/tfi";
+import { useSelector } from 'react-redux'
+import { userInfor } from '../features/userSlice.js'
 export default function ListPlayer(props) {
-
+    const userInfo = useSelector(userInfor);
     const [players, setPlayers] = useState([]);
     const url = props.url || "api/user/players";
     const fetchApiPlayer = async () => {
         try {
             const response = await fetch(baseUrl + url);
             const data = await response.json();
-            setPlayers(data);
+            if(userInfo!=null){
+                const newD = data.filter(d=>d._id !== userInfo._id);
+                setPlayers(newD);
+            }else{
+                setPlayers(data);
+            }
             console.log(data);
         } catch (error) {
             console.log(error);

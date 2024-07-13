@@ -155,9 +155,10 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     };
 
     const checkMoreThanNow = (dateSchedule, start) => {
-        const dateS = new Date(dateSchedule).getTime() + (start*60*60*1000);
-        const dateN = today.getTime() >= dateS;
-    }
+        const dateS = new Date(dateSchedule).getTime() + (start * 60 * 60 * 1000);
+        const dateN = today.getTime() >= dateS ? true : false;
+        return dateN;
+    };
 
     const renderScheduleButtons = () => {
         return scheduleUpdate.map(slot => {
@@ -171,7 +172,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                         type="button"
                         className={`btn btn-outline-light w-5/6 my-1 ${isSelected ? 'active-date text-white' : ''}`}
                         onClick={() => handleSlotSelection(slot._id)}
-                        disabled={check}
+                        disabled={check || checkMoreThanNow(slot.date, slot.start)}
                     >
                         {slotTime}
                     </button>

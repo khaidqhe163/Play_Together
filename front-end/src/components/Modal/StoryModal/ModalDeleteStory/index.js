@@ -2,7 +2,7 @@ import { Button, message } from "antd";
 import CustomModal from "../../CustomModal";
 import api from '../../../../utils/axiosConfig';
 
-const ModalDeleteStory = ({ open, onCancel, onOk }) => {
+const ModalDeleteStory = ({ open, onCancelStory, onCancel, onOk }) => {
     const handleDeleteStory = async () => {
         try {
             const response = await api.delete(`/api/stories/${open?._id}`);
@@ -10,6 +10,7 @@ const ModalDeleteStory = ({ open, onCancel, onOk }) => {
                 message.success('Xóa tin thành công');
                 onOk();
                 onCancel();
+                onCancelStory();
             } else {
                 message.error('Xóa tin không thành công');
             }
@@ -18,7 +19,7 @@ const ModalDeleteStory = ({ open, onCancel, onOk }) => {
             message.error('Đã xảy ra lỗi khi xóa tin');
         }
     }
-    
+
     const footer = () => (
         <div className="d-flex justify-content-center ">
             <Button className="mr-10 mb-10" onClick={onCancel}>
@@ -29,7 +30,7 @@ const ModalDeleteStory = ({ open, onCancel, onOk }) => {
             </Button>
         </div>
     );
-console.log(open);
+    console.log(open);
     return (
         <CustomModal
             open={!!open}

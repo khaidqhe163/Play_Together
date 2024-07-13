@@ -34,37 +34,47 @@ export default function PlayerHistory() {
     }
   };
 
+  const formatStatus = (num) => {
+    switch (num) {
+      case 2: return <span className="text-success">Đã xong</span>;
+      case 4: return <span className="text-danger">Chưa hoàn thành</span>;
+      default: return '';
+    }
+  };
+
   return (
     <>
-     <h1 className="text-white">Lịch sử nhận Duo</h1>
-      {loading ? <LoadingSpinner/> : <>
+      <h1 className="text-white">Lịch sử nhận Duo</h1>
+      {loading ? <LoadingSpinner /> : <>
         {
           listBooking.length !== 0 ? <div className="mt-4">
-              <table className="min-w-full bg-gray-800 text-white">
-                <thead>
-                  <tr>
-                    <th className="px-6 py-3 text-left">Tên khách hàng</th>
-                    <th className="px-6 py-3 text-left">Số giờ thuê</th>
-                    <th className="px-6 py-3 text-left">Số tiền</th>
-                    <th className="px-6 py-3 text-left">Ngày</th>
+            <table className="min-w-full bg-gray-800 text-white">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-left">Tên khách hàng</th>
+                  <th className="px-6 py-3 text-left">Số giờ thuê</th>
+                  <th className="px-6 py-3 text-left">Số tiền</th>
+                  <th className="px-6 py-3 text-left">Trạng thái</th>
+                  <th className="px-6 py-3 text-left">Ngày</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listBooking.map((l, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
+                    <td className="px-6 py-4">{l.userName}</td>
+                    <td className="px-6 py-4">{formatHours(l.totalHiredHour)}</td>
+                    <td className="px-6 py-4">{l.price.toLocaleString("vi-VN")} VNĐ</td>
+                    <td className="px-6 py-4">{formatStatus(l.status)}</td>
+                    <td className="px-6 py-4">{format(new Date(l.createdAt), "dd-MM-yyyy")}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {listBooking.map((l, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
-                      <td className="px-6 py-4">{l.userName}</td>
-                      <td className="px-6 py-4">{formatHours(l.totalHiredHour)}</td>
-                      <td className="px-6 py-4">{l.price.toLocaleString("vi-VN")} VNĐ</td>
-                      <td className="px-6 py-4">{format(new Date(l.createdAt), "dd-MM-yyyy")}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div> : <h4 className='text-white fw-normal text-center mt-28'>Hiện không có dữ liệu!</h4>
+                ))}
+              </tbody>
+            </table>
+          </div> : <h4 className='text-white fw-normal text-center mt-28'>Hiện không có dữ liệu!</h4>
         }
       </>}
 
     </>
-    
+
   );
 }

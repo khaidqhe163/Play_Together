@@ -89,6 +89,7 @@ function Register() {
             } else {
                 toast('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
             }
+            console.log(error);
         }
     }
     return (
@@ -187,18 +188,6 @@ function Register() {
                     </div>
                 </Col>
             </Row>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-                transition={Bounce} />
         </Container>
     )
 }

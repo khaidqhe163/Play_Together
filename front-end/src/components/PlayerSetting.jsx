@@ -220,7 +220,7 @@ export default function PlayerSetting() {
               name='rentCost'
               onChange={formik.handleChange}
               min={5000}
-              max={10000000}
+              max={1000000}
             />
             <h6 className='title'>Giới thiệu chi tiết về bạn</h6>
             <textarea
