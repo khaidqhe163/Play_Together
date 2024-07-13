@@ -49,6 +49,8 @@ UserRouter.put('/change-password', jwt.verifyAccessToken, UserController.changeP
 
 UserRouter.post('/blockOrUnBlockUser/:id', jwt.verifyAccessToken, UserController.blockOrUnBlock)
 
+UserRouter.get('/hot-players', UserController.getHotPlayers);
+UserRouter.get('/followed-players', jwt.verifyAccessToken, UserController.getFollowedPlayers);
 UserRouter.get('/:userId', UserController.getUserById); 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -70,10 +72,32 @@ UserRouter.put('/update-only-schedule', jwt.verifyAccessToken, UserController.up
 UserRouter.post('/users', UserController.getAllUsers);
 UserRouter.post('/ban', UserController.banUser)
 UserRouter.put('/unban', UserController.unbanUser)
+UserRouter.put('/ban/:userId', UserController.banUser)
 
 UserRouter.post('/follow-player/:playerId', jwt.verifyAccessToken, UserController.followPlayer);
 UserRouter.post('/unfollow-player/:playerId', jwt.verifyAccessToken, UserController.unfollowPlayer);
+
 UserRouter.post('/logout', UserController.logout)
 UserRouter.post('/login-admin', UserController.loginAdmin)
 UserRouter.get('/autologin/admin', middleware.autoLoginAdmin, UserController.autoLoginAdmin)
+
+const storageAlbum = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/album/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.payload.id + Date.now() + file.originalname);
+    }
+});
+
+const uploadAlbum = multer({
+    storage: storageAlbum,
+    limits: { fileSize: 1024 * 1024 * 3 }
+});
+
+UserRouter.post('/album', jwt.verifyAccessToken,uploadAlbum.array('images', 10), UserController.addImagesToAlbum);
+UserRouter.put('/delete-image', jwt.verifyAccessToken, UserController.deleteImageToAlbum);
+
+
+
 export default UserRouter

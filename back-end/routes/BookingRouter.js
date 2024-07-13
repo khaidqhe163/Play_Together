@@ -14,5 +14,5 @@ BookingRouter.put('/booking-online', jwt.verifyAccessToken, BookingController.ch
 BookingRouter.post('/', BookingController.createBooking);
 BookingRouter.post('/by-schedule', jwt.verifyAccessToken, BookingController.createBookingT);
 BookingRouter.delete('/booking-online/:bookingId', BookingController.deleteBookingById);
-
+BookingRouter.get("/private-booking/:id", BookingController.getBookingByPlayerId)
 export default BookingRouter;

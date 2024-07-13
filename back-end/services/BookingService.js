@@ -105,6 +105,14 @@ const getListBookingSuccess = async (userId, status) => {
     }
 };
 
+const getBookingByPlayerId = async (playerId) => {
+    try {
+        const b = await Booking.find({ playerId: playerId, bookingStatus: { $in: [3, 4] } });
+        return b;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
 export default {
     getAllBooking,
     getLatestBooking,
@@ -116,5 +124,6 @@ export default {
     getMyBooking,
     deleteBookingById,
     getListBookingSuccess,
-    getBookingByReport
+    getBookingByReport,
+    getBookingByPlayerId
 }

@@ -1,22 +1,16 @@
-import '../App.css';
-import storyImage1 from '../assets/imagevideo2.jpg';
-import storyImage3 from '../assets/imagevideo3.jpg';
-import avatar1 from '../assets/avatar1.jpg';
-import avatar2 from '../assets/avatar2.jpg';
-import avatar3 from '../assets/avatar3.jpg';
-import { useState } from 'react';
-import StoryCreation from '../components/StoryCreation';
-import { userInfor } from '../features/userSlice';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { userInfor } from '../features/userSlice';
+import api from '../utils/axiosConfig';
+import { baseUrl } from '../utils/service';
+import StoryCreation from '../components/StoryCreation';
 
 export default function ListIdol({ stories, setStory }) {
-    const idols = [
-        { id: 1, img: storyImage1, avatar: avatar1, name: 'Minh Châu' },
-        { id: 2, img: storyImage3, avatar: avatar2, name: 'Hương Ly' },
-        { id: 3, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-        { id: 4, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-        { id: 5, img: storyImage3, avatar: avatar3, name: 'Hương Thảo' },
-    ];
+    const [hotPlayers, setHotPlayers] = useState([]);
+    const userInfo = useSelector(userInfor);
+    const [openModalCreate, setOpenModalCreate] = useState(false);
+    const [followedPlayers, setFollowedPlayers] = useState([]);
 
     const containerStyle = {
         backgroundColor: "#20202b",
@@ -99,51 +93,109 @@ export default function ListIdol({ stories, setStory }) {
         margin: 0,
         fontSize: "16px",
     };
-    const userInfo = useSelector(userInfor);
-    const [openModalCreate, setOpenModalCreate] = useState(false);
+
     const handleShowOpenCreate = () => {
         setOpenModalCreate(true);
-    }
+    };
+
     const handleCloseOpenCreate = () => {
         setOpenModalCreate(false);
-    }
+    };
+
+    useEffect(() => {
+        // Fetch hot players
+        const fetchHotPlayers = async () => {
+            try {
+                const response = await api.get('http://localhost:3008/api/user/hot-players');
+                setHotPlayers(response.data);
+            } catch (error) {
+                console.error('Error fetching hot players:', error);
+            }
+        };
+
+        fetchHotPlayers();
+    }, []);
+
+    useEffect(() => {
+        const fetchFollowedPlayers = async () => {
+            try {
+                const response = await api.get('http://localhost:3008/api/user/followed-players', {
+                    headers: {
+                        Authorization: `Bearer ${userInfo.token}`,  
+                    },
+                });
+                setFollowedPlayers(response.data);
+            } catch (error) {
+                console.error('Error fetching followed players:', error);
+            }
+        };
+    
+        fetchFollowedPlayers();
+    }, [userInfo]);
+    
     return (
         <div style={containerStyle}>
-            {
-                userInfo && (
-                    <div>
-                        <p style={headingStyle}>Tin của bạn</p>
-                        <div style={buttonContainerStyle}>
-                            <button style={buttonStyle} onClick={handleShowOpenCreate}>
-                                <ion-icon name="add-outline"></ion-icon>
-                            </button>
-                            <div style={textContainerStyle}>
-                                <h5 style={{ color: "#fff", margin: "0" }}>Tạo tin</h5>
-                                <p style={{ color: "#bcbcbc", margin: "0" }}>Bạn có thể tạo tin ở đây</p>
-                            </div>
+            {!userInfo ? (
+                // Nếu chưa đăng nhập
+                <div>
+                    <p style={headingStyle}>Top người chơi</p>
+                    <div style={storyContainerStyle}>
+                        {hotPlayers.map((player) => (
+                            <Link key={player?._id} to={`/player-profile/${player?._id}`} className="text-decoration-none">
+                                <div
+                                    style={storyStyle}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = storyHoverStyle.backgroundColor}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = storyStyle.backgroundColor}
+                                >
+                                    <img src={baseUrl + player?.avatar} alt={player.name} style={avatarStyle} />
+                                    <div>
+                                        <h5 style={nameStyle}>{player?.username}</h5>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                // Nếu đã đăng nhập
+                <div>
+                    <p style={headingStyle}>Tin của bạn</p>
+                    <div style={buttonContainerStyle}>
+                        <button style={buttonStyle} onClick={handleShowOpenCreate}>
+                            <ion-icon name="add-outline"></ion-icon>
+                        </button>
+                        <div style={textContainerStyle}>
+                            <h5 style={{ color: "#fff", margin: "0" }}>Tạo tin</h5>
+                            <p style={{ color: "#bcbcbc", margin: "0" }}>Bạn có thể tạo tin ở đây</p>
                         </div>
                     </div>
-                )
-            }
-            <div>
-                <p style={headingStyle}>Thịnh hành</p>
-                <div style={storyContainerStyle}>
-                    {idols.map(story => (
-                        <div
-                            key={story.id}
-                            style={storyStyle}
-                            onMouseEnter={e => e.currentTarget.style.backgroundColor = storyHoverStyle.backgroundColor}
-                            onMouseLeave={e => e.currentTarget.style.backgroundColor = storyStyle.backgroundColor}
-                        >
-                            <img src={story.avatar} style={avatarStyle} alt='Avatar' />
-                            <p style={nameStyle}>{story.name}</p>
+                    <div>
+                        <p style={headingStyle}>Theo dõi</p>
+                        <div style={storyContainerStyle}>
+                        {followedPlayers.length === 0 ? (
+                                <p style={{ color: "#bcbcbc" }}>Bạn chưa theo dõi ai</p>
+                            ) : (
+                                followedPlayers.map((player) => (
+                                    <Link key={player._id} to={`/player-profile/${player._id}`} className="text-decoration-none">
+                                        <div
+                                            style={storyStyle}
+                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = storyHoverStyle.backgroundColor}
+                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = storyStyle.backgroundColor}
+                                        >
+                                            <img src={baseUrl + player.avatar} alt={player.username} style={avatarStyle} />
+                                            <div>
+                                                <h5 style={nameStyle}>{player.username}</h5>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))
+                            )}
                         </div>
-                    ))}
+                    </div>
                 </div>
-            </div>
+            )}
             <StoryCreation show={openModalCreate} close={handleCloseOpenCreate} stories={stories} setStory={setStory} />
-
         </div>
-
     );
+    
 }
