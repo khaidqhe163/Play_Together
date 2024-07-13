@@ -38,6 +38,25 @@ function autoLogin(req, res, next) {
     })
 }
 
+function autoLoginAdmin(req, res, next) {
+    const cookies = req.cookies;
+    if (!cookies || !cookies.RefreshAdminToken) {
+        return res.status(401).json({
+            message: "Your login session has expired!"
+        })
+    }
+    const refreshToken = cookies.RefreshAdminToken;
+    jwt.verify(refreshToken, process.env.PRIVATE_KEY_REFRESH, (err, payload) => {
+        if (err) {
+            res.status(401).json({
+                message: "Your login session has expired!"
+            })
+        }
+        req.payloadadmin = payload;
+        next();
+    })
+}
+
 function verifyAccessToken(req, res, next) {
     if (!req.headers['authorization'])
         return res.status(401).json({
@@ -96,5 +115,6 @@ export default {
     autoLogin,
     verifyAccessToken,
     signRefreshToken,
-    verifyRefreshToken
+    verifyRefreshToken,
+    autoLoginAdmin
 }

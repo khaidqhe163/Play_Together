@@ -1,3 +1,4 @@
+import Booking from "../models/Booking.js";
 import Notification from "../models/Notification.js"
 import Story from "../models/Story.js";
 import CommentService from "./CommentService.js";
@@ -162,6 +163,40 @@ const completeBookingNotification = async (userId, bookingId, playerId) => {
         throw new Error(error)
     }
 }
+
+const reportBookingNotification = async (adminId, complaint, bookingId) => {
+    try {
+        const booking = await Booking.findById(bookingId)
+        if (complaint === 0) {
+            console.log("zoday");
+            const content = "Thông báo đơn của bạn từ chối. Bằng chứng bạn đưa ra chưa đủ thuyết phục"
+            const url = "/list-booking/my-booking"
+            const type = "process report"
+            const noti = (await Notification.create({
+                userId: adminId, receivers: booking.userId, type, content, url, sendDate: Date.now()
+            })).populate("userId", ["username", "avatar"]);
+            console.log("notification", noti);
+            return noti
+        } else {
+            const content1 = `Đơn tố cáo của bạn về đơn #${booking._id} đã được chúng tôi duyệt. Số tiền ${booking.price} mà bạn thuê đã được hoàn trả vào tài khoản của bạn`
+            const content2 = `Người dùng đã tố cáo bạn với booking #${booking._id}. Sau thời gian xác thực chúng tôi đã huỷ booking của bạn và trả lại tiền booking đó cho người dùng`
+            const url1 = "/list-booking/my-booking"
+            const url2 = "/player-history"
+            const type = "process report"
+            const noti1 = (await Notification.create({
+                userId: adminId, receivers: booking.userId, type, content: content1, url: url1, sendDate: Date.now()
+            })).populate("userId", ["username", "avatar"])
+            const noti2 = (await Notification.create({
+                userId: adminId, receivers: booking.playerId, type, content: content2, url: url2, sendDate: Date.now()
+            })).populate("userId", ["username", "avatar"])
+
+            console.log([noti1, noti2]);
+            return [noti1, noti2]
+        }
+    } catch (error) {
+        throw new Error(error)
+    }
+}
 export default {
     sendReplyStoryNotification,
     sendPostStoryNotification,
@@ -171,5 +206,6 @@ export default {
     likeStoryNotification,
     sendBookingNotification,
     processBookingNotification,
-    completeBookingNotification
+    completeBookingNotification,
+    reportBookingNotification
 }

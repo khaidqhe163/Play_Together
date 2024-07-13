@@ -121,7 +121,22 @@ const completeBookingNotification = async (req, res) => {
     }
 }
 
-
+const reportBookingNotification = async (req, res) => {
+    try {
+        const adminId = req.payload.id;
+        console.log(adminId);
+        const {
+            bookingId,
+            complaint
+        } = req.body;
+        const notification = await NotificationService.reportBookingNotification(adminId, Number(complaint), bookingId);
+        console.log(notification);
+        res.status(201).json(notification);
+        return notification
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 export default {
     sendReplyStoryNotification,
     sendPostStoryNotification,
@@ -131,5 +146,6 @@ export default {
     likeStoryNotification,
     sendBookingNotification,
     processBookingNotification,
-    completeBookingNotification
+    completeBookingNotification,
+    reportBookingNotification
 }

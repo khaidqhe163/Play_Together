@@ -74,4 +74,6 @@ UserRouter.put('/unban', UserController.unbanUser)
 UserRouter.post('/follow-player/:playerId', jwt.verifyAccessToken, UserController.followPlayer);
 UserRouter.post('/unfollow-player/:playerId', jwt.verifyAccessToken, UserController.unfollowPlayer);
 UserRouter.post('/logout', UserController.logout)
+UserRouter.post('/login-admin', UserController.loginAdmin)
+UserRouter.get('/autologin/admin', middleware.autoLoginAdmin, UserController.autoLoginAdmin)
 export default UserRouter

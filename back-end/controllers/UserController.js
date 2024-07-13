@@ -47,20 +47,15 @@ const login = async (req, res) => {
                 message: "Sai mật khẩu"
             })
         }
-        console.log(user.role);
         if (user.role === 2) {
             return res.status(401).json({
                 message: "Sai thông tin tài khoản!"
-            }) 
+            })
         }
         if (user.status) {
-            console.log("zoday");
             const ban = await BanService.getBanByUserId(user._id);
             const endTime = new Date(ban.endTime);
-            console.log(endTime);
-            console.log(Date.now() < endTime);
             if (Date.now() < endTime) {
-                console.log("ban");
                 return res.status(401).json({
                     message: "Tài khoản của bạn đã bị cấm"
                 })
@@ -93,10 +88,7 @@ const autoLogin = async (req, res) => {
         if (user.status) {
             const ban = await BanService.getBanByUserId(user._id);
             const endTime = new Date(ban.endTime);
-            console.log(endTime);
-            console.log(Date.now() < endTime);
             if (Date.now() < endTime) {
-                console.log("ban");
                 return res.status(401).json({
                     message: "Tài khoản của bạn đã bị cấm"
                 })
@@ -127,7 +119,6 @@ const loginPassport = async (req, res) => {
         if (tokenElements[1] < Date.now() - 5 * 1000) {
             throw new Error("Token is expired!");
         }
-        console.log(tokenElements);
         const user = await UserService.autoLogin(tokenElements[0]);
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
@@ -435,7 +426,6 @@ const banUser = async (req, res) => {
         console.log(complaint);
         switch (complaint) {
             case 1:
-                console.log("zoday");
                 endDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
                 break;
             case 2:
@@ -537,6 +527,58 @@ const logout = async (req, res) => {
     }
 };
 
+const loginAdmin = async (req, res) => {
+    try {
+        const user = await UserService.findUserByEmail(req.body.email);
+        if (!user) {
+            return res.status(401).json({
+                message: "Email chưa được đăng ký"
+            })
+        }
+        const hashPassword = bcrypt.compareSync(req.body.password, user.password);
+        if (!hashPassword) {
+            return res.status(401).json({
+                message: "Sai mật khẩu"
+            })
+        }
+        if (user.role === 1) {
+            return res.status(401).json({
+                message: "Sai thông tin tài khoản!"
+            })
+        }
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
+        const { password, ...returnUser } = user;
+        res.cookie("RefreshAdminToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
+        res.status(200).json({
+            user: returnUser,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        })
+    }
+}
+
+const autoLoginAdmin = async (req, res) => {
+    try {
+        const user = await UserService.findUserByEmail(req.payloadadmin.email);
+        const refreshToken = req.cookies.RefreshAdminToken;
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const { password, ...returnUser } = user;
+        res.status(200).json({
+            user: returnUser,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        })
+    }
+}
 export default {
     register,
     login,
@@ -562,5 +604,7 @@ export default {
     unfollowPlayer,
     updateOnlySchedule,
     logout,
-    unbanUser
+    unbanUser,
+    loginAdmin,
+    autoLoginAdmin
 }

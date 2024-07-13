@@ -39,12 +39,13 @@ const autoLogin = async (email) => {
 const addSocialAccount = async (profile) => {
     try {
         const user = await User.findOne({ email: profile.emails[0].value }).exec();
+        console.log(user);
         if (!user) {
             const account = {
                 username: profile.displayName,
                 email: profile.emails[0].value
             }
-            User.create(account);
+            await User.create(account);
         }
     } catch (error) {
         throw new Error(error.toString());
@@ -173,7 +174,7 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
             }));
 
             players = players.sort((a, b) => b.score - a.score);
-        }else if (category === "3") {
+        } else if (category === "3") {
             // Vip player: Số giờ thuê cao nhất từ trước đến giờ và đánh giá từ 4.5 đến 5.0
             players = await Promise.all(players.map(async player => {
 
