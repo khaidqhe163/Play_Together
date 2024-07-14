@@ -359,6 +359,28 @@ const getBookingByPlayerId = async (req, res) => {
         res.status(500).json(error)
     }
 }
+const getAll = async (req, res) => {
+    try {
+        const booking = await BookingService.getAll();
+        res.status(200).json(booking);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
+const getTopBookers = async (req, res) => {
+    const { period } = req.params;
+
+    try {
+        const topBookers = await BookingService.getTopBookers(period);
+        res.status(200).json(topBookers);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
 export default {
     getTop10Lessees,
     createBooking,
@@ -369,5 +391,7 @@ export default {
     getMyBooking,
     deleteBookingById,
     getListBookingSuccess,
-    getBookingByPlayerId
+    getBookingByPlayerId,
+    getAll,
+    getTopBookers,
 }

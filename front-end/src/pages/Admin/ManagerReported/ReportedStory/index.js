@@ -6,10 +6,12 @@ import { Button, Image } from "antd";
 import dayjs from "dayjs";
 import { baseUrl } from "../../../../utils/service";
 import ReportModal from "../Modal";
+import ModalBan from "../Modal/ModalBan";
 
 const ReportedStory = () => {
     const [reporting, setReproting] = useState([])
     const [openModalReport, setOpenModalReport] = useState(false)
+    const [modalBan, setModalBan] = useState(false)
 
     const getAll = async () => {
         try {
@@ -82,8 +84,8 @@ const ReportedStory = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-3">
-                                                <Button className="" type="primary" danger>
-                                                    Khóa
+                                                <Button className="" type="primary" danger onClick={() => setModalBan(r)}>
+                                                    {r?.storyId?.status ? "Mở khóa" : "Khóa"}
                                                 </Button>
                                             </td>
                                         </tr>
@@ -99,6 +101,14 @@ const ReportedStory = () => {
                 <ReportModal
                     open={openModalReport}
                     onCancel={() => setOpenModalReport(false)}
+                    onOk={getAll}
+                />
+            )}
+
+            {!!modalBan && (
+                <ModalBan
+                    open={modalBan}
+                    onCancel={() => setModalBan(false)}
                     onOk={getAll}
                 />
             )}

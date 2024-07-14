@@ -269,7 +269,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                     <FontAwesomeIcon icon={faAngleRight} />
                                 </div>
                                 <div className="d-flex flex-column">
-                                    <div className="heart" onClick={() => handleLikedOrUnliked()}>
+                                    <div className="heart" onClick={() => handleLikedOrUnliked()} style={!user?.value?._id ? {cursor: "not-allowed"}  : {cursor: "pointer"}}>
                                         <FontAwesomeIcon color={!!likedStatus ? 'red' : ''} icon={faHeart} />
                                     </div>
                                 </div>

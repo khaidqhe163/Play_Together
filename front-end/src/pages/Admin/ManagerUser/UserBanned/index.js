@@ -27,7 +27,6 @@ const UserBanned = () => {
     return (
         <LayoutAdmin>
             <ContainerPage>
-
                 <div className="title">
                     <h6>Danh sách người dùng đã bị khóa</h6>
                 </div>
@@ -65,7 +64,7 @@ const UserBanned = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-3">{i % 2 === 0 ? <span className="onl">Online</span> : <span className="off">Offline</span>}</td>
+                                            <td className="px-6 py-3">{u?.player ? <span className="onl">Player</span> : <span className="off">Người dùng</span>}</td>
                                             <td className="px-6 py-3 created-user">{dayjs(u?.createdAt).format('DD-MM-YYYY')}</td>
                                             <td>Ngày</td>
                                             <td>Lý do</td>

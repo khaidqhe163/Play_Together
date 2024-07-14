@@ -96,14 +96,25 @@ const getStoriesByUser = async (userId) => {
     }
 }
 
+const banOrUnbanStory = async (id) => {
+  const story = await Story.findById(id);
+    if (!story) {
+        throw new Error('Story not found');
+    }
+    story.status = !story.status;
+    await story.save();
+    return story;
+}
+
 export default {
+    deleteStory,
     getAllStories,
     uploadVideo,
-    deleteStory,
     getStoryDetail,
     likeOrUnlikeStory,
     viewStory,
-    getStoriesByUser,
+    getStoriesByUser, // Add this line
+    banOrUnbanStory,
 }
 
 

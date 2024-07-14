@@ -17,6 +17,18 @@ const createPayment = async (req, res) => {
     }
 }
 
+const getAll = async (req, res) => {
+    try {
+        const payments = await PaymentService.getAll();
+        res.status(200).json(payments);
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        });
+    }
+}
+
 export default {
     createPayment,
+    getAll,
 }
