@@ -158,10 +158,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         const date = new Date(dateSchedule).getTime();
         const dateS = new Date(today.getTime() + (7 * 60 * 60 * 1000)).getTime();
         const dateX = date + (start * 60 * 60 * 1000);
-        console.log(dateSchedule);
-        console.log(start);
-        console.log(dateX);
-        console.log(dateS);
+        
         const dateN = dateS >= dateX ? true : false;
         console.log(dateN);
         return dateN;
