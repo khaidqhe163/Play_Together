@@ -17,7 +17,7 @@ export default function ListPlayer(props) {
             const response = await fetch(baseUrl + url);
             const data = await response.json();
             if(userInfo!=null){
-                const newD = data.filter(d=>d._id !== userInfo._id);
+                const newD = data.filter(d=>d._id !== userInfo._id && !userInfo.blockedUsers.includes(d._id));
                 setPlayers(newD);
             }else{
                 setPlayers(data);

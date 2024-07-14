@@ -223,7 +223,7 @@ function PlayerProfile() {
             {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
             <ReportPlayer show={showReport} handleClose={handleCloseReport} id={id} />
             <DonateModal showDonate={showDonate} handleClose={()=>setShowDonate(false)} player={player}/>
-            <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/>
+            {/* <CanvasHire showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
             {/* <CanvasUserSet showHire={openHire} handleClose={() => setOpenHire(false)} player={player} snav={snav} setSnav={setSnav}/> */}
 
         </>

@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 function DonateModal({ showDonate, handleClose, player }) {
     const dispatch = useDispatch();
-    const userInfo = useSelector(userInfor, setUserInformation);
+    const userInfo = useSelector(userInfor);
     const [objDonate, setObjDonate] = useState({
         userId: userInfo?._id,
         playerId: player?._id,
