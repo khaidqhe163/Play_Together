@@ -37,7 +37,6 @@ const createReportPlayer = async (req, res) => {
     try {
         let screenShot = [];
         const userId = req.payload.id;
-        console.log(req.files);
         if (req.files) {
             req.files.forEach((file) => {
                 screenShot.push(file.path);
@@ -81,7 +80,6 @@ const getReportBookingById = async (req, res) => {
             }));
             const reportObj = report.toObject();
             reportObj.bookingId.hours = transformedHours;
-            console.log(reportObj.bookingId.hours);
             return res.status(200).json(reportObj);
         }
         res.status(200).json(report);
@@ -98,7 +96,6 @@ const processReportPlayer = async (req, res) => {
             reason,
             playerId
         } = req.body;
-        console.log(complaint);
         const report = await ReportService.processReportPlayer(reportId, Number(complaint), reason, playerId);
         const player = await UserService.findByUserId(playerId);
         if (complaint == 1) {
@@ -134,7 +131,6 @@ const processReportPlayer = async (req, res) => {
                 }]
             }
             transporter.sendMail(mail);
-            console.log("Send End");
         }
         res.status(200).json(report)
     } catch (error) {
@@ -150,7 +146,6 @@ const processReportBooking = async (req, res) => {
             complaint,
             bookingId
         } = req.body;
-        console.log(complaint);
         const report = await ReportService.processReportBooking(reportId, Number(complaint), bookingId);
         res.status(200).json(report)
     } catch (error) {
@@ -163,7 +158,6 @@ const createReportBooking = async (req, res) => {
     try {
         let screenShot = [];
         const userId = req.payload.id;
-        console.log(req.files);
         if (req.files) {
             req.files.forEach((file) => {
                 screenShot.push(file.path);

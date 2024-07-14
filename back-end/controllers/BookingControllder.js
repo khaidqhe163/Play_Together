@@ -296,7 +296,7 @@ const changeStatusToProgress = async (req, res) => {
                 const isCurrentTimeValid = now <= maxEndTimeInMilliseconds;
 
 
-                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc cc. ❌" });
+                if (isCurrentTimeValid) return res.status(400).json({ error: "Bạn không thể hoàn thành trước thời gian kết thúc. ❌" });
                 aPlayer.player.totalHiredHour += (parseInt(checkB) / 2);
                 await aPlayer.save();
             }
@@ -333,13 +333,14 @@ const deleteBookingById = async (req, res) => {
 const getListBookingSuccess = async (req, res) => {
     try {
         const userId = req.payload.id;
-        const status = 2;
-        const booking = await BookingService.getListBookingSuccess(userId, status);
+        // const status = 2;
+        const booking = await BookingService.getListBookingSuccess(userId);
         const transf = booking.map(b => {
             return {
                 userName: b.userId.username,
                 totalHiredHour: (b.hours.length + b.unit) / 2,
                 price: b.price,
+                status: b.bookingStatus,
                 createdAt: b.createdAt
             }
         })

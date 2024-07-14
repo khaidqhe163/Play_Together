@@ -16,7 +16,6 @@ export default function ListStory() {
             const response = await fetch(baseUrl + 'api/stories');
             const data = await response.json();
             setStories(data);
-            console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -55,7 +54,7 @@ export default function ListStory() {
                 ))}
 
                 <div className="col-md-2 mb-4">
-                    <Link to={"/stories"}>
+                    <Link to={"/play-together/stories"}>
                         <div className="card rounded-4 w-100 h-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
                             <div className='mx-auto d-flex align-items-center justify-content-center w-100' style={{ height: "16em" }}>
                                 <div>

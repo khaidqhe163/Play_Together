@@ -17,7 +17,6 @@ function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
         setIsOpen(true);
     };
     const closeModal = () => {
-        console.log("click here");
         setIsOpen(false);
     };
     const previousImage = (e) => {
@@ -36,7 +35,6 @@ function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
     useEffect(() => {
         const getReport = async () => {
             const report = await axios.get("http://localhost:3008/api/report/report-player/" + id)
-            console.log(report.data);
             setReport(report.data)
         }
         getReport();
@@ -64,7 +62,6 @@ function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
                 reason: des.current.value,
                 reportId: report._id
             });
-            console.log(res.status);
             const updatedReports = reports.map((r) => {
                 if (r._id !== report._id) {
                     return r;

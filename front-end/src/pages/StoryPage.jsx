@@ -5,7 +5,8 @@ import ListStoryPage from "../components/ListStoryPage";
 import StoryModal from "../components/Modal/StoryModal";
 import api from "../utils/axiosConfig";
 import { Spin } from "antd";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function StoryPage() {
   const [stories, setStories] = useState(null);
@@ -13,12 +14,13 @@ export default function StoryPage() {
   const [currentStory, setCurrentStory] = useState(null);
   const [openModalStory, setOpenModalStory] = useState(false);
   const { storyId, commentId } = useParams();
+  const nav = useNavigate();
   useEffect(() => {
     getListStories();
   }, []);
 
   useEffect(() => {
-    // console.log(storyId);
+    console.log("change story");
     if (stories && storyId) {
       let index = null;
       for (let i = 0; i < stories.length; i++) {
@@ -27,17 +29,13 @@ export default function StoryPage() {
           break;
         }
       }
-      console.log("index", index);
       if (index !== null) setCurrentStory(index);
     }
-  }, [stories]);
+  }, [stories, storyId]);
 
 
   useEffect(() => {
-    console.log(currentStory);
-    console.log(openModalStory);
     if (currentStory !== null && !openModalStory) {
-      console.log("zoday");
       setOpenModalStory(true);
     }
   }, [currentStory]);
@@ -61,14 +59,15 @@ export default function StoryPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <Spin
-        spinning={loading}
-        className="d-flex justify-content-center align-content-center h-100"
-      ></Spin>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     // <Spin
+  //     //   spinning={loading}
+  //     //   className="d-flex justify-content-center align-content-center h-100"
+  //     // ></Spin>
+  //     <LoadingSpinner />
+  //   );
+  // }
 
   const handleViewStory = async () => {
     try {
@@ -81,7 +80,6 @@ export default function StoryPage() {
     } finally {
     }
   };
-  console.log(openModalStory);
   return (
     <div className="container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain">
       <div
@@ -101,6 +99,7 @@ export default function StoryPage() {
         <div className="col-10" style={{ backgroundColor: "#13131a" }}>
           <div className="row d-flex justify-content-center">
             <div className="col-12 col-md-10 py-3">
+              {loading && <LoadingSpinner />}
               <ListStoryPage
                 stories={stories}
                 setOpenModalStory={setOpenModalStory}
@@ -115,7 +114,7 @@ export default function StoryPage() {
       {!!openModalStory && (
         <StoryModal
           open={stories[currentStory]}
-          onCancel={() => setOpenModalStory(undefined)}
+          onCancel={() => {setOpenModalStory(undefined); nav("/play-together/stories")}}
           setCurrentStory={setCurrentStory}
           stories={stories}
           onViewStory={handleViewStory}

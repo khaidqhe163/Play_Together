@@ -10,7 +10,6 @@ import { toast } from 'react-toastify';
 function ReviewModal({ show, handleClose, player, setListBooking, currentIndex, listBooking }) {
     const [rating, setRating] = useState(0);
     const content = useRef();
-    console.log(player);
     const handleSubmit = async () => {
         try {
             const review = api.post('/api/comment/review-player', {
@@ -30,7 +29,6 @@ function ReviewModal({ show, handleClose, player, setListBooking, currentIndex, 
             setRating(0);
             handleClose();
             toast("Đánh giá thành công")
-            console.log(review);
         } catch (error) {
             console.log(error);
         }

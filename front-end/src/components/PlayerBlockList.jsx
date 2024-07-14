@@ -13,8 +13,7 @@ export default function PlayerBlockList() {
   const user = useSelector((state) => state.user?.value)
   const [dataSource, setDataSource] = useState([])
   const dispatch = useDispatch();
-  
-  console.log("user ", user);
+
 
   const getListBlockedUser = async () => {
     try {

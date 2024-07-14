@@ -23,13 +23,11 @@ function SocialMediaLogin() {
                 },
                 withCredentials: true
             })
-            console.log("==========================");
-            console.log(user.data);
             dispatch(setUserInformation(user.data.user));
             dispatch(setAccessToken(user.data.accessToken));
-            nav("/");
+            nav("/play-together/");
         } catch (error) {
-            nav('/login')
+            nav('/play-together/login')
             console.log(error);
         }
     }

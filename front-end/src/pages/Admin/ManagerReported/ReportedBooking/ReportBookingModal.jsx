@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
 import "../../../../css/reportdetail.css"
 import { LuEye } from 'react-icons/lu';
 import axios from 'axios';
 import { baseUrl, formatDate, formatMoney } from '../../../../utils/service';
 import ImageGallery from '../../../../components/ImageGallery';
+import api from '../../../../utils/axiosConfigAdmin';
+import { SocketContext } from '../../../../context/SocketContext';
 function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
     const [complaint, setComplaint] = useState(null);
     const des = useRef();
@@ -12,6 +14,7 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
     const [report, setReport] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const { socket } = useContext(SocketContext);
     const openModal = (index) => {
         setCurrentImageIndex(index);
         setIsOpen(true);
@@ -68,14 +71,23 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
                 complaint: complaint,
                 reportId: report._id
             });
-            console.log(res.status);
+            const notification = await api.post("/api/notification/report-booking-notification", {
+                bookingId: report.bookingId,
+                complaint: complaint
+            })
+            if (0 === Number(complaint)) {
+                socket.emit("sendNotification", notification.data)
+            } else {
+                notification.data.forEach((n) => {
+                    socket.emit("sendNotification", n)
+                })
+            }
             const updatedReports = reports.map((r) => {
                 if (r._id !== report._id) {
                     return r;
                 } else {
                     return res.data
                 }
-
             })
             setReports(updatedReports);
             setReport(null);
@@ -107,8 +119,6 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
     };
 
     const formatEndTime = (d, unit) => {
-        console.log(unit);
-        console.log(d);
         const t = new Date(d).getTime();
         const end = t + (unit * 30 * 60 * 1000);
         const endTime = new Date(end);
@@ -122,8 +132,6 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
         }
         return `${hours}:${minutes}`;
     };
-
-    console.log(report);
     return (
         <Modal
             size="lg"

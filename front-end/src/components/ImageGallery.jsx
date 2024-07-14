@@ -5,8 +5,6 @@ import Modal from 'react-modal';
 import { baseUrl } from '../utils/service';
 
 const ImageGallery = ({ image, isOpen, closeModal, previousImage, nextImage }) => {
-    console.log(isOpen);
-    console.log(image);
     let converted_path;
     let url;
     if (image && !image.startsWith('blob:')) {

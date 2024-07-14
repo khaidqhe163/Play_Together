@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux"; 
-import { userInfor } from "../features/userSlice"; 
+import { useDispatch, useSelector } from "react-redux";
+import { setUserInformation, userInfor } from "../features/userSlice";
 import axios from '../utils/axiosConfig'; // Ensure you have the correct axios instance
+import { toast } from "react-toastify";
 
 export default function PlayerSettingDuo() {
   const [isDuoEnabled, setIsDuoEnabled] = useState(false);
-  const userInfo = useSelector(userInfor); 
-
+  const userInfo = useSelector(userInfor);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (userInfo && userInfo.player && userInfo.player.duoSettings) {
-      setIsDuoEnabled(userInfo.player.duoSettings); 
+      setIsDuoEnabled(userInfo.player.duoSettings);
     }
-  }, [userInfo]); 
+  }, [userInfo]);
 
   const toggleDuo = () => {
     setIsDuoEnabled(!isDuoEnabled);
@@ -19,13 +20,19 @@ export default function PlayerSettingDuo() {
 
   const handleUpdate = async () => {
     try {
+      if (!userInfo.player || !userInfo.player.serviceType || userInfo?.player.serviceType.length === 0 || !userInfo.player.rentCost || userInfo?.player?.rentCost === 0) {
+        toast("Vui lòng thêm thông tin player trước khi bật!")
+        setIsDuoEnabled(false);
+        return;
+      }
       const response = await axios.put('/api/user/update-duo-setting', { isDuoEnabled });
-      console.log('Duo setting updated:', response.data);
+      dispatch(setUserInformation(response.data));
+      toast("Cập nhật thành công")
     } catch (error) {
       console.error('Error updating Duo setting:', error);
     }
   };
-
+  console.log(userInfo);
   return (
     <>
       <h1 className="text-white">Cài đặt Duo</h1>

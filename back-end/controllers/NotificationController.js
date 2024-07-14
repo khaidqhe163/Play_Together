@@ -70,6 +70,8 @@ const likeStoryNotification = async (req, res) => {
         const {
             storyId,
         } = req.body;
+        console.log(userId);
+        console.log(storyId);
         const notification = await NotificationService.likeStoryNotification(storyId, userId);
         res.status(201).json(notification);
     } catch (error) {
@@ -121,6 +123,37 @@ const completeBookingNotification = async (req, res) => {
     }
 }
 
+const reportBookingNotification = async (req, res) => {
+    try {
+        const adminId = req.payload.id;
+        console.log(adminId);
+        const {
+            bookingId,
+            complaint
+        } = req.body;
+        const notification = await NotificationService.reportBookingNotification(adminId, Number(complaint), bookingId);
+        console.log(notification);
+        res.status(201).json(notification);
+        return notification
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+const donateNotification = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const {
+            playerId,
+            money
+        } = req.body;
+        const notification = await NotificationService.donateNotification(userId, playerId, money);
+        console.log(notification);
+        res.status(201).json(notification);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
 
 export default {
     sendReplyStoryNotification,
@@ -131,5 +164,7 @@ export default {
     likeStoryNotification,
     sendBookingNotification,
     processBookingNotification,
-    completeBookingNotification
+    completeBookingNotification,
+    reportBookingNotification,
+    donateNotification
 }

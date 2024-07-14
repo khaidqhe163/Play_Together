@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 
 export const SocketContext = createContext();
 
-export const SocketProvider = ({ user, children }) => {
+export const SocketProvider = ({ user, admin, children }) => {
     const [socket, setSocket] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState(null);
     const [openChatCanvas, setOpenChatCanvas] = useState(false);
@@ -29,6 +29,16 @@ export const SocketProvider = ({ user, children }) => {
             setNewMessage(res)
         })
     }, [socket, user])
+    useEffect(() => {
+        if (socket === null) return;
+        socket.emit("addNewUser", admin?._id)
+        socket.on("getOnlineUsers", (res) => {
+            setOnlineUsers(res)
+        })
+        socket.on("getNewMessagePrivate", (res) => {
+            setNewMessage(res)
+        })
+    }, [socket, admin])
     return (
         <SocketContext.Provider value={{
             socket,

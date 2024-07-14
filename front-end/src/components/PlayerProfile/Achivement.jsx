@@ -75,7 +75,7 @@ function Achivement({ player, setOpenHire, setShowDonate }) {
                     </div>
                     <div>
                         <p>Số giờ thuê</p>
-                        <p className='amounts'>{player?.player?.totalHiredHour}</p>
+                        <p className='amounts'>{player?.player?.totalHiredHour || 0}</p>
                     </div>
                     <div>
                         <p>Tỉ lệ hoàn thành</p>

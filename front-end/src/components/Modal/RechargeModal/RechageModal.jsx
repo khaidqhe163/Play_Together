@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import QrModal from './QRModal';
-
+import './Recharge.css'
 const RechargeModal = ({ show, handleClose }) => {
     const [showQR, setShowQR] = useState(false);
     const [amount, setAmount] = useState(0);

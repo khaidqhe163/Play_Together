@@ -4,7 +4,6 @@ function Home() {
   const handleRefreshToken = async () => {
     try {
       const response = await api.get("/api/service/test");
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

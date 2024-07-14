@@ -1,0 +1,74 @@
+import axios from "axios";
+import store from "../app/store";
+import { setAccessTokenAdmin } from "../features/accessTokenAdminSlice";
+const instance = axios.create({
+    baseURL: 'http://localhost:3008',
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
+instance.defaults.withCredentials = true;
+
+let isRefreshing = false;
+
+instance.interceptors.request.use(function (config) {
+
+    let headersToken = store.getState().accessTokenAdmin.value;
+    if (headersToken) {
+        config.headers.Authorization = `Bearer ${headersToken}`
+    }
+    return config;
+}, function (error) {
+    return Promise.reject(error);
+});
+
+instance.interceptors.response.use(function (response) {
+    return response;
+}, async function (error) {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        if (!isRefreshing) {
+            isRefreshing = true;
+            try {
+                const newToken = await refreshAccessToken();
+                store.dispatch(setAccessTokenAdmin(newToken));
+                instance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                isRefreshing = false;
+                return instance(originalRequest);
+            } catch (err) {
+                isRefreshing = false;
+                return Promise.reject(err);
+            }
+        } else {
+            return new Promise((resolve, reject) => {
+                const checkRefresh = setInterval(() => {
+                    const token = store.getState().accessTokenAdmin;
+                    if (!isRefreshing) {
+                        clearInterval(checkRefresh);
+                        if (token) {
+                            originalRequest.headers.Authorization = `Bearer ${token}`;
+                            resolve(instance(originalRequest));
+                        } else {
+                            reject(error);
+                        }
+                    }
+                }, 1000);
+            });
+        }
+    }
+    return Promise.reject(error);
+});
+
+async function refreshAccessToken() {
+    try {
+        const response = await instance.post('/api/user/refresh-token', { refreshToken: store.getState().refreshTokenAdmin.value });
+        return response.data.accessToken;
+    } catch (error) {
+        console.error('Failed to refresh access token:', error);
+        throw error;
+    }
+}
+export default instance;

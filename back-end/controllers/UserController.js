@@ -1,4 +1,4 @@
-import { UserService, BanService } from "../services/index.js"
+import { UserService, BanService, CommentService } from "../services/index.js"
 import jwt from '../middleware/jwt.js';
 import bcrypt from 'bcryptjs'
 import User from "../models/User.js";
@@ -8,6 +8,7 @@ import nodemailer from "nodemailer";
 import hbs from 'nodemailer-express-handlebars'
 import * as path from 'path'
 import fs from "fs"
+import Comment from "../models/Comment.js";
 
 const register = async (req, res) => {
     try {
@@ -49,20 +50,15 @@ const login = async (req, res) => {
                 message: "Sai mật khẩu"
             })
         }
-        console.log(user.role);
         if (user.role === 2) {
             return res.status(401).json({
                 message: "Sai thông tin tài khoản!"
-            }) 
+            })
         }
         if (user.status) {
-            console.log("zoday");
             const ban = await BanService.getBanByUserId(user._id);
             const endTime = new Date(ban.endTime);
-            console.log(endTime);
-            console.log(Date.now() < endTime);
             if (Date.now() < endTime) {
-                console.log("ban");
                 return res.status(401).json({
                     message: "Tài khoản của bạn đã bị cấm"
                 })
@@ -95,10 +91,7 @@ const autoLogin = async (req, res) => {
         if (user.status) {
             const ban = await BanService.getBanByUserId(user._id);
             const endTime = new Date(ban.endTime);
-            console.log(endTime);
-            console.log(Date.now() < endTime);
             if (Date.now() < endTime) {
-                console.log("ban");
                 return res.status(401).json({
                     message: "Tài khoản của bạn đã bị cấm"
                 })
@@ -129,7 +122,6 @@ const loginPassport = async (req, res) => {
         if (tokenElements[1] < Date.now() - 5 * 1000) {
             throw new Error("Token is expired!");
         }
-        console.log(tokenElements);
         const user = await UserService.autoLogin(tokenElements[0]);
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
@@ -250,10 +242,21 @@ const resetPassword = async (req, res) => {
 
 const getAllPlayer = async (req, res) => {
     try {
-        const players = await UserService.getAllPlayer();
+        let players = await UserService.getAllPlayer();
         if (players.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy người chơi nào.' });
         }
+        players = await Promise.all(players.map(async p => {
+            const comments = await CommentService.getAllCommentAboutPlayer(p._id);
+            // console.log(comments);
+            const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.rating, 0) / comments.length;
+            p = p.toObject();
+            p.averageStars = averageStars;
+            p.amountVote = comments.length;
+            return p;
+        }));
+
+        console.log(players);
 
         res.status(200).json(players);
     } catch (error) {
@@ -295,7 +298,6 @@ const updatePlayerInfo = async (req, res) => {
             videoHightlight,
             achivements
         } = req.body
-        console.log(req.body);
         const device = JSON.parse(deviceStatus);
         const service = JSON.parse(serviceType)
         const achivement = JSON.parse(achivements)
@@ -384,7 +386,6 @@ const updateUser = async (req, res) => {
         if (newAvatar) {
             fs.unlinkSync(req.body.avatar)
         }
-        console.log(req.body.avatar);
         res.status(200).json(updatedUser);
     } catch (error) {
         res.status(500).json({ message: error.toString() });
@@ -435,10 +436,8 @@ const banUser = async (req, res) => {
             userId
         } = req.body;
         let endDate;
-        console.log(complaint);
         switch (complaint) {
             case 1:
-                console.log("zoday");
                 endDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
                 break;
             case 2:
@@ -455,40 +454,39 @@ const banUser = async (req, res) => {
         }
 
         const player = await UserService.getPlayerById(userId);
-        // const transporter = nodemailer.createTransport({
-        //     host: "smtp.gmail.com",
-        //     port: 587,
-        //     secure: false, // Use `true` for port 465, `false` for all other ports
-        //     auth: {
-        //         user: "khaidqhe163770@fpt.edu.vn",
-        //         pass: "iyrdweksgcrjokhw",
-        //     },
-        // });
-        // const handlebarOptions = {
-        //     viewEngine: {
-        //         partialsDir: path.resolve('./templates/'),
-        //         defaultLayout: false,
-        //     },
-        //     viewPath: path.resolve('./templates/'),
-        // };
-        // transporter.use('compile', hbs(handlebarOptions))
-        // const mail = {
-        //     from: '"Play Together" <khaidqhe163770@fpt.edu.vn>',
-        //     to: `${player.email}`,
-        //     subject: 'Report player',
-        //     template: 'reportplayer',
-        //     context: {
-        //         description: reason,
-        //     },
-        //     attachments: [{
-        //         filename: 'warning-email.png',
-        //         path: './public/warning-email.png',
-        //         cid: 'emailbackground' //same cid value as in the html img src
-        //     }]
-        // }
-        // transporter.sendMail(mail);
-        // console.log("Send End");
-        console.log(endDate);
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // Use `true` for port 465, `false` for all other ports
+            auth: {
+                user: "khaidqhe163770@fpt.edu.vn",
+                pass: "iyrdweksgcrjokhw",
+            },
+        });
+        const handlebarOptions = {
+            viewEngine: {
+                partialsDir: path.resolve('./templates/'),
+                defaultLayout: false,
+            },
+            viewPath: path.resolve('./templates/'),
+        };
+        transporter.use('compile', hbs(handlebarOptions))
+        const mail = {
+            from: '"Play Together" <khaidqhe163770@fpt.edu.vn>',
+            to: `${player.email}`,
+            subject: 'Cấm tài khoản',
+            template: 'reportplayer',
+            context: {
+                description: reason,
+            },
+            attachments: [{
+                filename: 'warning-email.png',
+                path: './public/warning-email.png',
+                cid: 'emailbackground' //same cid value as in the html img src
+            }]
+        }
+        transporter.sendMail(mail);
+        console.log("Send End");
         const user = await BanService.banUser(userId, endDate, reason);
         res.status(200).json(user)
     } catch (error) {
@@ -539,12 +537,11 @@ const logout = async (req, res) => {
         })
     }
 };
-  
+
 const addImagesToAlbum = async (req, res) => {
     try {
         const userId = req.payload.id;
         const images = req.files.map(file => file.path);
-        console.log(images);
         const updatedUser = await UserService.addImagesToAlbum(userId, images);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -560,7 +557,7 @@ const getImagesFromAlbum = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const images = user.player.images; 
+        const images = user.player.images;
         res.status(200).json({ images });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching images', error: error.message });
@@ -568,65 +565,64 @@ const getImagesFromAlbum = async (req, res) => {
 };
 
 const deleteImageToAlbum = async (req, res) => {
-    try{
+    try {
         const image = req.body.image;
         const userId = req.payload.id;
-console.log(image);
        
         const user = await UserService.deleteImageToAlbum(image, userId)
         fs.unlinkSync(image)
         res.status(200).json(user);
-    }catch (error){
+    } catch (error) {
         res.status(500).json({ message: 'Error fetching images', error: error.message });
     }
 }
 
 const getHotPlayers = async (req, res) => {
     try {
-      // Define the time frame (last 7 days)
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  
-      // Query to find players who have bookings in the last 7 days
-      const players = await User.find({ "player.duoSettings": true }).populate("player.serviceType").exec();
-  
-      // Calculate completion rate and total hired hours for each player
-      const hotPlayers = await Promise.all(
-        players.map(async (player) => {
-          const bookings = await Booking.find({
-            playerId: player._id,
-            createdAt: { $gte: oneWeekAgo },
-          }).exec();
-          const completedBookings = bookings.filter(
-            (booking) => booking.bookingStatus === 2
-          ).length;
-          const totalBookings = bookings.filter(
-            (booking) => booking.bookingStatus === 2 || booking.bookingStatus === 3
-          ).length;
-          const completionRate = totalBookings === 0 ? 0 : completedBookings / totalBookings;
-  
-          player = player.toObject();
-          player.totalHiredHours = player.player.totalHiredHour;
-          player.completionRate = completionRate;
-  
-          // Calculate a score based on total hired hours and completion rate
-          player.score = player.totalHiredHours + player.completionRate;
-  
-          return player;
-        })
-      );
-  
-      // Sort players by score in descending order
-      const sortedHotPlayers = hotPlayers.sort((a, b) => b.score - a.score);
-  
-      // Respond with the sorted hot players
-      res.status(200).json(sortedHotPlayers);
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching hot players.', error: error.message });
-    }
-  };
+        // Define the time frame (last 7 days)
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-  const getFollowedPlayers = async (req, res) => {
+        // Query to find players who have bookings in the last 7 days
+        const players = await User.find({ "player.duoSettings": true }).populate("player.serviceType").exec();
+
+        // Calculate completion rate and total hired hours for each player
+        const hotPlayers = await Promise.all(
+            players.map(async (player) => {
+                const bookings = await Booking.find({
+                    playerId: player._id,
+                    createdAt: { $gte: oneWeekAgo },
+                }).exec();
+                const completedBookings = bookings.filter(
+                    (booking) => booking.bookingStatus === 2
+                ).length;
+                const totalBookings = bookings.filter(
+                    (booking) => booking.bookingStatus === 2 || booking.bookingStatus === 3
+                ).length;
+                const completionRate = totalBookings === 0 ? 0 : completedBookings / totalBookings;
+
+                player = player.toObject();
+                player.totalHiredHours = player.player.totalHiredHour;
+                player.completionRate = completionRate;
+
+                // Calculate a score based on total hired hours and completion rate
+                player.score = player.totalHiredHours + player.completionRate;
+
+                return player;
+            })
+        );
+
+        // Sort players by score in descending order
+        const sortedHotPlayers = hotPlayers.sort((a, b) => b.score - a.score);
+
+        // Respond with the sorted hot players
+        res.status(200).json(sortedHotPlayers);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching hot players.', error: error.message });
+    }
+};
+
+const getFollowedPlayers = async (req, res) => {
     try {
         const userId = req.payload.id;
         const followers = await UserService.getFollowerById(userId);
@@ -636,6 +632,58 @@ const getHotPlayers = async (req, res) => {
     }
 };
 
+const loginAdmin = async (req, res) => {
+    try {
+        const user = await UserService.findUserByEmail(req.body.email);
+        if (!user) {
+            return res.status(401).json({
+                message: "Email chưa được đăng ký"
+            })
+        }
+        const hashPassword = bcrypt.compareSync(req.body.password, user.password);
+        if (!hashPassword) {
+            return res.status(401).json({
+                message: "Sai mật khẩu"
+            })
+        }
+        if (user.role === 1) {
+            return res.status(401).json({
+                message: "Sai thông tin tài khoản!"
+            })
+        }
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
+        const { password, ...returnUser } = user;
+        res.cookie("RefreshAdminToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
+        res.status(200).json({
+            user: returnUser,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        })
+    }
+}
+
+const autoLoginAdmin = async (req, res) => {
+    try {
+        const user = await UserService.findUserByEmail(req.payloadadmin.email);
+        const refreshToken = req.cookies.RefreshAdminToken;
+        const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
+        const { password, ...returnUser } = user;
+        res.status(200).json({
+            user: returnUser,
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        })
+    }
+}
 export default {
     register,
     login,
@@ -661,10 +709,11 @@ export default {
     updateOnlySchedule,
     logout,
     unbanUser,
-    logout,
+    loginAdmin,
+    autoLoginAdmin,
     addImagesToAlbum,
     getImagesFromAlbum,
     deleteImageToAlbum,
-    getHotPlayers ,
+    getHotPlayers,
     getFollowedPlayers
 }

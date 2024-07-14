@@ -15,22 +15,22 @@ UserRouter.get('/auth/google',
     passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
 
 UserRouter.get('/auth/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/login' }),
+    passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/play-together/login' }),
     function (req, res) {
         let token = req.user.emails[0].value + ":" + (Date.now() + 5 * 1000);
         token = btoa(token);
-        res.redirect('http://localhost:3000/login-success/' + token);
+        res.redirect('http://localhost:3000/play-together/login-success/' + token);
     });
 
 UserRouter.get('/auth/facebook',
     passport.authenticate('facebook', { scope: ["email"], session: false }));
 
 UserRouter.get('/auth/facebook/callback',
-    passport.authenticate('facebook', { session: false, failureRedirect: 'http://localhost:3000/login' }),
+    passport.authenticate('facebook', { session: false, failureRedirect: 'http://localhost:3000/play-together/login' }),
     function (req, res) {
         let token = req.user.emails[0].value + ":" + (Date.now() + 5 * 1000);
         token = btoa(token);
-        res.redirect('http://localhost:3000/login-success/' + token);
+        res.redirect('http://localhost:3000/play-together/login-success/' + token);
     });
 
 UserRouter.post('/refresh-token', jwt.verifyRefreshToken);
@@ -78,6 +78,8 @@ UserRouter.post('/follow-player/:playerId', jwt.verifyAccessToken, UserControlle
 UserRouter.post('/unfollow-player/:playerId', jwt.verifyAccessToken, UserController.unfollowPlayer);
 
 UserRouter.post('/logout', UserController.logout)
+UserRouter.post('/login-admin', UserController.loginAdmin)
+UserRouter.get('/autologin/admin', middleware.autoLoginAdmin, UserController.autoLoginAdmin)
 
 const storageAlbum = multer.diskStorage({
     destination: function (req, file, cb) {

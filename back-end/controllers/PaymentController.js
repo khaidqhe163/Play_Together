@@ -4,7 +4,6 @@ const createPayment = async (req, res) => {
     try {
         const id = req.payload.id;
         const {total} = req.body;
-        console.log(total);
         const aPayment = await PaymentService.createPayment({id, total});
         const aUser = await UserService.findUserById(id);
         aUser.accountBalance += parseInt(total);

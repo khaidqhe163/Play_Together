@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { userInfor } from '../../features/userSlice.js';
 import '../../css/boxchat.css'
 import { SocketContext } from '../../context/SocketContext.jsx';
+import { Link } from 'react-router-dom';
 function ChatBoxComunity() {
     const chatbox = useRef(null);
     const [textMessage, setTextMessage] = useState("")
@@ -76,21 +77,23 @@ function ChatBoxComunity() {
             console.log(error);
         }
     }
-    console.log("hello2");
     return (
         <Stack direction='vertical' className='chatbox' gap={2}>
             <Stack direction='vertical' gap={3} ref={chatbox} style={{ overflow: "auto" }}>
                 {
                     messages?.map((m, index) => {
+                        console.log(m);
                         return (
                             <div className="d-flex" style={{ width: "100%" }} key={index}>
-                                <img src={baseUrl + m?.senderId.avatar} style={{
-                                    width: "40px",
-                                    height: "40px",
-                                    marginRight: "10px"
-                                }}
-                                    className='rounded-circle'
-                                    alt='error'></img>
+                                <Link to={"/play-together/player-profile/" + m?.senderId._id}>
+                                    <img src={baseUrl + m?.senderId.avatar} style={{
+                                        width: "40px",
+                                        height: "40px",
+                                        marginRight: "10px"
+                                    }}
+                                        className='rounded-circle'
+                                        alt='error'></img>
+                                </Link>
                                 <div className='text-white' style={{
                                     background: "#323241",
                                     borderRadius: "10px",

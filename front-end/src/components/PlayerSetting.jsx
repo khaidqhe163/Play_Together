@@ -13,7 +13,7 @@ import { IoCloseCircle, IoPencil } from "react-icons/io5";
 export default function PlayerSetting() {
   const userInfo = useSelector(userInfor);
   const [listService, setListService] = useState();
-  const [pickGame, setPickGame] = useState([]);
+  const [pickGame, setPickGame] = useState(null);
   const [achivements, setAchivements] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newDate, setNewDate] = useState('');
@@ -31,7 +31,6 @@ export default function PlayerSetting() {
   };
 
   const handleAddAchivement = () => {
-    console.log(newDate);
     if (newDate !== "" && newContent !== "") {
       setAchivements([...achivements, { id: Date.now(), date: newDate, text: newContent }]);
     }
@@ -62,7 +61,6 @@ export default function PlayerSetting() {
     if (userInfo !== null) {
       setPickGame(userInfo?.player?.serviceType)
       if (userInfo && userInfo.player && userInfo.player.achivements) {
-        console.log("zoday");
         const editAchivement = userInfo.player.achivements.map((achivement) => {
           return {
             text: achivement.text,
@@ -87,7 +85,6 @@ export default function PlayerSetting() {
   useEffect(() => {
     setPickGame(userInfo?.player?.serviceType)
     if (userInfo && userInfo.player && userInfo.player.achivements) {
-      console.log("zoday2");
 
       const editAchivement = userInfo.player.achivements.map((achivement) => {
         return {
@@ -98,7 +95,6 @@ export default function PlayerSetting() {
       })
       setAchivements(editAchivement)
     }
-    console.log(userInfo);
     formik.setValues({
       rentCost: userInfo && userInfo.player && userInfo.player.rentCost ? userInfo.player.rentCost : 5000,
       info: userInfo && userInfo.player && userInfo.player.info ? userInfo.player.info : "",
@@ -138,7 +134,11 @@ export default function PlayerSetting() {
       const filtedAchivement = achivements.map((achivement) => {
         return { date: achivement.date, text: achivement.text }
       })
-      console.log(achivements);
+      console.log(pickGame);
+      if (!pickGame || pickGame?.length === 0) {
+        toast("Bạn chưa chọn service nào cả!")
+        return;
+      }
       const requestObject = {
         rentCost: values.rentCost,
         info: values.info,
@@ -153,9 +153,7 @@ export default function PlayerSetting() {
         }),
         serviceType: JSON.stringify(pickGame)
       }
-      console.log(requestObject);
       const update = await api.post("/api/user/update-player-info", requestObject);
-      console.log(update.data);
       dispatch(setUserInformation(update.data.user));
       toast('Cập nhật thành công!')
     } catch (error) {
@@ -220,7 +218,7 @@ export default function PlayerSetting() {
               name='rentCost'
               onChange={formik.handleChange}
               min={5000}
-              max={10000000}
+              max={1000000}
             />
             <h6 className='title'>Giới thiệu chi tiết về bạn</h6>
             <textarea

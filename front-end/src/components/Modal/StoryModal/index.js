@@ -12,6 +12,7 @@ import ModalDeleteComment from "./ModalDeleteComment/index.js";
 import { SocketContext } from "../../../context/SocketContext.jsx";
 import ModalDeleteStory from "./ModalDeleteStory/index.js";
 import ModalReportStory from "./ModalReportStory/index.js";
+import { userInfor } from "../../../features/userSlice.js";
 
 const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onOk, commentId }) => {
     const [form] = Form.useForm();
@@ -31,12 +32,13 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
     const today = dayjs();
     const yesterday = today.subtract(1, 'day');
     const commentBox = useRef()
+    const userInfo = useSelector(userInfor);
     useEffect(() => {
-        if(commentId && comments){
-            if(document.getElementById(commentId))
-            document.getElementById(commentId).scrollIntoView({
-                behavior: "smooth"
-            })
+        if (commentId && comments) {
+            if (document.getElementById(commentId))
+                document.getElementById(commentId).scrollIntoView({
+                    behavior: "smooth"
+                })
         }
     }, [comments])
 
@@ -79,8 +81,8 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
         // },
     ];
 
-    if (open?.author?._id !== user?.value?._id) {
-        item2.unshift ({
+    if (open?.author?._id !== user?.value?._id && userInfo !== null) {
+        item2.unshift({
             label: (
                 <span className="fs-12" onClick={() => setOpenReportStory(open)}>
                     Báo cáo
@@ -93,7 +95,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
     if (open?.author?._id === user?.value?._id) {
         item2.unshift({
             label: (
-                <span className="fs-12" style={{boxSizing: 'border-box'}}
+                <span className="fs-12" style={{ boxSizing: 'border-box' }}
                     onClick={() => setOpenDeleteStory(open)}
                 >
                     Xóa tin
@@ -147,12 +149,13 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
             if (res?.isError) return
             onOk()
+            console.log(likedStatus);
             if (!likedStatus) {
-                console.log("zoday");
                 const likeNotify = await api.post("/api/notification/like-story-notification", {
                     storyId: open._id
                 })
                 socket.emit("sendNotification", likeNotify.data)
+                console.log(likeNotify.data);
             }
             setLikedStatus(!likedStatus)
             setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
@@ -183,13 +186,17 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                 ? await api.post('/api/comment', data)
                 : await api.put(`/api/comment/${isEdit?._id}`, data)
 
-            if (!data.reply || (data.userId !== data.commentor && isEdit === false)) {
-                const commentNotify = await api.post("/api/notification/comment-story-notification", {
-                    storyId: data.storyId,
-                    author: data.userId,
-                    commentId: res.data._id
-                })
-                socket.emit("sendNotification", commentNotify.data)
+            if (!data.reply || userInfo._id !== data.commentor) {
+                if (isEdit === false) {
+                    const commentNotify = await api.post("/api/notification/comment-story-notification", {
+                        storyId: data.storyId,
+                        author: data.userId,
+                        commentId: res.data._id
+                    })
+                    console.log("zoday 1");
+                    console.log(commentNotify.data);
+                    socket.emit("sendNotification", commentNotify.data)
+                }
             }
             if (data.reply && isEdit === false) {
                 const replyNotify = await api.post("/api/notification/send-reply-story-notifcation", {
@@ -272,9 +279,6 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                     <div className="heart" onClick={() => handleLikedOrUnliked()}>
                                         <FontAwesomeIcon color={!!likedStatus ? 'red' : ''} icon={faHeart} />
                                     </div>
-                                    <div className="gift mt-10">
-                                        <FontAwesomeIcon icon={faGift} />
-                                    </div>
                                 </div>
                             </Col>
                         </Row>
@@ -299,21 +303,16 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                         </div>
                                     </div>
                                     <div className="thue mr-20 d-flex ">
-                                        <Button danger type="primary" shape="round"
-                                            style={{ color: 'white', height: '34px', width: '84px', fontSize: '16px', fontWeight: 600 }}
-                                        >
-                                            Thuê
-                                        </Button>
 
                                         <div className="ml-20 mt-3" style={{}}>
                                             <Dropdown
                                                 menu={{ items: item2 }}
                                                 trigger={['click']}
                                             >
-                                                <span className="fs-14 fw-700 white" style={{cursor: "pointer"}}>
+                                                <span className="fs-14 fw-700 white" style={{ cursor: "pointer" }}>
                                                     . . .
                                                 </span>
-                                            </Dropdown> 
+                                            </Dropdown>
                                         </div>
                                         {/* <Button danger type="primary" shape="round" className="ml-10"
                                             style={{ color: 'white', height: '36px', width: '40px'}}
@@ -323,7 +322,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                 </div>
                                 <div className="option d-flex justify-content-space-evenly mt-20" style={{ color: 'hsl(0deg 0.78% 74.71%)' }}>
                                     <div><FontAwesomeIcon icon={faEye} /> {open?.view.length} </div>
-                                    <div><FontAwesomeIcon icon={faCommentAlt} /> 0 </div>
+                                    <div><FontAwesomeIcon icon={faCommentAlt} /> {comments?.length} </div>
                                     <div><FontAwesomeIcon icon={faHeart} /> {likesCount} </div>
                                 </div>
                                 <div className="stuatus mt-20 ml-20" style={{ color: 'hsl(0deg 0.78% 74.71%)' }}>
@@ -333,72 +332,72 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                                 <Divider className="mt-10 mb-0" style={{ backgroundColor: 'white' }} />
                             </div>
 
-                            <Spin spinning={loading} className="d-flex justify-content-center align-content-center">
-                                <div className="comment pl-30" style={{ maxHeight: '250px', overflowY: 'auto' }} ref={commentBox}>
-                                    {
-                                        comments?.map((c, i) => (
-                                            <div key={i} className="d-flex mb-10">
-                                                <div className="d-flex">
-                                                    <div className="avatar-commnet mr-20 mt-15">
-                                                        <Image
-                                                            alt="Avatar"
-                                                            preview={false}
-                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                            src={baseUrl + c?.commentor?.avatar}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="d-flex flex-column ">
-                                                    <div style={{ fontWeight: '700', fontSize: '12px' }}> <span style={{ color: 'hsl(0deg 0.78% 74.71%)' }}> {c?.commentor?.username} </span></div>
-                                                    <div className="created" style={{ fontSize: '10px', color: '#A19F9F' }}>
-                                                        <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span>
-                                                        {
-                                                            (user?.value?._id && user?.value?._id !== c?.commentor?._id) ? (
-                                                                <>
-                                                                    <span className="ml-10 reply_story_comment" onClick={() => {
-                                                                        // handleReply(c)
-                                                                        inputRef.current.focus()
-                                                                        setRep(c)
-                                                                        form.setFieldsValue({
-                                                                            reply_user: c?.commentor?.username
-                                                                        })
-                                                                    }}> Trả lời </span>
-                                                                </>
-                                                            ) : (<></>)
-                                                        }
-                                                        {
-                                                            c?.commentor?._id === user?.value?._id ? (
-                                                                <>
-                                                                    <span className="ml-10">
-                                                                        <Dropdown
-                                                                            menu={{
-                                                                                items: items(c),
-                                                                            }}
-                                                                            trigger={['click']}
-                                                                        >
-                                                                            <span className="fs-12 fw-700" style={{ cursor: "pointer" }}>
-                                                                                ...
-                                                                            </span>
-                                                                        </Dropdown>
-                                                                    </span>
-                                                                </>
-                                                            ) : (<></>)
-                                                        }
-                                                    </div>
-                                                    <div className="fs-12" style={{ color: 'hsl(0deg 0.78% 74.71%)' }}>
-                                                        {c?.reply
-                                                            ? <>
-                                                                <span style={{ borderRadius: '30%', backgroundColor: '#7d7c94', padding: '0 4px', fontWeight: 600 }}> {c?.reply?.username} </span>
-                                                                <span className="ml-5"> {c?.content} </span>
-                                                            </> : <> {c?.content} </>
-                                                        }
-                                                    </div>
+
+                            <div className="comment pl-30" style={{ height: '250px', overflowY: 'auto' }} ref={commentBox}>
+                                {
+                                    comments?.map((c, i) => (
+                                        <div key={i} className="d-flex mb-10">
+                                            <div className="d-flex">
+                                                <div className="avatar-commnet mr-20 mt-15">
+                                                    <Image
+                                                        alt="Avatar"
+                                                        preview={false}
+                                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                        src={baseUrl + c?.commentor?.avatar}
+                                                    />
                                                 </div>
                                             </div>
-                                        ))
-                                    }
-                                </div>
-                            </Spin>
+                                            <div className="d-flex flex-column ">
+                                                <div style={{ fontWeight: '700', fontSize: '12px' }}> <span style={{ color: 'hsl(0deg 0.78% 74.71%)' }}> {c?.commentor?.username} </span></div>
+                                                <div className="created" style={{ fontSize: '10px', color: '#A19F9F' }}>
+                                                    <span> {dayjs(c?.createdAt).format('DD-MM-YYYY')} </span>
+                                                    {
+                                                        (user?.value?._id && user?.value?._id !== c?.commentor?._id) ? (
+                                                            <>
+                                                                <span className="ml-10 reply_story_comment" onClick={() => {
+                                                                    // handleReply(c)
+                                                                    inputRef.current.focus()
+                                                                    setRep(c)
+                                                                    form.setFieldsValue({
+                                                                        reply_user: c?.commentor?.username
+                                                                    })
+                                                                }}> Trả lời </span>
+                                                            </>
+                                                        ) : (<></>)
+                                                    }
+                                                    {
+                                                        c?.commentor?._id === user?.value?._id ? (
+                                                            <>
+                                                                <span className="ml-10">
+                                                                    <Dropdown
+                                                                        menu={{
+                                                                            items: items(c),
+                                                                        }}
+                                                                        trigger={['click']}
+                                                                    >
+                                                                        <span className="fs-12 fw-700" style={{ cursor: "pointer" }}>
+                                                                            ...
+                                                                        </span>
+                                                                    </Dropdown>
+                                                                </span>
+                                                            </>
+                                                        ) : (<></>)
+                                                    }
+                                                </div>
+                                                <div className="fs-12" style={{ color: 'hsl(0deg 0.78% 74.71%)' }}>
+                                                    {c?.reply
+                                                        ? <>
+                                                            <span style={{ borderRadius: '30%', backgroundColor: '#7d7c94', padding: '0 4px', fontWeight: 600 }}> {c?.reply?.username} </span>
+                                                            <span className="ml-5"> {c?.content} </span>
+                                                        </> : <> {c?.content} </>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
 
                             <div className="comment">
                                 <Divider style={{ marginBottom: '15px', marginTop: '0', backgroundColor: 'white', fontSize: '10px' }} />
@@ -472,7 +471,7 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             {!!openDeleteStory && (
                 <ModalDeleteStory
                     open={openDeleteStory}
-                    
+                    onCancelStory={onCancel}
                     onCancel={() => setOpenDeleteStory(false)}
                     onOk={onOk}
                 />
