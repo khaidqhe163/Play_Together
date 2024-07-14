@@ -9,8 +9,10 @@ import { TfiMoreAlt } from "react-icons/tfi";
 import ListPlayer from './ListPlayer.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { getService } from '../features/serviceSlice.js';
+import { userInfor } from '../features/userSlice.js';
 export default function Search() {
   const dispatch = useDispatch();
+  const userInfo = useSelector(userInfor);
   const service = useSelector(getService);
   const serviceId = service?._id;
   const [showPopUpRange, setShowPopUpRange] = useState(false);
@@ -59,7 +61,13 @@ export default function Search() {
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
-        setListSearch(data);
+        if (userInfo != null) {
+          const newD = data.filter(d => d._id !== userInfo._id && !userInfo.blockedUsers.includes(d._id));
+          setListSearch(newD);
+        } else {
+          setListSearch(data);
+        }
+        // setListSearch(data);
         setHasSearched(true);
       })
       .catch(error => {
@@ -199,7 +207,7 @@ export default function Search() {
 
                           </div>
                           <div className='w-50 d-flex align-items-center justify-content-end'>
-                            <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>4.8 <span>(355)</span></p>
+                            <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>{p.averageStars.toFixed(1)} <span>({p.amountVote})</span></p>
                           </div>
                         </div>
                       </div>
@@ -225,8 +233,8 @@ export default function Search() {
         <ListPlayer url={`api/user/players-by-service/${serviceId}`} />
       </>}
       {!service && <>
-      <h5 className="text-white my-4">LIST PLAYERS</h5>
-      <ListPlayer />
+        <h5 className="text-white my-4">LIST PLAYERS</h5>
+        <ListPlayer />
       </>}
 
     </>
