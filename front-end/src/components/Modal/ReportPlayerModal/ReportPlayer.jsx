@@ -24,8 +24,9 @@ function ReportPlayer({ show, handleClose, id }) {
     useEffect(() => {
         const getPlayerReportReason = async () => {
             try {
-                const data = await axios.get("http://localhost:3008/api/report-reason");
+                const data = await axios.get("http://localhost:3008/api/report-reason/2");
                 setReportReason(data.data)
+                console.log(data.data);
             } catch (error) {
                 console.log(error);
             }

@@ -6,6 +6,7 @@ import StoryModal from "../components/Modal/StoryModal";
 import api from "../utils/axiosConfig";
 import { Spin } from "antd";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function StoryPage() {
   const [stories, setStories] = useState(null);
@@ -42,7 +43,6 @@ export default function StoryPage() {
   useEffect(() => {
     if (!openModalStory) {
       setCurrentStory(null);
-      nav("/stories")
     }
   }, [openModalStory]);
 
@@ -59,14 +59,15 @@ export default function StoryPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <Spin
-        spinning={loading}
-        className="d-flex justify-content-center align-content-center h-100"
-      ></Spin>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     // <Spin
+  //     //   spinning={loading}
+  //     //   className="d-flex justify-content-center align-content-center h-100"
+  //     // ></Spin>
+  //     <LoadingSpinner />
+  //   );
+  // }
 
   const handleViewStory = async () => {
     try {
@@ -98,6 +99,7 @@ export default function StoryPage() {
         <div className="col-10" style={{ backgroundColor: "#13131a" }}>
           <div className="row d-flex justify-content-center">
             <div className="col-12 col-md-10 py-3">
+              {loading && <LoadingSpinner />}
               <ListStoryPage
                 stories={stories}
                 setOpenModalStory={setOpenModalStory}
@@ -112,7 +114,7 @@ export default function StoryPage() {
       {!!openModalStory && (
         <StoryModal
           open={stories[currentStory]}
-          onCancel={() => setOpenModalStory(undefined)}
+          onCancel={() => {setOpenModalStory(undefined); nav("/play-together/stories")}}
           setCurrentStory={setCurrentStory}
           stories={stories}
           onViewStory={handleViewStory}

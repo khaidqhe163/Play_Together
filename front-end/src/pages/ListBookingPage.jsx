@@ -18,7 +18,7 @@ function ListBookingPage() {
   const nav = useNavigate();
 
   const handleClick = (number) => {
-    nav('/list-booking/' + number);
+    nav('/play-together/list-booking/' + number);
   };
 
   return (

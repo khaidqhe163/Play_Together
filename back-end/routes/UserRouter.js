@@ -15,22 +15,22 @@ UserRouter.get('/auth/google',
     passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
 
 UserRouter.get('/auth/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/login' }),
+    passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:3000/play-together/login' }),
     function (req, res) {
         let token = req.user.emails[0].value + ":" + (Date.now() + 5 * 1000);
         token = btoa(token);
-        res.redirect('http://localhost:3000/login-success/' + token);
+        res.redirect('http://localhost:3000/play-together/login-success/' + token);
     });
 
 UserRouter.get('/auth/facebook',
     passport.authenticate('facebook', { scope: ["email"], session: false }));
 
 UserRouter.get('/auth/facebook/callback',
-    passport.authenticate('facebook', { session: false, failureRedirect: 'http://localhost:3000/login' }),
+    passport.authenticate('facebook', { session: false, failureRedirect: 'http://localhost:3000/play-together/login' }),
     function (req, res) {
         let token = req.user.emails[0].value + ":" + (Date.now() + 5 * 1000);
         token = btoa(token);
-        res.redirect('http://localhost:3000/login-success/' + token);
+        res.redirect('http://localhost:3000/play-together/login-success/' + token);
     });
 
 UserRouter.post('/refresh-token', jwt.verifyRefreshToken);

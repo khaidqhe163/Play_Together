@@ -40,7 +40,7 @@ function Login() {
             dispatch(setAccessToken(userInfo.data.accessToken))
             dispatch(setRefreshToken(userInfo.data.refreshToken))
             toast("Đăng nhập thành công!");
-            nav('/')
+            nav('/play-together')
         } catch (error) {
             console.log(error);
             if (error.response && error.response.status === 401) {
@@ -63,8 +63,8 @@ function Login() {
                 <LoginLeft />
                 <Col md={6} id='login-rightside'>
                     <div id='login-header'>
-                        <button onClick={() => { nav('/register') }}>Đăng ký</button>
-                        <Link to="/">
+                        <button onClick={() => { nav('/play-together/register') }}>Đăng ký</button>
+                        <Link to="/play-together">
                             <div id='login-close'>
                                 <ion-icon name="close-outline"></ion-icon>
                             </div>

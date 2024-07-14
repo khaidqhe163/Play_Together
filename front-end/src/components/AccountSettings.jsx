@@ -42,21 +42,21 @@ export default function AccountSettings() {
                     </div>
                 </p>
                 <div style={dropdownContentStyle}>
-                    <NavLink to="/profile" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/profile" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaUserCircle style={{ marginRight: "5px" }} />
                             <span>Thông tin cá nhân</span>
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/change-password" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/change-password" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaKey style={{ marginRight: "5px" }} />
                             <span>Đổi mật khẩu</span>
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/customer-history" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/customer-history" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaHistory style={{ marginRight: "5px" }} />
                             <span>Lịch sử giao dịch</span>
@@ -70,35 +70,35 @@ export default function AccountSettings() {
                     </div>
                 </p>
                 <div style={dropdownContentStyle}>
-                    <NavLink to="/player-setting" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/player-setting" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaCog style={{ marginRight: "5px" }} />
                             <span>Tổng quan</span>
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/player-guide" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/player-guide" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaBook style={{ marginRight: "5px" }} />
                             <span>Hướng dẫn</span>
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/player-setting-duo" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/player-setting-duo" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaCog style={{ marginRight: "5px" }} />
                             <span>Cài đặt Duo</span>
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/player-history" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/player-history" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaHistory style={{ marginRight: "5px" }} />
                             <span>Lịch sử nhận Duo</span>
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/player-block-list" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/player-block-list" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaList style={{ marginRight: "5px" }} />
                             <span>Danh sách chặn</span>
@@ -106,7 +106,7 @@ export default function AccountSettings() {
                     </NavLink>
                     <br />
 
-                    <NavLink to="/player-schedule" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/play-together/player-schedule" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <AiFillSchedule size={20} style={{ marginRight: "5px" }} />
                             <span>Thiết lập lịch Duo</span>

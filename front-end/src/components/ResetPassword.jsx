@@ -21,7 +21,7 @@ function ResetPassword() {
             })
             setEmail(verifiedToken.data.email);
         } catch (error) {
-            nav("/");
+            nav("/play-together/");
             // console.log(error.toString());
         }
     }
@@ -77,7 +77,7 @@ function ResetPassword() {
                 email: email,
                 ...values
             });
-            nav('/login')
+            nav('/play-together/login')
         } catch (error) {
             alert('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
         }

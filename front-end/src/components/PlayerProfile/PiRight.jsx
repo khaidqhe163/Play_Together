@@ -48,8 +48,8 @@ function PiRight({ id, setOpenHire, player, setShowDonate }) {
     return (
         <div className='pi-right pi'>
             <button onClick={handleOpenChat} disabled={userInfo?._id === player?._id}>Chat</button>
-            <button onClick={() => { userInfo === null ? nav("/login") : setShowDonate() }} disabled={userInfo?._id === player?._id}>Donate</button>
-            <button onClick={() => { userInfo === null ? nav("/login") : setOpenHire() }}>Thuê</button>
+            <button onClick={() => { userInfo === null ? nav("/play-together/login") : setShowDonate() }} disabled={userInfo?._id === player?._id}>Donate</button>
+            <button onClick={() => { userInfo === null ? nav("/play-together/login") : setOpenHire() }}>Thuê</button>
         </div>
     )
 }

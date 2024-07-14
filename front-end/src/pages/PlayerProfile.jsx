@@ -179,10 +179,10 @@ function PlayerProfile() {
                             {following ? (
                                 <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={unfollowPlayer}>Bỏ theo dõi</button>
                             ) : (
-                                <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={() => { userInfo === null ? nav("/login") : followPlayer() }}>Theo dõi</button>
+                                <button style={{ background: "linear-gradient(90deg, #9e23d2 , #5c23d2)" }} onClick={() => { userInfo === null ? nav("/play-together/login") : followPlayer() }}>Theo dõi</button>
                             )}
-                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => { userInfo === null ? nav("/login") : setOpenModalBlock(player) }}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
-                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }} onClick={() => { userInfo === null ? nav("/login") : handleShowReport() }}>Báo cáo</button>
+                            <button style={{ background: "linear-gradient(90deg, #fc0000 , #ff7400)" }} onClick={() => { userInfo === null ? nav("/play-together/login") : setOpenModalBlock(player) }}>{blocked ? ' Bỏ chặn' : 'Chặn'}</button>
+                            <button style={{ background: "linear-gradient(90deg, #1e1e1e , #7d7d7d)" }} onClick={() => { userInfo === null ? nav("/play-together/login") : handleShowReport() }}>Báo cáo</button>
                         </Col>
                     </Row>
                     <Row>

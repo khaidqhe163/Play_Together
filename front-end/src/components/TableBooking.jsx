@@ -199,13 +199,14 @@ function TableBooking({ endPoint }) {
     return (
         <div className='row m-0'>
             <div className='col-12 mt-0'>
+                <div className='d-flex justify-end mb-6'>
+                    <button className='py-2 px-2 rounded-lg text-white transition ease-in-out active:scale-90 flex items-center' onClick={reloadBooking}><GrUpdate className='mr-5' /> Reload</button>
+                </div>
                 {loading ? <LoadingSpinner /> : <>
                     {listBooking.length === 0 || ((endPoint === 'booking-online' || endPoint === 'booking-schedule') && listBooking.filter(l => (l.bookingStatus !== 2 && l.bookingStatus !== 3)).length === 0) ?
                         <h5 className='text-white'>Hiện tại không có lịch nào!</h5> :
                         <>
-                            <div className='d-flex justify-end mb-6'>
-                                <button className='py-2 px-2 rounded-lg text-white transition ease-in-out active:scale-90 flex items-center' onClick={reloadBooking}><GrUpdate className='mr-5' /> Reload</button>
-                            </div>
+
                             <table className="min-w-full bg-gray-800 text-white rounded-xl stable">
                                 <thead>
                                     <tr>

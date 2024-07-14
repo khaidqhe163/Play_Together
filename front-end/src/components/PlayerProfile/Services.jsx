@@ -57,9 +57,9 @@ function Services({ player, setOpenHire, setShowDonate }) {
             reviews.forEach((r) => {
                 total += r.rating;
             })
-            if (total === Math.floor(total))
+            if (total / reviews.length === Math.floor(total / reviews.length))
                 return `${total / reviews.length}.0`;
-            else return total
+            else return (total / reviews.length).toFixed(1);
         }
         if (total === Math.floor(total))
             return `0.0`

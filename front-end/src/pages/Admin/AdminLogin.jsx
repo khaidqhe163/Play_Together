@@ -34,7 +34,7 @@ const AdminLogin = () => {
             dispatch(setAdminInfo(response.data.user));
             dispatch(setAccessTokenAdmin(response.data.accessToken))
             dispatch(setRefreshTokenAdmin(response.data.refreshToken))
-            nav("/admin/users")
+            nav("/play-together/admin/users")
         } catch (error) {
             setError('Tài khoản hoặc mật khẩu không chính xác !!!');
         }

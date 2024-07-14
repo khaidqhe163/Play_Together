@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { userInfor, setUserInformation } from '../features/userSlice';
 import { baseUrl } from '../utils/service';
 import API from '../utils/axiosConfig';
+import { toast } from 'react-toastify';
 
 export default function Profile() {
     const dispatch = useDispatch();
@@ -52,7 +53,7 @@ export default function Profile() {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-
+            toast("Cập nhật thành công!")
             dispatch(setUserInformation(updateUser.data));
         } catch (error) {
             console.error(error);

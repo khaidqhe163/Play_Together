@@ -81,9 +81,9 @@ function MainRoutes({ userInfo, adminInfo }) {
   }
   useEffect(() => {
     if (!adminInfo && location.pathname.includes("/admin")) {
-      nav("/admin/login");
-    } else if(location.pathname.includes("/admin")) {
-      nav("/admin/users")
+      nav("/play-together/admin/login");
+    } else if (location.pathname.includes("/admin")) {
+      nav("/play-together/admin/users")
     }
   }, [adminInfo]);
   return (
@@ -92,7 +92,7 @@ function MainRoutes({ userInfo, adminInfo }) {
         {route.routes.map((route) => (
           <Route
             key={route.path}
-            path={route.path}
+            path={`/play-together${route.path}`}
             element={<route.element />}
           />
         ))}

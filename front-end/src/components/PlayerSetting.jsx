@@ -13,7 +13,7 @@ import { IoCloseCircle, IoPencil } from "react-icons/io5";
 export default function PlayerSetting() {
   const userInfo = useSelector(userInfor);
   const [listService, setListService] = useState();
-  const [pickGame, setPickGame] = useState([]);
+  const [pickGame, setPickGame] = useState(null);
   const [achivements, setAchivements] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newDate, setNewDate] = useState('');
@@ -134,6 +134,11 @@ export default function PlayerSetting() {
       const filtedAchivement = achivements.map((achivement) => {
         return { date: achivement.date, text: achivement.text }
       })
+      console.log(pickGame);
+      if (!pickGame || pickGame?.length === 0) {
+        toast("Bạn chưa chọn service nào cả!")
+        return;
+      }
       const requestObject = {
         rentCost: values.rentCost,
         info: values.info,
