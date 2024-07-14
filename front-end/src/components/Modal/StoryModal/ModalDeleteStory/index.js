@@ -30,7 +30,6 @@ const ModalDeleteStory = ({ open, onCancelStory, onCancel, onOk }) => {
             </Button>
         </div>
     );
-    console.log(open);
     return (
         <CustomModal
             open={!!open}

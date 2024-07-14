@@ -42,7 +42,6 @@ function App() {
             withCredentials: true,
             headers: { 'Content-Type': 'multipart/form-data' },
           });
-          console.log(autoLogin.data);
           dispatch(setAdminInfo(autoLogin.data.user))
           dispatch(setAccessTokenAdmin(autoLogin.data.accessToken))
           dispatch(setRefreshTokenAdmin(autoLogin.data.refreshToken))
@@ -57,7 +56,6 @@ function App() {
     autoLogin();
     autoLoginAdmin();
   }, []);
-  console.log(adminInfo);
   return (
     <div className="App">
       <SocketProvider user={userInfo} admin={adminInfo}>
@@ -83,10 +81,9 @@ function MainRoutes({ userInfo, adminInfo }) {
   }
   useEffect(() => {
     if (!adminInfo && location.pathname.includes("/admin")) {
-      console.log("zoday");
-      nav("/admin/login");
-    } else if(location.pathname.includes("/admin")) {
-      nav("/admin/users")
+      nav("/play-together/admin/login");
+    } else if (location.pathname.includes("/admin")) {
+      nav("/play-together/admin/users")
     }
   }, [adminInfo]);
   return (
@@ -95,7 +92,7 @@ function MainRoutes({ userInfo, adminInfo }) {
         {route.routes.map((route) => (
           <Route
             key={route.path}
-            path={route.path}
+            path={`/play-together${route.path}`}
             element={<route.element />}
           />
         ))}

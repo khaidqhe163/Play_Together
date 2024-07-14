@@ -38,10 +38,8 @@ export default function ChangePassword() {
     } else {
       try {
         const update = await api.put("/api/user/change-password", changePassword);
-        console.log(update.status);
         if (update.status === 200) {
           toast(update.data.message);
-          console.log("Đổi mật khẩu thành công!");
           setChangePassword(prev => ({
             ...prev,
             currentPassword: "",

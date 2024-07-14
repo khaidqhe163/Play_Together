@@ -25,7 +25,6 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                     const otherPerson = mes.data.find((m) => {
                         return m.senderId._id !== userInfo._id
                     })
-                    console.log("otherPerson", otherPerson);
                     if (otherPerson.senderId.blockedUsers.includes(userInfo._id)) {
                         setBlock(1)
                     } else if (userInfo.blockedUsers.includes(otherPerson.senderId._id)) {
@@ -67,7 +66,6 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
             } else {
                 chatId = currentConversation._id
             }
-            console.log("chatId", chatId);
             const message = {
                 messageType: 1,
                 conversationId: chatId,
@@ -80,7 +78,6 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
                 senderId: userInfo._id,
                 receiverId: receiver._id
             }
-            console.log(socketMes);
             socket.emit("sendPrivateMessage", socketMes)
             if (currentConversation._id === "newchat") {
                 setConversation(conversations.map((c) => {
@@ -103,7 +100,6 @@ function ChatBoxDual({ currentConversation, setConversation, conversations, newM
             console.log(error);
         }
     }
-    console.log(block, "block");
     return (
         <Stack direction='vertical' className='chatbox' gap={2}>
             <div className='chat-box-header d-flex align-items-center justify-content-between'>

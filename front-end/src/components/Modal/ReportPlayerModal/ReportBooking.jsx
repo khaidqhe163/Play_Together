@@ -75,7 +75,6 @@ function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking, l
         setIsOpen(true);
     };
     const closeModal = () => {
-        console.log("click here");
         setIsOpen(false);
     };
     const previousImage = (e) => {
@@ -93,7 +92,6 @@ function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking, l
     };
 
     const handleSubmit = async () => {
-        console.log("helelo");
         try {
             const form = new FormData();
             for (let i = 0; i < files.length; i++) {
@@ -105,7 +103,6 @@ function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking, l
             form.append("bookingId", currentBooking._id);
             form.append("playerId", currentBooking.playerId);
 
-            console.log(files);
             const report = await api.post("/api/report/report-booking", form, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -127,7 +124,6 @@ function ReportBooking({ show, handleClose, currentBooking, setCurrentBooking, l
             console.log(error);
         }
     }
-    console.log(currentBooking);
     return (
         <>
             <Modal show={show} onHide={handleClose} id="report-modal" centered backdrop="static"

@@ -70,6 +70,8 @@ const likeStoryNotification = async (req, res) => {
         const {
             storyId,
         } = req.body;
+        console.log(userId);
+        console.log(storyId);
         const notification = await NotificationService.likeStoryNotification(storyId, userId);
         res.status(201).json(notification);
     } catch (error) {
@@ -137,6 +139,22 @@ const reportBookingNotification = async (req, res) => {
         res.status(500).json(error)
     }
 }
+const donateNotification = async (req, res) => {
+    try {
+        const userId = req.payload.id;
+        const {
+            playerId,
+            money
+        } = req.body;
+        const notification = await NotificationService.donateNotification(userId, playerId, money);
+        console.log(notification);
+        res.status(201).json(notification);
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+
 export default {
     sendReplyStoryNotification,
     sendPostStoryNotification,
@@ -147,5 +165,6 @@ export default {
     sendBookingNotification,
     processBookingNotification,
     completeBookingNotification,
-    reportBookingNotification
+    reportBookingNotification,
+    donateNotification
 }

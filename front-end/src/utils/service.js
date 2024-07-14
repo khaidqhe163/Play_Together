@@ -8,7 +8,6 @@ export const formatDate = (date) => {
 }
 
 export const formatMoney = (money) => {
-    console.log("money:", money);
     if (!money) return ""
     let USDollar = new Intl.NumberFormat('en-VN', {
         style: 'currency',
@@ -22,6 +21,5 @@ export function getId(url) {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     const returnUrl = (match && match[2].length === 11) ? match[2] : null;
-    console.log("https://www.youtube.com/embed/" + returnUrl + "?si=9pDPUza4DZNbAzK1");
     return "https://www.youtube.com/embed/" + returnUrl
 }

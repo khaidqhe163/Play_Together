@@ -31,11 +31,10 @@ const AdminLogin = () => {
             setShowToast(true);
             setEmail('');
             setPassword('');
-            console.log(response.data);
             dispatch(setAdminInfo(response.data.user));
             dispatch(setAccessTokenAdmin(response.data.accessToken))
             dispatch(setRefreshTokenAdmin(response.data.refreshToken))
-            nav("/admin/users")
+            nav("/play-together/admin/dashboard")
         } catch (error) {
             setError('Tài khoản hoặc mật khẩu không chính xác !!!');
         }

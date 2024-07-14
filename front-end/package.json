@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@antv/g2plot": "^2.4.31",
+    "@antv/util": "^3.3.7",
     "@fontsource/poppins": "^5.0.14",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",

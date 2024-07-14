@@ -107,7 +107,7 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
       if (category === "1") {
         // Người mới: Tạo tài khoản trong vòng 1 tháng trở lại đây
         const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        oneMonthAgo.setDate(oneMonthAgo.getDate() - 7);
         query.createdAt = { $gte: oneMonthAgo };
       }
     }
@@ -115,6 +115,16 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
     console.log(query);
 
     let players = await User.find(query).populate('player.serviceType').exec();
+    players = await Promise.all(players.map(async player => {
+      const comments = await Comment.find({ userId: player._id, bookingId: { $exists: true } }).exec();
+      const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.rating, 0) / comments.length;
+      player = player.toObject();
+      player.averageStars = averageStars;
+      player.amountVote = comments.length;
+      return player;
+    }
+    ));
+
 
     if (gameName) {
       players = players.filter(user =>
@@ -125,7 +135,7 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
     }
 
     if (category === "2") {
-      // Hot player: Số giờ thuê cao nhất và tỉ lệ hoàn thành cao trong 7 ngày
+      // Hot player: Số giờ thuê cao nhất và tỉ lệ hoàn thành cao hơn 50% trong 7 ngày
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -143,19 +153,20 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
 
         return player;
       }));
-
+      players = players.filter(player => player.completionRate >= 0.5);
       players = players.sort((a, b) => b.score - a.score);
+
     } else if (category === "3") {
       // Vip player: Số giờ thuê cao nhất từ trước đến giờ và đánh giá từ 4.5 đến 5.0
       players = await Promise.all(players.map(async player => {
 
-        const comments = await Comment.find({ userId: player._id, storyId: null }).exec();
-        // console.log(comments);
-        const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.rating, 0) / comments.length;
-        player = player.toObject();
+        // const comments = await Comment.find({ userId: player._id, bookingId: { $exists: true } }).exec();
+        // const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.rating, 0) / comments.length;
+        // player = player.toObject();
         player.totalHiredHours = player.player.totalHiredHour;
 
-        player.averageStars = averageStars;
+        // player.averageStars = averageStars;
+        // player.amountVote = comments.length;
 
         return player;
       }));
@@ -172,7 +183,15 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
 const getPlayerByServiceId = async (serviceId) => {
   try {
     let players = await User.find({}).populate("player.serviceType").exec();
-
+    players = await Promise.all(players.map(async player => {
+      const comments = await Comment.find({ userId: player._id, bookingId: { $exists: true } }).exec();
+      const averageStars = comments.length === 0 ? 5.0 : comments.reduce((acc, comment) => acc + comment.rating, 0) / comments.length;
+      player = player.toObject();
+      player.averageStars = averageStars;
+      player.amountVote = comments.length;
+      return player;
+    }
+    ));
     players = players.filter(
       (user) =>
         user.player &&

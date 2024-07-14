@@ -15,12 +15,10 @@ function PiRight({ id, setOpenHire, player, setShowDonate }) {
                 return;
             }
             const chat = await api.get(`/api/conversation/get-conversation-by-id/${userInfo._id}/${id}`)
-            console.log(chat.data);
             if (chat.data) {
                 setNewChat(chat.data)
             }
             else {
-                console.log(player);
                 const member = [
                     {
                         "_id": id,
@@ -38,7 +36,6 @@ function PiRight({ id, setOpenHire, player, setShowDonate }) {
                     type: 2,
                     members: member
                 }
-                console.log(newConversation);
                 setNewChat(newConversation)
             }
 
@@ -51,8 +48,8 @@ function PiRight({ id, setOpenHire, player, setShowDonate }) {
     return (
         <div className='pi-right pi'>
             <button onClick={handleOpenChat} disabled={userInfo?._id === player?._id}>Chat</button>
-            <button onClick={() => { userInfo === null ? nav("/login") : setShowDonate() }} disabled={userInfo?._id === player?._id}>Donate</button>
-            <button onClick={() => { userInfo === null ? nav("/login") : setOpenHire() }}>Thuê</button>
+            <button onClick={() => { userInfo === null ? nav("/play-together/login") : setShowDonate() }} disabled={userInfo?._id === player?._id}>Donate</button>
+            <button onClick={() => { userInfo === null ? nav("/play-together/login") : setOpenHire() }}>Thuê</button>
         </div>
     )
 }

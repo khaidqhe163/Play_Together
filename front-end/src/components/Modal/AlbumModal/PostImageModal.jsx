@@ -74,7 +74,6 @@ function PostImageModal({ show, close, setListPost, listPost, setShowCreate, off
                 }
             });
             toast.success('Đăng ảnh thành công');
-            console.log(response.data); // handle response from server if needed
             dispatch(setUserInformation(response.data))
             close();
         } catch (error) {

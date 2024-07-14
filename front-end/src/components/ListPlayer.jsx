@@ -17,12 +17,11 @@ export default function ListPlayer(props) {
             const response = await fetch(baseUrl + url);
             const data = await response.json();
             if(userInfo!=null){
-                const newD = data.filter(d=>d._id !== userInfo._id);
+                const newD = data.filter(d=>d._id !== userInfo._id && !userInfo.blockedUsers.includes(d._id));
                 setPlayers(newD);
             }else{
                 setPlayers(data);
             }
-            console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -37,7 +36,7 @@ export default function ListPlayer(props) {
             {players.length > 0 ? <>
                 {players.map((p, i) => (
                     <div className='col-md-3 my-3' key={i}>
-                        <Link className='text-decoration-none' to={`/player-profile/${p._id}`}>
+                        <Link className='text-decoration-none' to={`/play-together/player-profile/${p._id}`}>
                             <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
                                 <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
                                 <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>
@@ -67,7 +66,7 @@ export default function ListPlayer(props) {
 
                                         </div>
                                         <div className='w-50 d-flex align-items-center justify-content-end'>
-                                            <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>4.8 <span>(355)</span></p>
+                                            <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>{p.averageStars.toFixed(1)} <span>({p.amountVote})</span></p>
                                         </div>
                                     </div>
                                 </div>

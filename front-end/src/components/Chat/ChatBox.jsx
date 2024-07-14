@@ -110,7 +110,6 @@ function ChatBox() {
 
     useEffect(() => {
         if (newMessage === null) return;
-
         const newConvers = conversations?.some((c) => {
             return c._id === newMessage?.message?.conversationId
         })
@@ -118,7 +117,7 @@ function ChatBox() {
             getConversationById(newMessage?.senderId);
         }
         else {
-            if (newMessage?.senderId !== userInfo._id && currentConver._id === newMessage?.message?.conversationId) {
+            if (newMessage?.senderId !== userInfo._id && currentConver._id === newMessage?.message?.conversationId && openChatCanvas === true) {
                 const updateConversation = conversations?.find((c) => {
                     return c._id === newMessage.message.conversationId;
                 })
@@ -129,7 +128,8 @@ function ChatBox() {
                     })
                     setConversation([updateConversation, ...filterConvers])
                 }
-            } else {
+            } else if ((newMessage?.senderId !== userInfo._id && currentConver._id === newMessage?.message?.conversationId && openChatCanvas === false)
+                || (newMessage?.senderId !== userInfo._id && currentConver._id !== newMessage?.message?.conversationId)) {
                 const updateConversation = conversations?.find((c) => {
                     return c._id === newMessage.message.conversationId;
                 })

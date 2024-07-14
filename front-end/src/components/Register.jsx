@@ -25,7 +25,6 @@ function Register() {
             pwRules.push(3);
         }
         setPwRule(pwRules);
-        console.log(value);
     }
     const validate = values => {
         const errors = {};
@@ -80,9 +79,8 @@ function Register() {
     const handleSubmit = async (values) => {
         try {
             await axios.post("http://localhost:3008/api/user/register", values);
-            console.log("success");
             toast('Đăng ký thành công!')
-            nav('/login')
+            nav('/play-together/login')
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast(error.response.data.message)
@@ -98,8 +96,8 @@ function Register() {
                 <LoginLeft />
                 <Col md={6} id='login-rightside'>
                     <div id='login-header'>
-                        <button onClick={() => { nav('/login') }}>Đăng nhập</button>
-                        <Link to="/">
+                        <button onClick={() => { nav('/play-together/login') }}>Đăng nhập</button>
+                        <Link to="/play-together">
                             <div id='login-close'>
                                 <ion-icon name="close-outline"></ion-icon>
                             </div>

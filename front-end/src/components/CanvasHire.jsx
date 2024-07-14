@@ -33,7 +33,6 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
 
     const fetchData = async (selectedDate, playerId) => {
         try {
-            console.log(playerId);
             const s = await api.get(`/api/schedule/user?date=${selectedDate}&pid=${playerId}`);
             setScheduleUpdate(s.data);
         } catch (error) {
@@ -41,7 +40,6 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             // toast('Có lỗi trong việc lấy lịch!');
         }
     };
-    console.log(scheduleUpdate);
     useEffect(() => {
         if (player?._id) {
             const newPlayerId = player._id;
@@ -91,7 +89,6 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                     ...prevDetails,
                     hours: []
                 }));
-                console.log(s.data.aBooking);
                 fetchData(schedule);
                 toast(s.data.message);
                 setTimeout(handleClose, 2000);
@@ -155,12 +152,19 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     };
 
     const checkMoreThanNow = (dateSchedule, start) => {
-        const dateS = new Date(dateSchedule).getTime() + (start * 60 * 60 * 1000);
+        const date = new Date(dateSchedule);
+        const dateS = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+        console.log(dateSchedule);
+        console.log(start);
+        console.log(dateS);
+        console.log(today.getTime());
         const dateN = today.getTime() >= dateS ? true : false;
+        console.log(dateN);
         return dateN;
     };
 
     const renderScheduleButtons = () => {
+        console.log("today", today);
         return scheduleUpdate.map(slot => {
             const slotTime = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
             const isSelected = bookingDetails.hours.includes(slot._id);
