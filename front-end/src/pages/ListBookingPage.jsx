@@ -17,9 +17,8 @@ function ListBookingPage() {
   const access = useSelector(accessToken);
   const nav = useNavigate();
 
-  console.log("access", access);
   const handleClick = (number) => {
-    nav('/list-booking/' + number);
+    nav('/play-together/list-booking/' + number);
   };
 
   return (

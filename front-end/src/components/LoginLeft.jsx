@@ -10,7 +10,7 @@ function LoginLeft() {
                 <IoGameController />
             </IconContext.Provider>
             <h2>Play Together</h2>
-            <img src='photo-1-1641312073214533330565.webp' alt='error' id='login-img' />
+            <img src='/login.webp' alt='error' id='login-img' />
         </Col>
     )
 }

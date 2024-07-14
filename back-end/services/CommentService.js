@@ -54,7 +54,7 @@ const reviewPlayer = async (commentor, userId, rating, content, bookingId) => {
 
 const getReviewPlayer = async (playerId) => {
     try {
-        const reviews = await Comment.find({ userId: playerId, rating: { $exists: true } }).populate("commentor", "username avatar")
+        const reviews = await Comment.find({ userId: playerId, rating: { $exists: true } }).populate("commentor", "username avatar").sort({ createdAt: -1 })
         return reviews
     } catch (error) {
         throw new Error('Error updating comment');

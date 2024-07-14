@@ -1,22 +1,40 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { baseUrl } from '../../utils/service';
-
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { setUserInformation } from '../../features/userSlice';
+import { setAccessToken } from '../../features/accessTokenSlice';
+import { setRefreshToken } from '../../features/refreshTokenSlice';
+import { setAdminInfo } from '../../features/adminInfoSlice';
+import { setAccessTokenAdmin } from '../../features/accessTokenAdminSlice';
+import { setRefreshTokenAdmin } from '../../features/refreshTokenAdminSlice';
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [showToast, setShowToast] = useState(false); // State để điều khiển hiển thị toast
-
+    const nav = useNavigate();
+    const dispatch = useDispatch();
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post(baseUrl + 'api/admin/login', { email, password });
+            const response = await axios.post(baseUrl + 'api/user/login-admin', { email, password },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                }
+            );
             setShowToast(true);
             setEmail('');
             setPassword('');
-            
+            dispatch(setAdminInfo(response.data.user));
+            dispatch(setAccessTokenAdmin(response.data.accessToken))
+            dispatch(setRefreshTokenAdmin(response.data.refreshToken))
+            nav("/play-together/admin/dashboard")
         } catch (error) {
             setError('Tài khoản hoặc mật khẩu không chính xác !!!');
         }

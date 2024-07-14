@@ -17,7 +17,7 @@ const getAllReports = async () => {
         const reports = await Report.find()
             .populate('reportReason', 'content type')
             .populate('owner', 'avatar username email')
-            .populate('storyId', 'path thumbnail')
+            .populate('storyId', 'status path thumbnail')
         return reports
     } catch (error) {
         throw new Error("Error fetch comments: " + error.message);
@@ -114,10 +114,10 @@ const processReportPlayer = async (reportId, complaint, reason, playerId) => {
 const processReportBooking = async (reportId, complaint, bookingId) => {
     try {
         let report;
-        console.log("booking", bookingId);
         if (complaint === 0) {
             report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Đơn bị từ chối" }, { new: true })
                 .populate("owner", "username").populate("reportReason", "content")
+            const booking = await Booking.updateOne({ _id: bookingId }, { $set: { reported: false } })
         }
         if (complaint === 1) {
             report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Hoàn tiền" }, { new: true })

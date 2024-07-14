@@ -44,7 +44,6 @@ const ModalBanUser = ({ show, players, onCancel, setPlayers, player }) => {
                     reason: reason.current.value
                 })
             }
-            console.log(res.data);
             const newPlayer = players.map((m) => {
                 if (m._id === res.data._id) return res.data;
                 else return m;

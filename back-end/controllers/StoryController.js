@@ -122,6 +122,18 @@ const getUserStories = async (req, res) => {
     }
 }
 
+const banOrUnbanStory = async (req, res) => {
+    try {
+        const id = req.body.id;
+        const updatedStory = await StoryService.banOrUnbanStory(id);
+        res.status(200).json({updatedStory});
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+}
+
 export default {
     getStories,
     createStory,
@@ -130,5 +142,6 @@ export default {
     likeOrUnlikeStory,
     viewStory,
     getUserStories, // Add this line
+    banOrUnbanStory,
 }
 

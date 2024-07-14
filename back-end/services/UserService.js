@@ -25,7 +25,8 @@ const register = async (email, username, dateOfBirth, gender, password) => {
 const findUserByEmail = async (email) => {
   try {
     const existEmail = await User.findOne({ email: email }).exec();
-    return existEmail._doc;
+    if (existEmail) return existEmail._doc
+    return null;
   } catch (error) {
     throw new Error(error.toString());
   }
@@ -86,7 +87,6 @@ const getAllPlayer = async () => {
   }
 };
 
-
 const searchPlayerByCriteria = async (gender, category, playerName, gameName, priceRange) => {
   try {
     const query = { 'player.duoSettings': true };
@@ -107,7 +107,7 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
       if (category === "1") {
         // Người mới: Tạo tài khoản trong vòng 1 tháng trở lại đây
         const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        oneMonthAgo.setDate(oneMonthAgo.getDate() - 7);
         query.createdAt = { $gte: oneMonthAgo };
       }
     }
@@ -153,7 +153,6 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
 
         return player;
       }));
-      console.log(players);
       players = players.filter(player => player.completionRate >= 0.5);
       players = players.sort((a, b) => b.score - a.score);
 
@@ -394,6 +393,15 @@ const banUser = async (userId) => {
 const getFollowerById = async (id) => {
   try {
     const followers = await User.find({ followers: id });
+    const users = await User.findOne({ _id: id });
+    let returnUsers
+    if (followers && followers.length !== 0 && users.blockedUsers && users.blockedUsers.length !== 0) {
+      returnUsers = followers.filter((b) => {
+        return users.blockedUsers.includes(b._id) === false;
+      })
+      return returnUsers;
+    }
+
     console.log(followers);
     return followers;
   } catch (error) {
@@ -475,6 +483,16 @@ const deleteImageToAlbum = async (index, userId) => {
     throw new Error(error.toString());
   }
 };
+
+const getAll = async () => {
+  try {
+      const users = await User.find({})
+      return users
+  } catch (error) {
+      throw new Error(error.toString());
+  }
+}
+
 export default {
   register,
   findUserByEmail,
@@ -501,4 +519,5 @@ export default {
   unban,
   addImagesToAlbum,
   deleteImageToAlbum,
+  getAll,
 };

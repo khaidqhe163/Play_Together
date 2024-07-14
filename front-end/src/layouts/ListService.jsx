@@ -32,7 +32,6 @@ export default function ListService() {
             const response = await fetch(baseUrl + 'api/service');
             const data = await response.json();
             setListService(data);
-            console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -42,7 +41,6 @@ export default function ListService() {
     }, []);
     // console.log(`serviceId: ${service._id}`);
     const handleClickService = (s) => {
-        console.log(s);
         if (service) {
             const checked = service._id === s._id;
             if (checked) {

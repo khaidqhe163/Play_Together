@@ -63,7 +63,6 @@ function StoryCreation({ show, close, stories, setStory }) {
                     }
                 }
             );
-            console.log(story);
             const updateStory = [story.data.data, ...stories];
             const notification = await api.post("/api/notification/send-post-story-notification", {
                 storyId: story.data.data._id

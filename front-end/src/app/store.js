@@ -7,7 +7,9 @@ import serviceReducer from '../features/serviceSlice'
 import socketSlice from '../features/socketSlice'
 import onlineUserSlice from '../features/onlineUserSlice'
 import navReducer from "../features/navSlice"
-
+import adminReducer from '../features/adminInfoSlice'
+import accessTokenAdminSlice from '../features/accessTokenAdminSlice'
+import refreshTokenAdminSlice from '../features/refreshTokenAdminSlice'
 export default configureStore ({
     reducer: {
         user: userReducer,
@@ -17,6 +19,9 @@ export default configureStore ({
         service: serviceReducer,
         socket: socketSlice,
         onlineUser: onlineUserSlice,
-        navigation: navReducer    
+        navigation: navReducer,
+        admin: adminReducer,
+        accessTokenAdmin: accessTokenAdminSlice,
+        refreshTokenAdmin: refreshTokenAdminSlice     
     }
 })

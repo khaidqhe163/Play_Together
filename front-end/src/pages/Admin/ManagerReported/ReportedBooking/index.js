@@ -23,7 +23,6 @@ const ReportedBooking = () => {
         getReports();
     }, [])
 
-    console.log(reports);
     return (
         <LayoutAdmin>
             <ContainerPage>

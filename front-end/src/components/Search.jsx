@@ -21,7 +21,7 @@ export default function Search() {
     category: '',
     playerName: '',
     gameName: '',
-    priceRange: [10000, 1000000]
+    priceRange: [5000, 1000000]
   });
 
   const [listSearch, setListSearch] = useState([]);
@@ -34,7 +34,6 @@ export default function Search() {
       [name]: value
     }));
   };
-  console.log(formData);
 
   const rangeSelector = (event, newValue) => {
     setFormData(prevState => ({
@@ -49,7 +48,6 @@ export default function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
 
     fetch('http://localhost:3008/api/user/search-player', {
       method: 'POST',
@@ -150,9 +148,9 @@ export default function Search() {
                       </Typography>
                       <Slider
                         value={formData.priceRange}
-                        min={10000}
+                        min={5000}
                         max={1000000}
-                        step={10000}
+                        step={1000}
                         onChange={rangeSelector}
                         valueLabelDisplay="auto"
                         valueLabelFormat={(value) => `${value.toLocaleString()}`}
@@ -176,7 +174,7 @@ export default function Search() {
             <div className='row'>
               {listSearch.map(p => (
                 <div className='col-md-3 mb-4'>
-                  <Link className='text-decoration-none' to={`/player-profile/${p._id}`}>
+                  <Link className='text-decoration-none' to={`/play-together/player-profile/${p._id}`}>
                     <div className="card rounded-4 relative" style={{ boxShadow: "0px 0px 0px 0px #0000", backgroundColor: "#20202b" }}>
                       <img className="card-img-top rounded-top-4 object-cover object-center" style={{ height: "20em", aspectRatio: 1 / 1 }} src={baseUrl + p.avatar} alt="Card image cap" />
                       <div className='absolute bg-bgButton rounded-4 px-2 py-1 right-2 bottom-36'>

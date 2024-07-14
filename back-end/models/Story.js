@@ -1,3 +1,4 @@
+import bodyParser from "body-parser"
 import mongoose, { Schema } from "mongoose"
 
 const story = new Schema({
@@ -9,7 +10,8 @@ const story = new Schema({
     },
     like: [Schema.Types.ObjectId],
     view: [Schema.Types.ObjectId],
-    thumbnail: { type: String, required: true }
+    thumbnail: { type: String, required: true },
+    status: {type: Boolean, required: false}
 }, {
     timestamps: true,
 })

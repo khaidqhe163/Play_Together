@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 const items = [
   {
-    key: '/admin/dashboard',
+    key: '/play-together/admin/dashboard',
     icon: <PieChartOutlined />,
     label: 'DashBoard',
   },
@@ -21,23 +21,18 @@ const items = [
     label: 'Tài khoản',
     children: [
       {
-        key: '/admin/users',
+        key: '/play-together/admin/users',
         label: 'Tất cả tài khoản',
       },
       {
-        key: '/admin/users/players',
+        key: '/play-together/admin/users/players',
         label: 'Tài khoản đã đăng ký',
       },
       {
-        key: '/admin/users/banned',
+        key: '/play-together/admin/users/banned',
         label: 'Tài khoản đã bị ban',
       },
     ],
-  },
-  {
-    key: '/admin/stories',
-    icon: <ContainerOutlined />,
-    label: 'Story',
   },
   {
     key: 'reports',
@@ -45,21 +40,21 @@ const items = [
     label: 'Báo cáo',
     children: [
       {
-        key: '/admin/reports/stories',
+        key: '/play-together/admin/reports/stories',
         label: 'Video bị báo cáo',
       },
       {
-        key: '/admin/reports/users',
+        key: '/play-together/admin/reports/users',
         label: 'Người dùng bị báo cáo',
       },
       {
-        key: '/admin/reports/bookings',
+        key: '/play-together/admin/reports/bookings',
         label: 'Booking bị báo cáo',
       },
     ],
   },
   {
-    key: '/admin/report-reason',
+    key: '/play-together/admin/report-reason',
     icon: <ContainerOutlined />,
     label: 'Report Reason',
   },
@@ -84,7 +79,7 @@ const LeftSide = () => {
         items={items}
         onClick={e => handleChangeMenu(e.key)}
         selectedKeys={location?.pathname}
-        defaultSelectedKeys={['/admin/users']}
+        defaultSelectedKeys={['play-together/admin/dashboard']}
         defaultOpenKeys={['users']}
       />
     </HomeContainer>

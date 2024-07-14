@@ -4,8 +4,8 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const result = await AdminService.loginAdmin(email, password);
-        res.cookie("RefreshToken", result.refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
-        res.cookie("AccessToken", result.accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
+        res.cookie("RefreshAdminToken", result.refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
+        res.cookie("AccessAdminToken", result.accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json({
             admin: result.admin,
             accessToken: result.accessToken,

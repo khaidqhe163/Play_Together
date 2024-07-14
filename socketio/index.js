@@ -26,7 +26,6 @@ io.on("connection", (socket) => {
         const user = onlineUsers.find((o) => {
             return o.userId === message.receiverId;
         })
-        console.log(user);
         if (user) {
             io.to(user.socketId).emit("getNewMessagePrivate", message)
         }

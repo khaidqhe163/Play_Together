@@ -23,7 +23,6 @@ const ReportedUser = () => {
         getReports();
     }, [])
 
-    console.log(reports);
     return (
         <LayoutAdmin>
             <ContainerPage>

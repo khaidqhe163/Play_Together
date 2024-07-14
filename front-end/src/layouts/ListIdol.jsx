@@ -106,7 +106,13 @@ export default function ListIdol({ stories, setStory }) {
         // Fetch hot players
         const fetchHotPlayers = async () => {
             try {
-                const response = await api.get('http://localhost:3008/api/user/hot-players');
+                const response = await api.post('http://localhost:3008/api/user/search-player', {
+                    gender: '',
+                    category: "2",
+                    playerName: '',
+                    gameName: '',
+                    priceRange: [5000, 1000000]
+                });
                 setHotPlayers(response.data);
             } catch (error) {
                 console.error('Error fetching hot players:', error);
@@ -121,7 +127,7 @@ export default function ListIdol({ stories, setStory }) {
             try {
                 const response = await api.get('http://localhost:3008/api/user/followed-players', {
                     headers: {
-                        Authorization: `Bearer ${userInfo.token}`,  
+                        Authorization: `Bearer ${userInfo.token}`,
                     },
                 });
                 setFollowedPlayers(response.data);
@@ -129,19 +135,19 @@ export default function ListIdol({ stories, setStory }) {
                 console.error('Error fetching followed players:', error);
             }
         };
-    
+
         fetchFollowedPlayers();
     }, [userInfo]);
-    
+
     return (
         <div style={containerStyle}>
             {!userInfo ? (
                 // Nếu chưa đăng nhập
                 <div>
-                    <p style={headingStyle}>Top người chơi</p>
+                    <p style={headingStyle}>Hot player</p>
                     <div style={storyContainerStyle}>
                         {hotPlayers.map((player) => (
-                            <Link key={player?._id} to={`/player-profile/${player?._id}`} className="text-decoration-none">
+                            <Link key={player?._id} to={`/play-together/player-profile/${player?._id}`} className="text-decoration-none">
                                 <div
                                     style={storyStyle}
                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = storyHoverStyle.backgroundColor}
@@ -172,11 +178,11 @@ export default function ListIdol({ stories, setStory }) {
                     <div>
                         <p style={headingStyle}>Theo dõi</p>
                         <div style={storyContainerStyle}>
-                        {followedPlayers.length === 0 ? (
+                            {followedPlayers.length === 0 ? (
                                 <p style={{ color: "#bcbcbc" }}>Bạn chưa theo dõi ai</p>
                             ) : (
                                 followedPlayers.map((player) => (
-                                    <Link key={player._id} to={`/player-profile/${player._id}`} className="text-decoration-none">
+                                    <Link key={player._id} to={`/play-together/player-profile/${player._id}`} className="text-decoration-none">
                                         <div
                                             style={storyStyle}
                                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = storyHoverStyle.backgroundColor}
@@ -197,5 +203,5 @@ export default function ListIdol({ stories, setStory }) {
             <StoryCreation show={openModalCreate} close={handleCloseOpenCreate} stories={stories} setStory={setStory} />
         </div>
     );
-    
+
 }

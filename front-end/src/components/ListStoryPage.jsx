@@ -4,16 +4,6 @@ import api from '../utils/axiosConfig.js';
 
 export default function ListStoryPage({ stories, setOpenModalStory, setCurrentStory }) {
 
-    // const handleViewStory = async () => {
-    //     try {
-    //       const res = await api.post('/api/stories/viewStory/' + stories?._id)
-    //       if (res?.isError) return 
-    //     } catch (error) {
-    //       console.log(error);
-    //     } finally { 
-    //     }
-    // }
-
     return (
         <>
             <div className="row">
