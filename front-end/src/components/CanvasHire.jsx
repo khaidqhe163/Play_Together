@@ -152,13 +152,11 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     };
 
     const checkMoreThanNow = (dateSchedule, start) => {
-        const date = new Date(dateSchedule);
-        const dateS = new Date(date.getTime() + 7 * 60 * 60 * 1000);
-        console.log(dateSchedule);
-        console.log(start);
-        console.log(dateS);
-        console.log(today.getTime());
-        const dateN = today.getTime() >= dateS ? true : false;
+        const date = new Date(dateSchedule).getTime();
+        const dateS = new Date(today.getTime() + (7 * 60 * 60 * 1000)).getTime();
+        const dateX = date + (start * 60 * 60 * 1000);
+        
+        const dateN = dateS >= dateX ? true : false;
         console.log(dateN);
         return dateN;
     };

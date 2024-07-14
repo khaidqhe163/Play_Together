@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUserInformation, userInfor } from '../features/userSlice';
 import axios from '../utils/axiosConfig';
 
-
 export default function PlayerSchedule() {
     const dispatch = useDispatch();
     const today = new Date();
@@ -78,16 +77,37 @@ export default function PlayerSchedule() {
         }
     };
 
-    const generateTimeOptions = () => {
+    const generateTimeOptions = (minTime = 0) => {
         const options = [];
-        for (let hour = 0; hour < 24; hour++) {
-            options.push({ value: hour, label: `${hour}:00` });
-            options.push({ value: hour + 0.5, label: `${hour}:30` });
+        if (minTime === 0) {
+            const currentHour = today.getHours();
+            const currentMinute = today.getMinutes();
+
+            for (let hour = 0; hour < 24; hour++) {
+                if (hour > currentHour || (hour === currentHour && 0 > currentMinute)) {
+                    options.push({ value: hour, label: `${hour}:00` });
+                }
+                if (hour > currentHour || (hour === currentHour && 30 > currentMinute)) {
+                    options.push({ value: hour + 0.5, label: `${hour}:30` });
+                }
+            }
+        } else {
+            for (let hour = 0; hour < 24; hour++) {
+                const hourWithHalf = hour + 0.5;
+                if (hour >= minTime) {
+                    options.push({ value: hour, label: `${hour}:00` });
+                }
+                if (hourWithHalf >= minTime) {
+                    options.push({ value: hourWithHalf, label: `${hour}:30` });
+                }
+            }
         }
+
         return options;
     };
 
     const timeOptions = generateTimeOptions();
+    const endTimeOptions = generateTimeOptions(parseFloat(schedule.startTime) + 0.5);
 
     const formatTime = (time) => {
         const hours = Math.floor(time);
@@ -120,7 +140,6 @@ export default function PlayerSchedule() {
         return buttons;
     };
 
-
     const [isOnlySchedule, setOnlySchedule] = useState(false);
     const userInfo = useSelector(userInfor);
 
@@ -146,7 +165,6 @@ export default function PlayerSchedule() {
         }
     };
 
-
     return (
         <div className="row mt-4">
             <div className='col-12'>
@@ -170,83 +188,87 @@ export default function PlayerSchedule() {
                     </label>
                 </div>
             </div>
-            {isOnlySchedule && (<><div className='col-10 mx-auto'>
-                <form onSubmit={handleSubmit} className='mt-14'>
-                    <div className="mb-3">
-                        <label className="form-label">Ngày duo</label>
-                        <div className="d-flex">
-                            {renderWeekButtons()}
-                        </div>
+            {isOnlySchedule && (
+                <>
+                    <div className='col-10 mx-auto'>
+                        <form onSubmit={handleSubmit} className='mt-14'>
+                            <div className="mb-3">
+                                <label className="form-label">Ngày duo</label>
+                                <div className="d-flex">
+                                    {renderWeekButtons()}
+                                </div>
+                            </div>
+                            <div className="row mb-3">
+                                <div className="col">
+                                    <label htmlFor="startTime" className="form-label">Giờ bắt đầu</label>
+                                    <select
+                                        className="form-select"
+                                        id="startTime"
+                                        name="startTime"
+                                        value={schedule.startTime}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="">Chọn giờ bắt đầu</option>
+                                        {timeOptions.map((option, index) => (
+                                            <option key={index} value={option.value}>{option.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="col">
+                                    <label htmlFor="endTime" className="form-label">Giờ kết thúc</label>
+                                    <select
+                                        className="form-select"
+                                        id="endTime"
+                                        name="endTime"
+                                        value={schedule.endTime}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="">Chọn giờ kết thúc</option>
+                                        {endTimeOptions.map((option, index) => (
+                                            <option key={index} value={option.value}>{option.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" className="btn btn-primary mt-20">Lưu lịch</button>
+                        </form>
                     </div>
-                    <div className="row mb-3">
-                        <div className="col">
-                            <label htmlFor="startTime" className="form-label">Giờ bắt đầu</label>
-                            <select
-                                className="form-select"
-                                id="startTime"
-                                name="startTime"
-                                value={schedule.startTime}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">Chọn giờ bắt đầu</option>
-                                {timeOptions.map((option, index) => (
-                                    <option key={index} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="col">
-                            <label htmlFor="endTime" className="form-label">Giờ kết thúc</label>
-                            <select
-                                className="form-select"
-                                id="endTime"
-                                name="endTime"
-                                value={schedule.endTime}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">Chọn giờ kết thúc</option>
-                                {timeOptions.map((option, index) => (
-                                    <option key={index} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                        </div>
+                    <div className='col-10 mx-auto'>
+                        <h5 className="text-white mt-16">Lịch Duo của tôi</h5>
                     </div>
-                    <button type="submit" className="btn btn-primary mt-20">Lưu lịch</button>
-                </form>
-            </div>
-                <div className='col-10 mx-auto'>
-                    <h5 className="text-white mt-16">Lịch Duo của tôi</h5>
-                </div>
-                <div className="mt-4 col-10 mx-auto">
-                    <table className="min-w-full bg-gray-800 text-white text-center">
-                        <thead>
-                            <tr>
-                                <th className="px-6 py-3">Date</th>
-                                <th className="px-6 py-3">Giờ bắt đầu</th>
-                                <th className="px-6 py-3">Giờ kết thúc</th>
-                                <th className="px-6 py-3">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {scheduleUpdate.map((s, index) => (
-                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
-                                    <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
-                                    <td className="px-6 py-4">{formatTime(s.start)} </td>
-                                    <td className="px-6 py-4">{formatTime(s.end)} </td>
-                                    <td className="px-6 py-4">
-                                        {s.bookingId === null ? <button
-                                            className="btn btn-danger"
-                                            onClick={() => handleDelete(s._id)}
-                                        >
-                                            Xoá
-                                        </button> : null}
-                                    </td>
+                    <div className="mt-4 col-10 mx-auto">
+                        <table className="min-w-full bg-gray-800 text-white text-center">
+                            <thead>
+                                <tr>
+                                    <th className="px-6 py-3">Date</th>
+                                    <th className="px-6 py-3">Giờ bắt đầu</th>
+                                    <th className="px-6 py-3">Giờ kết thúc</th>
+                                    <th className="px-6 py-3">Hành động</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div></>)}
+                            </thead>
+                            <tbody>
+                                {scheduleUpdate.map((s, index) => (
+                                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}>
+                                        <td className="px-6 py-4">{format(new Date(s.date), 'dd-MM-yyyy')}</td>
+                                        <td className="px-6 py-4">{formatTime(s.start)} </td>
+                                        <td className="px-6 py-4">{formatTime(s.end)} </td>
+                                        <td className="px-6 py-4">
+                                            {s.bookingId === null ? <button
+                                                className="btn btn-danger"
+                                                onClick={() => handleDelete(s._id)}
+                                            >
+                                                Xoá
+                                            </button> : null}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </>
+            )}
         </div>
     );
 }
