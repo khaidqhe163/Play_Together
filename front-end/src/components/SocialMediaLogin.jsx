@@ -23,8 +23,6 @@ function SocialMediaLogin() {
                 },
                 withCredentials: true
             })
-            console.log("==========================");
-            console.log(user.data);
             dispatch(setUserInformation(user.data.user));
             dispatch(setAccessToken(user.data.accessToken));
             nav("/");

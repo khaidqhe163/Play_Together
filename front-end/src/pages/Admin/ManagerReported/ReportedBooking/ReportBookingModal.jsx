@@ -71,12 +71,10 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
                 complaint: complaint,
                 reportId: report._id
             });
-            console.log(res.status);
             const notification = await api.post("/api/notification/report-booking-notification", {
                 bookingId: report.bookingId,
                 complaint: complaint
             })
-            console.log(notification.data);
             if (0 === Number(complaint)) {
                 socket.emit("sendNotification", notification.data)
             } else {
@@ -121,8 +119,6 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
     };
 
     const formatEndTime = (d, unit) => {
-        console.log(unit);
-        console.log(d);
         const t = new Date(d).getTime();
         const end = t + (unit * 30 * 60 * 1000);
         const endTime = new Date(end);
@@ -136,8 +132,6 @@ function ReportBookingModal({ lgShow, setLgShow, id, reports, setReports }) {
         }
         return `${hours}:${minutes}`;
     };
-
-    console.log(report);
     return (
         <Modal
             size="lg"

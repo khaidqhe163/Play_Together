@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import './DonateModal.css';
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { formatMoney } from '../../../utils/service';
 import api from '../../../utils/axiosConfig';
 import { toast } from 'react-toastify';
+import { SocketContext } from '../../../context/SocketContext';
 
 function DonateModal({ showDonate, handleClose, player }) {
     const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function DonateModal({ showDonate, handleClose, player }) {
         money: 0,
         content: "",
     });
-
+    const { socket } = useContext(SocketContext);
     useEffect(() => {
         if (userInfo && player) {
             setObjDonate({
@@ -59,14 +60,14 @@ function DonateModal({ showDonate, handleClose, player }) {
             if (response.status === 201) {
                 toast(response.data.message);
                 dispatch(setUserInformation(response.data.restUser));
+                const notification = await api.post("/api/notification/donate-notification", objDonate)
+                socket.emit("sendNotification", notification.data);
                 handleClose();
             }
-
         } catch (error) {
             console.log(error.message);
         }
     };
-    console.log(objDonate);
 
     return (
         <>

@@ -147,12 +147,13 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
             const res = await api.post('/api/stories/likedOrUnlikedStory/' + open._id)
             if (res?.isError) return
             onOk()
+            console.log(likedStatus);
             if (!likedStatus) {
-                console.log("zoday");
                 const likeNotify = await api.post("/api/notification/like-story-notification", {
                     storyId: open._id
                 })
                 socket.emit("sendNotification", likeNotify.data)
+                console.log(likeNotify.data);
             }
             setLikedStatus(!likedStatus)
             setLikesCount((prevCount) => likedStatus ? prevCount - 1 : prevCount + 1);
@@ -189,6 +190,8 @@ const StoryModal = ({ open, onCancel, setCurrentStory, stories, onViewStory, onO
                     author: data.userId,
                     commentId: res.data._id
                 })
+                console.log("zoday 1");
+                console.log(commentNotify.data);
                 socket.emit("sendNotification", commentNotify.data)
             }
             if (data.reply && isEdit === false) {

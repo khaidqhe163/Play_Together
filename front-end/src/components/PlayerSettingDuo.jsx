@@ -20,7 +20,6 @@ export default function PlayerSettingDuo() {
   const handleUpdate = async () => {
     try {
       const response = await axios.put('/api/user/update-duo-setting', { isDuoEnabled });
-      console.log('Duo setting updated:', response.data);
     } catch (error) {
       console.error('Error updating Duo setting:', error);
     }

@@ -24,7 +24,6 @@ function TableBooking({ endPoint }) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [player, setPlayer] = useState(null);
-    console.log(endPoint);
     const [showReport, setShowReport] = useState(false);
     const handleCloseReport = () => setShowReport(false);
     const handleShowReport = () => setShowReport(true);
@@ -34,14 +33,11 @@ function TableBooking({ endPoint }) {
             const s = await api.get(`/api/booking/${endPoint}`);
             setListBooking(s.data);
             setLoading(false);
-            console.log(s.data);
         } catch (error) {
             setLoading(false);
             console.log(error);
         }
     };
-
-    console.log(listBooking);
 
     useEffect(() => {
         // if(userInfo == null) return;
@@ -118,7 +114,6 @@ function TableBooking({ endPoint }) {
         try {
             const status = 1;
             const bookingUpdate = await api.put(`/api/booking/booking-online`, { idBooking, status });
-            console.log(bookingUpdate);
             setUpdateBooking(bookingUpdate.data.u);
             const notification = await api.post(`/api/notification/process-booking-notification`, {
                 userId: bookingUpdate.data.u.userId,

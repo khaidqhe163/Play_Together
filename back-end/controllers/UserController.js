@@ -38,7 +38,6 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const user = await UserService.findUserByEmail(req.body.email);
-        console.log(user);
         if (!user) {
             return res.status(401).json({
                 message: "Email chưa được đăng ký"
@@ -70,7 +69,6 @@ const login = async (req, res) => {
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
         const { password, ...returnUser } = user;
-        console.log(returnUser);
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
         res.cookie("AccessToken", accessToken, { maxAge: 1000 * 60 * 60, httpOnly: true });
         res.status(200).json({
@@ -288,7 +286,6 @@ const updatePlayerInfo = async (req, res) => {
             videoHightlight,
             achivements
         } = req.body
-        console.log(req.body);
         const device = JSON.parse(deviceStatus);
         const service = JSON.parse(serviceType)
         const achivement = JSON.parse(achivements)
@@ -377,7 +374,6 @@ const updateUser = async (req, res) => {
         if (newAvatar) {
             fs.unlinkSync(req.body.avatar)
         }
-        console.log(req.body.avatar);
         res.status(200).json(updatedUser);
     } catch (error) {
         res.status(500).json({ message: error.toString() });
@@ -428,7 +424,6 @@ const banUser = async (req, res) => {
             userId
         } = req.body;
         let endDate;
-        console.log(complaint);
         switch (complaint) {
             case 1:
                 endDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
@@ -447,40 +442,39 @@ const banUser = async (req, res) => {
         }
 
         const player = await UserService.getPlayerById(userId);
-        // const transporter = nodemailer.createTransport({
-        //     host: "smtp.gmail.com",
-        //     port: 587,
-        //     secure: false, // Use `true` for port 465, `false` for all other ports
-        //     auth: {
-        //         user: "khaidqhe163770@fpt.edu.vn",
-        //         pass: "iyrdweksgcrjokhw",
-        //     },
-        // });
-        // const handlebarOptions = {
-        //     viewEngine: {
-        //         partialsDir: path.resolve('./templates/'),
-        //         defaultLayout: false,
-        //     },
-        //     viewPath: path.resolve('./templates/'),
-        // };
-        // transporter.use('compile', hbs(handlebarOptions))
-        // const mail = {
-        //     from: '"Play Together" <khaidqhe163770@fpt.edu.vn>',
-        //     to: `${player.email}`,
-        //     subject: 'Report player',
-        //     template: 'reportplayer',
-        //     context: {
-        //         description: reason,
-        //     },
-        //     attachments: [{
-        //         filename: 'warning-email.png',
-        //         path: './public/warning-email.png',
-        //         cid: 'emailbackground' //same cid value as in the html img src
-        //     }]
-        // }
-        // transporter.sendMail(mail);
-        // console.log("Send End");
-        console.log(endDate);
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // Use `true` for port 465, `false` for all other ports
+            auth: {
+                user: "khaidqhe163770@fpt.edu.vn",
+                pass: "iyrdweksgcrjokhw",
+            },
+        });
+        const handlebarOptions = {
+            viewEngine: {
+                partialsDir: path.resolve('./templates/'),
+                defaultLayout: false,
+            },
+            viewPath: path.resolve('./templates/'),
+        };
+        transporter.use('compile', hbs(handlebarOptions))
+        const mail = {
+            from: '"Play Together" <khaidqhe163770@fpt.edu.vn>',
+            to: `${player.email}`,
+            subject: 'Cấm tài khoản',
+            template: 'reportplayer',
+            context: {
+                description: reason,
+            },
+            attachments: [{
+                filename: 'warning-email.png',
+                path: './public/warning-email.png',
+                cid: 'emailbackground' //same cid value as in the html img src
+            }]
+        }
+        transporter.sendMail(mail);
+        console.log("Send End");
         const user = await BanService.banUser(userId, endDate, reason);
         res.status(200).json(user)
     } catch (error) {
@@ -536,7 +530,6 @@ const addImagesToAlbum = async (req, res) => {
     try {
         const userId = req.payload.id;
         const images = req.files.map(file => file.path);
-        console.log(images);
         const updatedUser = await UserService.addImagesToAlbum(userId, images);
         res.status(200).json(updatedUser);
     } catch (error) {
@@ -563,7 +556,6 @@ const deleteImageToAlbum = async (req, res) => {
     try{
         const image = req.body.image;
         const userId = req.payload.id;
-console.log(image);
        
         const user = await UserService.deleteImageToAlbum(image, userId)
         fs.unlinkSync(image)

@@ -25,7 +25,6 @@ function Register() {
             pwRules.push(3);
         }
         setPwRule(pwRules);
-        console.log(value);
     }
     const validate = values => {
         const errors = {};
@@ -80,7 +79,6 @@ function Register() {
     const handleSubmit = async (values) => {
         try {
             await axios.post("http://localhost:3008/api/user/register", values);
-            console.log("success");
             toast('Đăng ký thành công!')
             nav('/login')
         } catch (error) {

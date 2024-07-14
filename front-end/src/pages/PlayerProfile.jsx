@@ -44,9 +44,6 @@ function PlayerProfile() {
     const handleShowReport = () => setShowReport(true);
     useEffect(() => {
         const checkOnline = onlineUsers?.some(o => o.userId === id);
-        console.log(checkOnline);
-        console.log("onineUsers", onlineUsers);
-        console.log("id", id);
         setPlayerOnline(checkOnline)
     }, [onlineUsers]);
 
@@ -82,13 +79,11 @@ function PlayerProfile() {
             if (isNaN(a)) setAge("")
             else
                 setAge(currentTime.getFullYear() - dob.getFullYear())
-            console.log(author?.value?.followers.includes(id));
             setFollowing(player.followers.includes(author.value?._id)); // Set the initial follow status
         } catch (error) {
             console.log(error);
         }
     }
-    console.log(onlineUsers);
 
     const followPlayer = async () => {
         try {

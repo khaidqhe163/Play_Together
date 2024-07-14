@@ -74,7 +74,6 @@ function ReportPlayer({ show, handleClose, id }) {
         setIsOpen(true);
     };
     const closeModal = () => {
-        console.log("click here");
         setIsOpen(false);
     };
     const previousImage = (e) => {
@@ -92,7 +91,6 @@ function ReportPlayer({ show, handleClose, id }) {
     };
 
     const handleSubmit = async () => {
-        console.log("helelo");
         try {
             const form = new FormData();
             for (let i = 0; i < files.length; i++) {
@@ -102,7 +100,6 @@ function ReportPlayer({ show, handleClose, id }) {
             form.append("type", type.current.value);
             form.append("description", des.current.value);
             form.append("playerId", id);
-            console.log(files);
             const report = await api.post("/api/report/report-player", form, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

@@ -22,7 +22,6 @@ export default function ListPlayer(props) {
             }else{
                 setPlayers(data);
             }
-            console.log(data);
         } catch (error) {
             console.log(error);
         }

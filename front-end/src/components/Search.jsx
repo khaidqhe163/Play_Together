@@ -32,7 +32,6 @@ export default function Search() {
       [name]: value
     }));
   };
-  console.log(formData);
 
   const rangeSelector = (event, newValue) => {
     setFormData(prevState => ({
@@ -47,7 +46,6 @@ export default function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
 
     fetch('http://localhost:3008/api/user/search-player', {
       method: 'POST',
@@ -58,7 +56,6 @@ export default function Search() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('Success:', data);
         setListSearch(data);
         setHasSearched(true);
       })

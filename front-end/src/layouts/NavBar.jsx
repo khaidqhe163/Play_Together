@@ -69,7 +69,6 @@ export default function NavBar() {
     const getNotification = async () => {
       try {
         const notify = await api.get("api/notification");
-        console.log(notify.data);
         setNotification(notify.data)
         const unread = notify.data.filter((n) => {
           return n.isRead === false;

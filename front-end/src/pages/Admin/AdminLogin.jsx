@@ -31,7 +31,6 @@ const AdminLogin = () => {
             setShowToast(true);
             setEmail('');
             setPassword('');
-            console.log(response.data);
             dispatch(setAdminInfo(response.data.user));
             dispatch(setAccessTokenAdmin(response.data.accessToken))
             dispatch(setRefreshTokenAdmin(response.data.refreshToken))

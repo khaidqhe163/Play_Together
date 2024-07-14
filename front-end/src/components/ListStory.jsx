@@ -16,7 +16,6 @@ export default function ListStory() {
             const response = await fetch(baseUrl + 'api/stories');
             const data = await response.json();
             setStories(data);
-            console.log(data);
         } catch (error) {
             console.log(error);
         }

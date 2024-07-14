@@ -17,7 +17,6 @@ const ModalDeleteComment = ({open, onCancel, onOk, setLoading}) => {
         }
     }
 
-    console.log("open: ", open);
 
     const footer = () => (
         <div className="d-flex justify-content-center">

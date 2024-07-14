@@ -44,7 +44,9 @@ const sendCommentStoryNotification = async (storyId, author, commentor, commentI
         const comments = await CommentService.getAllCommentsByStoryId(storyId);
         let notification;
         console.log(comments.length);
-        if (comments.length <= 1) {
+        const existNotify = await Notification.findOne({ storyId: storyId, type: "comment story" });
+        console.log(existNotify);
+        if (comments.length <= 1 || !existNotify) {
             const content = "đã bình luận trong story của bạn";
             const url = `/stories/${storyId}/${commentId}`
             const type = "comment story"
@@ -81,17 +83,15 @@ const readNotification = async (id) => {
 const likeStoryNotification = async (storyId, userId) => {
     try {
         const story = await Story.findOne({ _id: storyId }).exec();
-        let existNotification;
-        if (story.like.length === 1) existNotification = await Notification.findOne({ storyId, type: "like story" })
-        let notification;
+        let existNotification = await Notification.findOne({ storyId, type: "like story" })
         let content;
-        if (story.like.length === 1 && !existNotification) {
+        let notification;
+        if (!existNotification) {
             content = "đã thích story của bạn";
             const url = `/stories/${storyId}`
             const type = "like story"
             notification = (await Notification.create({ userId: userId, receivers: [story.author], type, content, url, storyId, sendDate: Date.now() })).populate("userId", ["username", "avatar"])
         } else {
-            console.log("zoday");
             if (story.like.length === 1)
                 content = "đã thích story của bạn"
             else content = `và ${story.like.length - 1} người khác đã thích story của bạn`
@@ -163,6 +163,16 @@ const completeBookingNotification = async (userId, bookingId, playerId) => {
         throw new Error(error)
     }
 }
+const donateNotification = async (userId, playerId, money) => {
+    try {
+        const content = "đã donate cho bạn " + money;
+        const type = "donate"
+        const notification = (await Notification.create({ userId: userId, receivers: playerId, type, content, sendDate: Date.now() })).populate("userId", ["username", "avatar"])
+        return notification
+    } catch (error) {
+        throw new Error(error)
+    }
+}
 
 const reportBookingNotification = async (adminId, complaint, bookingId) => {
     try {
@@ -207,5 +217,6 @@ export default {
     sendBookingNotification,
     processBookingNotification,
     completeBookingNotification,
-    reportBookingNotification
+    reportBookingNotification,
+    donateNotification
 }

@@ -46,7 +46,7 @@ function NotificationBox({ notification, setUnreadNotification, setNotifyBox }) 
             {
                 notification?.map((n) => {
                     return (
-                        <Link to={n.url} style={{ textDecoration: "none" }}>
+                        <Link to={n.url} style={{ textDecoration: "none" }} onClick={() => setNotifyBox(false)}>
                             <div className="p-20 d-flex notification">
                                 <img src={baseUrl + n?.userId.avatar} alt="error" style={{ width: "48px", height: "48px", borderRadius: "50%", marginRight: "10px" }} />
                                 <div className="text-white mb-0 ml-5" style={{ width: "90%" }}>

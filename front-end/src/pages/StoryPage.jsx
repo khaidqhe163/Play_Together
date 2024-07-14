@@ -5,7 +5,7 @@ import ListStoryPage from "../components/ListStoryPage";
 import StoryModal from "../components/Modal/StoryModal";
 import api from "../utils/axiosConfig";
 import { Spin } from "antd";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function StoryPage() {
   const [stories, setStories] = useState(null);
@@ -13,12 +13,13 @@ export default function StoryPage() {
   const [currentStory, setCurrentStory] = useState(null);
   const [openModalStory, setOpenModalStory] = useState(false);
   const { storyId, commentId } = useParams();
+  const nav = useNavigate();
   useEffect(() => {
     getListStories();
   }, []);
 
   useEffect(() => {
-    // console.log(storyId);
+    console.log("change story");
     if (stories && storyId) {
       let index = null;
       for (let i = 0; i < stories.length; i++) {
@@ -27,17 +28,13 @@ export default function StoryPage() {
           break;
         }
       }
-      console.log("index", index);
       if (index !== null) setCurrentStory(index);
     }
-  }, [stories]);
+  }, [stories, storyId]);
 
 
   useEffect(() => {
-    console.log(currentStory);
-    console.log(openModalStory);
     if (currentStory !== null && !openModalStory) {
-      console.log("zoday");
       setOpenModalStory(true);
     }
   }, [currentStory]);
@@ -45,6 +42,7 @@ export default function StoryPage() {
   useEffect(() => {
     if (!openModalStory) {
       setCurrentStory(null);
+      nav("/stories")
     }
   }, [openModalStory]);
 
@@ -81,7 +79,6 @@ export default function StoryPage() {
     } finally {
     }
   };
-  console.log(openModalStory);
   return (
     <div className="container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain">
       <div

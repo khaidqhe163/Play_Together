@@ -28,7 +28,6 @@ const PlayerAlbum = () => {
                 }
             });
             toast.success('Đăng ảnh thành công');
-            console.log(response.data); // handle response from server if needed
         } catch (error) {
             console.error('Error uploading images:', error);
             toast.error('Đăng ảnh thất bại');

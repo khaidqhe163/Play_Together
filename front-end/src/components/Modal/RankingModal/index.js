@@ -18,8 +18,6 @@ const RankingModal = ({open, onCancel}) => {
         setActiveTab(key);
     };
 
-    console.log(activeTab);
-    console.log(title);
     return (  
        <div style={{zIndex: '1000'}}>
             <CustomModal

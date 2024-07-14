@@ -76,7 +76,6 @@ function ChatBoxComunity() {
             console.log(error);
         }
     }
-    console.log("hello2");
     return (
         <Stack direction='vertical' className='chatbox' gap={2}>
             <Stack direction='vertical' gap={3} ref={chatbox} style={{ overflow: "auto" }}>

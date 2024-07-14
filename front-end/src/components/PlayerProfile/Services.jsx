@@ -64,7 +64,6 @@ function Services({ player, setOpenHire, setShowDonate }) {
         if (total === Math.floor(total))
             return `0.0`
     }
-    console.log(reviews);
     return (
         <div className='player-infor-container'>
             <div className='pi-left pi'>

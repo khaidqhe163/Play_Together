@@ -41,7 +41,6 @@ function ResetPassword() {
             pwRules.push(3);
         }
         setPwRule(pwRules);
-        console.log(value);
     }
     const validate = values => {
         const errors = {};
@@ -78,13 +77,11 @@ function ResetPassword() {
                 email: email,
                 ...values
             });
-            console.log("success");
             nav('/login')
         } catch (error) {
             alert('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
         }
     }
-    console.log(email);
     return (
         <Container fluid>
             <Row sx={{ backgroundColor: 'red' }}>
