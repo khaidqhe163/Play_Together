@@ -17,7 +17,7 @@ const getAllReports = async () => {
         const reports = await Report.find()
             .populate('reportReason', 'content type')
             .populate('owner', 'avatar username email')
-            .populate('storyId', 'path thumbnail')
+            .populate('storyId', 'status path thumbnail')
         return reports
     } catch (error) {
         throw new Error("Error fetch comments: " + error.message);

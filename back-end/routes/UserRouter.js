@@ -99,5 +99,7 @@ UserRouter.post('/album', jwt.verifyAccessToken,uploadAlbum.array('images', 10),
 UserRouter.put('/delete-image', jwt.verifyAccessToken, UserController.deleteImageToAlbum);
 
 
+UserRouter.post('/getAll', UserController.getAll)
+
 
 export default UserRouter

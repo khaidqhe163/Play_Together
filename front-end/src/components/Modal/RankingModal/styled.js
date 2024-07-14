@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const RankingComponent = styled.div`
     width: 100%;
-    height: 1000px;
+    height: 850px;
 
     .title {
         text-align: center;

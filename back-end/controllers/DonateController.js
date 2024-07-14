@@ -18,6 +18,28 @@ const createDonate = async (req, res) => {
     }
 };
 
+const getAll = async (req, res) => {
+    try {
+        const donates = await DonateService.getAll();
+        res.status(200).json(donates);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+const getTopDonorsByPeriod = async (req, res) => {
+    const { period } = req.params;
+
+    try {
+        const topDonors = await DonateService.getTopDonorsByPeriod(period);
+        res.status(200).json(topDonors);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 export default {
-    createDonate
+    createDonate,
+    getAll,
+    getTopDonorsByPeriod,
 }

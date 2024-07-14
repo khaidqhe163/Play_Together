@@ -483,6 +483,16 @@ const deleteImageToAlbum = async (index, userId) => {
     throw new Error(error.toString());
   }
 };
+
+const getAll = async () => {
+  try {
+      const users = await User.find({})
+      return users
+  } catch (error) {
+      throw new Error(error.toString());
+  }
+}
+
 export default {
   register,
   findUserByEmail,
@@ -509,4 +519,5 @@ export default {
   unban,
   addImagesToAlbum,
   deleteImageToAlbum,
+  getAll,
 };

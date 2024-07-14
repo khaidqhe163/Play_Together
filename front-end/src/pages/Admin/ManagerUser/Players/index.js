@@ -39,6 +39,7 @@ const Players = () => {
                                 <tr>
                                     <th className="px-6 py-3">Tài khoản</th>
                                     <th className="px-6 py-3">Trạng thái</th>
+                                    <th className="px-6 py-3">Giới tính</th>
                                     <th className="px-6 py-3">Ngày tạo</th>
                                     <th className="px-6 py-3">Khóa tài khoản</th>
                                 </tr>
@@ -63,7 +64,8 @@ const Players = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-3">{i % 2 === 0 ? <span className="onl">Online</span> : <span className="off">Offline</span>}</td>
+                                            <td className="px-6 py-3">{p?.player ? <span className="onl">Player</span> : <span className="off">Người dùng</span>}</td>
+                                            <td className="px-6 py-3" style={{fontWeight: 600, fontSize: '12px'}}> {p?.gender} </td>
                                             <td className="px-6 py-3 created-user">{dayjs(p?.createdAt).format('DD-MM-YYYY')}</td>
                                             <td className="px-6 py-3">
                                                 <Button className="ml-20" type="primary" danger onClick={() => { setCurrentPlayer(i); setOpenModal(true) }}>

@@ -31,5 +31,7 @@ StoryRouter.post('/viewStory/:id', jwt.verifyAccessToken, StoryController.viewSt
 
 StoryRouter.get('/user/:userId', StoryController.getUserStories);
 
+StoryRouter.put('/banOrUnbanStory', StoryController.banOrUnbanStory);
+
 
 export default StoryRouter;

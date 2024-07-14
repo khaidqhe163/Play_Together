@@ -8,6 +8,17 @@ const createPayment = async ({id, total}) => {
         throw new Error(error);
     }
 }
+
+const getAll = async () => {
+    try {
+        const allPlayment = await Payment.find({});
+        return allPlayment;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 export default {
     createPayment,
+    getAll,
 }
