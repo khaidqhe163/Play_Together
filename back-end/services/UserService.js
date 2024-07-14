@@ -143,8 +143,9 @@ const searchPlayerByCriteria = async (gender, category, playerName, gameName, pr
 
               return player;
           }));
-
+          // console.log(players);
           players = players.sort((a, b) => b.score - a.score);
+          // console.log(players);
       }else if (category === "3") {
           // Vip player: Số giờ thuê cao nhất từ trước đến giờ và đánh giá từ 4.5 đến 5.0
           players = await Promise.all(players.map(async player => {

@@ -59,6 +59,15 @@ const getReviewPlayer = async (playerId) => {
     } catch (error) {
         throw new Error('Error updating comment');
     }
+};
+
+const getAllCommentAboutPlayer = async (playerId) => {
+    try {
+        const comments = await Comment.find({ userId: playerId, bookingId: { $exists: true } }).exec();
+        return comments;
+    } catch (error) {
+        throw new Error('Error updating comment');
+    }
 }
 export default {
     getAllCommentsByStoryId,
@@ -66,5 +75,6 @@ export default {
     deleteComment,
     updateComment,
     reviewPlayer,
-    getReviewPlayer
+    getReviewPlayer,
+    getAllCommentAboutPlayer,
 }

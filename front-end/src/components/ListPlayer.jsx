@@ -67,7 +67,7 @@ export default function ListPlayer(props) {
 
                                         </div>
                                         <div className='w-50 d-flex align-items-center justify-content-end'>
-                                            <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>4.8 <span>(355)</span></p>
+                                            <FaStar size={20} color='#8d68f2' /><p className='font-medium m-0' style={{ color: "#ADADAD" }}>{p.averageStars.toFixed(1)} <span>({p.amountVote})</span></p>
                                         </div>
                                     </div>
                                 </div>
