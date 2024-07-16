@@ -379,6 +379,28 @@ const getTopBookers = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
+};
+
+const getBookingDirectLasterOfPlayer = async (req, res) => {
+    try {
+        const now = new Date().getTime();
+        let checkedTime = true;
+        const playerId = req.payload.id;
+        const aBooking = await BookingService.getBookingDirectLasterOfPlayer(playerId);
+        // const tB = new Date(aBooking.createdAt).getTime();
+        // console.log("aBooking: ",aBooking);
+        // console.log("timeBooking: " + new Date(tB + (aBooking.unit * 30 * 60 * 1000)));
+        // console.log("now: " + new Date());
+        if (aBooking) {
+            const timeBooking = new Date(aBooking.createdAt).getTime() + (aBooking.unit * 30 * 60 * 1000);
+            console.log("timeBooking: " + timeBooking);
+            console.log("now: " + now);
+            checkedTime = now >= timeBooking;
+        }
+        res.status(200).json(checkedTime);
+    } catch (error) {
+        res.status(500).json(error)
+    }
 }
 
 export default {
@@ -394,4 +416,5 @@ export default {
     getBookingByPlayerId,
     getAll,
     getTopBookers,
+    getBookingDirectLasterOfPlayer,
 }

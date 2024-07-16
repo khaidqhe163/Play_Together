@@ -150,9 +150,25 @@ export default function PlayerSchedule() {
     }, [userInfo]);
 
     const toggleDuo = async () => {
-        const newIsOnlySchedule = !isOnlySchedule;
-        setOnlySchedule(newIsOnlySchedule);
-        await handleUpdate(newIsOnlySchedule);
+        const checked = await checkBookingDirectLaster();
+        // console.log("echo: ",checked);
+        if(checked){
+            const newIsOnlySchedule = !isOnlySchedule;
+            setOnlySchedule(newIsOnlySchedule);
+            await handleUpdate(newIsOnlySchedule);
+        }else{
+            toast("Bạn không thể thiết lập lịch Duo khi đang có lịch online! ❌");
+        }
+    };
+
+    const checkBookingDirectLaster = async () => {
+        try {
+            const response = await api.get('/api/booking/booking-laster');
+            // console.log('Checked b: ', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error get booking direct lasters: ', error);
+        }
     };
 
     const handleUpdate = async (newIsOnlySchedule) => {
