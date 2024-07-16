@@ -132,7 +132,7 @@ export default function Search() {
               </div>
               <div className='col-md-2'>
                 <div className='relative h-full w-40'>
-                  {formData.priceRange[0] !== 10000 || formData.priceRange[1] !== 1000000 ? (
+                  {formData.priceRange[0] !== 5000 || formData.priceRange[1] !== 1000000 ? (
                     <button type="button" className="rounded-4 text-white bg-bgButton h-full w-full" onClick={handleClickRange}>
                       {formData.priceRange[0].toLocaleString()} - {formData.priceRange[1].toLocaleString()}
                     </button>
