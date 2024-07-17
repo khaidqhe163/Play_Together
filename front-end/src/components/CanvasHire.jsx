@@ -45,7 +45,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     };
     useEffect(() => {
         if (player?._id) {
-            const newPlayerId = player._id;
+            // const newPlayerId = player._id;
             if (!player.player.onlySchedule) {
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
@@ -60,12 +60,30 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                     bookingStatus: 1,
                     price: (player?.player?.rentCost || 0) * prevDetails.hours.length
                 }));
-                if (newPlayerId) {
-                    fetchData(schedule, newPlayerId);
-                }
+                // if (newPlayerId) {
+                //     fetchData(schedule, newPlayerId);
+                // }
             }
         }
     }, [player, bookingDetails.unit, schedule, bookingDetails.hours]);
+
+    useEffect(() => {
+        const newPlayerId = player?._id;
+        if (newPlayerId) {
+            fetchData(schedule, newPlayerId);
+        }
+    }, [player, schedule]);
+
+    const handleRestBooking = () => {
+        setBookingDetails((prevDetails) => ({
+            ...prevDetails,
+            playerId: player?._id,
+            unit: 0,
+            bookingStatus: 1,
+            price: 0,
+            hours: [],
+        }));
+    };
 
     const handleUnitChange = (newUnit) => {
         setBookingDetails((prevDetails) => ({
@@ -100,9 +118,10 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             console.log(error);
             if (error.response.status === 400) {
                 toast(error.response.data.error);
+                if (player.player.onlySchedule) handleRestBooking(); fetchData(schedule, player?._id); setTimeout(handleClose, 2000);;
             } else if (error.response.status === 406) {
                 toast(error.response.data.error);
-                setTimeout(()=>{
+                setTimeout(() => {
                     nav('/play-together');
                 }, 3000);
             } else {
@@ -170,7 +189,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     };
 
     const renderScheduleButtons = () => {
-        console.log("today", today);
+        // console.log("today", today);
         return scheduleUpdate.map(slot => {
             const slotTime = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
             const isSelected = bookingDetails.hours.includes(slot._id);

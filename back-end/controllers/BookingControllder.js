@@ -86,11 +86,17 @@ const createBookingT = async (req, res) => {
     try {
         const { playerId, price, hours, unit, bookingStatus } = req.body;
         const checkDuo = await UserService.checkDuoPlayer(playerId);
+        const results = await Promise.all(
+            hours.map(async (h) => {
+                return await ScheduleService.checkScheduleBookingExist(h);
+            })
+        );
+        const exists = results.some(result => result === true);
         if (!checkDuo) {
-            return res.status(406).json({ error: 'Hiện tại người chơi đang tắt chế độ duo. Xin lỗi về sự bất tiện này. 😓'});
+            return res.status(406).json({ error: 'Hiện tại người chơi đang tắt chế độ duo. Xin lỗi về sự bất tiện này. 😓' });
         }
+        if(exists) return res.status(400).json({error: "Khung giờ hiện tại của người chơi này đã có người đặt. Xin hãy chọn khung giờ khác. ❌"});
         const userId = req.payload.id;
-        // console.log(req.body);
         const aUser = await UserService.findUserById(userId);
         const aPlayer = await UserService.getPlayerById(playerId);
         aUser.accountBalance -= parseInt(price);
