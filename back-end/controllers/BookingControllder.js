@@ -85,6 +85,10 @@ const createBooking = async (req, res) => {
 const createBookingT = async (req, res) => {
     try {
         const { playerId, price, hours, unit, bookingStatus } = req.body;
+        const checkDuo = await UserService.checkDuoPlayer(playerId);
+        if (!checkDuo) {
+            return res.status(406).json({ error: 'Hiện tại người chơi đang tắt chế độ duo. Xin lỗi về sự bất tiện này. 😓'});
+        }
         const userId = req.payload.id;
         // console.log(req.body);
         const aUser = await UserService.findUserById(userId);

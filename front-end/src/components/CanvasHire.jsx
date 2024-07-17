@@ -9,12 +9,15 @@ import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
 import { format, startOfWeek, addDays } from 'date-fns';
 import { SocketContext } from '../context/SocketContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export default function CanvasHire({ showHire, handleClose, player, snav, setSnav, playerOnline }) {
 
     const today = new Date();
 
     const dispatch = useDispatch();
+
+    const nav = useNavigate();
 
     const userInfo = useSelector(userInfor);
 
@@ -97,6 +100,11 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             console.log(error);
             if (error.response.status === 400) {
                 toast(error.response.data.error);
+            } else if (error.response.status === 406) {
+                toast(error.response.data.error);
+                setTimeout(()=>{
+                    nav('/play-together');
+                }, 3000);
             } else {
                 toast(error.toString());
             }
@@ -155,7 +163,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         const date = new Date(dateSchedule).getTime();
         const dateS = new Date(today.getTime() + (7 * 60 * 60 * 1000)).getTime();
         const dateX = date + (start * 60 * 60 * 1000);
-        
+
         const dateN = dateS >= dateX ? true : false;
         console.log(dateN);
         return dateN;
