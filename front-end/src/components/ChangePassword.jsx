@@ -3,6 +3,7 @@ import { userInfor } from '../features/userSlice';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
+
 export default function ChangePassword() {
   const userInfo = useSelector(userInfor);
   const [changePassword, setChangePassword] = useState({
@@ -12,52 +13,66 @@ export default function ChangePassword() {
   });
 
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   useEffect(() => {
     setChangePassword({
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
-    })
-  }, [userInfo])
+    });
+  }, [userInfo]);
+
+  const validatePassword = (password) => {
+    const lengthCheck = password.length >= 8;
+    const specialCharCheck = /[?.$%]/.test(password);
+    const numberCheck = /\d/.test(password);
+    const upperCaseCheck = /[A-Z]/.test(password);
+    return lengthCheck && specialCharCheck && numberCheck && upperCaseCheck;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setChangePassword({
       ...changePassword,
       [name]: value,
     });
-    if (name === "confirmPassword") {
+
+    if (name === "newPassword") {
+      const newPasswordValid = validatePassword(value);
+      setIsPasswordValid(newPasswordValid);
+    } else if (name === "confirmPassword") {
       setPasswordMatch(changePassword.newPassword === value);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (changePassword.newPassword !== changePassword.confirmPassword) {
-      toast("Mật khẩu không khớp!");
-    } else {
-      try {
-        const update = await api.put("/api/user/change-password", changePassword);
-        if (update.status === 200) {
-          toast(update.data.message);
-          setChangePassword(prev => ({
-            ...prev,
-            currentPassword: "",
-            newPassword: "",
-            confirmPassword: "",
-          }));
-        }
-      } catch (error) {
-        console.log(error);
-        if (error.response.status === 400) {
-          toast(error.response.data.error);
-        } else {
-          toast('Có lỗi trong việc đổi mật khẩu!');
-        }
+    if (!isPasswordValid) {
+      toast("Mật khẩu không hợp lệ!");
+      return;
+    }
+    try {
+      const update = await api.put("/api/user/change-password", changePassword);
+      if (update.status === 200) {
+        toast(update.data.message);
+        setChangePassword(prev => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        }));
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 400) {
+        toast(error.response.data.error);
+      } else {
+        toast('Có lỗi trong việc đổi mật khẩu!');
       }
     }
   };
-  console.log(userInfo);
+
   return (
     <>
       <h1 className="text-white">Đổi mật khẩu</h1>
@@ -98,6 +113,7 @@ export default function ChangePassword() {
         <button
           onClick={handleSubmit}
           className="bg-[#7b47ff] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          disabled={!isPasswordValid&&!passwordMatch}
         >
           Đổi mật khẩu
         </button>
