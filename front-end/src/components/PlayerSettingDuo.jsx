@@ -27,7 +27,7 @@ export default function PlayerSettingDuo() {
       }
       const response = await axios.put('/api/user/update-duo-setting', { isDuoEnabled });
       dispatch(setUserInformation(response.data));
-      toast("Cập nhật thành công")
+      toast("Cập nhật thành công. ✔️")
     } catch (error) {
       console.error('Error updating Duo setting:', error);
     }

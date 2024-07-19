@@ -101,6 +101,18 @@ const updateBookingIdOfSchedule = async (bookingId, scheduleId) => {
 };
 
 
+const checkScheduleBookingExist = async (scheduleId) => {
+    try {
+        const scheduleBookingExist = await Schedule.findOne({ _id: scheduleId}).exec();
+        if(scheduleBookingExist.bookingId !== null){
+            return true;
+        }
+        return false;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 
 
 
@@ -112,4 +124,5 @@ export default {
     deleteScheduleById,
     updateBookingIdOfSchedule,
     getScheduleById,
+    checkScheduleBookingExist,
 };

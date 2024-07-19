@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { baseUrl } from '../../../utils/service';
+import './Thank.css';
 
 const Thank = ({ show, handleClose, setIsPaid}) => {
     
     return (
         <Modal show={show} style={{ minWidth: '100%' }} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Cảm ơn bạn</Modal.Title>
+                <Modal.Title>Xin cảm ơn!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className='text-center'>

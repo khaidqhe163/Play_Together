@@ -79,28 +79,48 @@ export default function PlayerSchedule() {
 
     const generateTimeOptions = (minTime = 0) => {
         const options = [];
-        if (minTime === 0) {
-            const currentHour = today.getHours();
-            const currentMinute = today.getMinutes();
+        if (schedule.date === format(today, 'yyyy-MM-dd')) {
+            if (minTime === 0) {
+                const currentHour = today.getHours();
+                const currentMinute = today.getMinutes();
 
-            for (let hour = 0; hour < 24; hour++) {
-                if (hour > currentHour || (hour === currentHour && 0 > currentMinute)) {
-                    options.push({ value: hour, label: `${hour}:00` });
+                for (let hour = 0; hour < 24; hour++) {
+                    if (hour > currentHour || (hour === currentHour && 0 > currentMinute)) {
+                        options.push({ value: hour, label: `${hour}:00` });
+                    }
+                    if (hour > currentHour || (hour === currentHour && 30 > currentMinute)) {
+                        options.push({ value: hour + 0.5, label: `${hour}:30` });
+                    }
                 }
-                if (hour > currentHour || (hour === currentHour && 30 > currentMinute)) {
-                    options.push({ value: hour + 0.5, label: `${hour}:30` });
+            } else {
+                for (let hour = 0; hour < 24; hour++) {
+                    const hourWithHalf = hour + 0.5;
+                    if (hour >= minTime) {
+                        options.push({ value: hour, label: `${hour}:00` });
+                    }
+                    if (hourWithHalf >= minTime) {
+                        options.push({ value: hourWithHalf, label: `${hour}:30` });
+                    }
                 }
             }
         } else {
-            for (let hour = 0; hour < 24; hour++) {
-                const hourWithHalf = hour + 0.5;
-                if (hour >= minTime) {
+            if (minTime === 0) {
+                for (let hour = 0; hour < 24; hour++) {
                     options.push({ value: hour, label: `${hour}:00` });
+                    options.push({ value: hour + 0.5, label: `${hour}:30` });
                 }
-                if (hourWithHalf >= minTime) {
-                    options.push({ value: hourWithHalf, label: `${hour}:30` });
+            } else {
+                for (let hour = 0; hour < 24; hour++) {
+                    const hourWithHalf = hour + 0.5;
+                    if (hour >= minTime) {
+                        options.push({ value: hour, label: `${hour}:00` });
+                    }
+                    if (hourWithHalf >= minTime) {
+                        options.push({ value: hourWithHalf, label: `${hour}:30` });
+                    }
                 }
             }
+
         }
 
         return options;
@@ -150,9 +170,25 @@ export default function PlayerSchedule() {
     }, [userInfo]);
 
     const toggleDuo = async () => {
-        const newIsOnlySchedule = !isOnlySchedule;
-        setOnlySchedule(newIsOnlySchedule);
-        await handleUpdate(newIsOnlySchedule);
+        const checked = await checkBookingDirectLaster();
+        // console.log("echo: ",checked);
+        if (checked) {
+            const newIsOnlySchedule = !isOnlySchedule;
+            setOnlySchedule(newIsOnlySchedule);
+            await handleUpdate(newIsOnlySchedule);
+        } else {
+            toast("Bạn không thể thiết lập lịch Duo khi đang có lịch online! ❌");
+        }
+    };
+
+    const checkBookingDirectLaster = async () => {
+        try {
+            const response = await api.get('/api/booking/booking-laster');
+            // console.log('Checked b: ', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error get booking direct lasters: ', error);
+        }
     };
 
     const handleUpdate = async (newIsOnlySchedule) => {

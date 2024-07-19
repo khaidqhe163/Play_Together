@@ -9,12 +9,15 @@ import { toast } from 'react-toastify';
 import api from '../utils/axiosConfig';
 import { format, startOfWeek, addDays } from 'date-fns';
 import { SocketContext } from '../context/SocketContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export default function CanvasHire({ showHire, handleClose, player, snav, setSnav, playerOnline }) {
 
     const today = new Date();
 
     const dispatch = useDispatch();
+
+    const nav = useNavigate();
 
     const userInfo = useSelector(userInfor);
 
@@ -42,7 +45,7 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     };
     useEffect(() => {
         if (player?._id) {
-            const newPlayerId = player._id;
+            // const newPlayerId = player._id;
             if (!player.player.onlySchedule) {
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
@@ -57,12 +60,30 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
                     bookingStatus: 1,
                     price: (player?.player?.rentCost || 0) * prevDetails.hours.length
                 }));
-                if (newPlayerId) {
-                    fetchData(schedule, newPlayerId);
-                }
+                // if (newPlayerId) {
+                //     fetchData(schedule, newPlayerId);
+                // }
             }
         }
     }, [player, bookingDetails.unit, schedule, bookingDetails.hours]);
+
+    useEffect(() => {
+        const newPlayerId = player?._id;
+        if (newPlayerId) {
+            fetchData(schedule, newPlayerId);
+        }
+    }, [player, schedule]);
+
+    const handleRestBooking = () => {
+        setBookingDetails((prevDetails) => ({
+            ...prevDetails,
+            playerId: player?._id,
+            unit: 0,
+            bookingStatus: 1,
+            price: 0,
+            hours: [],
+        }));
+    };
 
     const handleUnitChange = (newUnit) => {
         setBookingDetails((prevDetails) => ({
@@ -97,6 +118,12 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
             console.log(error);
             if (error.response.status === 400) {
                 toast(error.response.data.error);
+                if (player.player.onlySchedule) handleRestBooking(); fetchData(schedule, player?._id); setTimeout(handleClose, 2000);;
+            } else if (error.response.status === 406) {
+                toast(error.response.data.error);
+                setTimeout(() => {
+                    nav('/play-together');
+                }, 3000);
             } else {
                 toast(error.toString());
             }
@@ -155,14 +182,14 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
         const date = new Date(dateSchedule).getTime();
         const dateS = new Date(today.getTime() + (7 * 60 * 60 * 1000)).getTime();
         const dateX = date + (start * 60 * 60 * 1000);
-        
+
         const dateN = dateS >= dateX ? true : false;
         console.log(dateN);
         return dateN;
     };
 
     const renderScheduleButtons = () => {
-        console.log("today", today);
+        // console.log("today", today);
         return scheduleUpdate.map(slot => {
             const slotTime = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
             const isSelected = bookingDetails.hours.includes(slot._id);

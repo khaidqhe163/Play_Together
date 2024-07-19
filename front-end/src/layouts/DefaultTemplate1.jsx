@@ -1,11 +1,24 @@
 import ListService from './ListService';
 import NavBar from './NavBar';
-import toast, { Toaster } from 'react-hot-toast';
+import { Bounce, ToastContainer } from 'react-toastify';
+
 export default function DefaultTemplate({ children }) {
     return (
         <div className='container-fluid d-flex flex-column vh-100 overflow-x-hidden bg-bgMain'>
             <div className='row sticky-top'>
                 <div className='col-12'>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                        transition={Bounce} />
                     <NavBar />
                 </div>
             </div>

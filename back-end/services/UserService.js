@@ -486,10 +486,19 @@ const deleteImageToAlbum = async (index, userId) => {
 
 const getAll = async () => {
   try {
-      const users = await User.find({})
-      return users
+    const users = await User.find({})
+    return users
   } catch (error) {
-      throw new Error(error.toString());
+    throw new Error(error.toString());
+  }
+};
+
+const checkDuoPlayer = async (playerId) => {
+  try {
+    const user = await User.findOne({ _id: playerId, 'player.duoSettings': true }).exec();
+    return user;
+  } catch (error) {
+    throw new Error(error.toString());
   }
 }
 
@@ -520,4 +529,5 @@ export default {
   addImagesToAlbum,
   deleteImageToAlbum,
   getAll,
+  checkDuoPlayer,
 };

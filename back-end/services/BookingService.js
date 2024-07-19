@@ -174,7 +174,16 @@ const getTopBookers = async (period) => {
             }
         }
     ]);
-}
+};
+
+const getBookingDirectLasterOfPlayer = async(playerId)=>{
+    try {
+        const b = await Booking.findOne({ playerId, unit: {$ne:0}}).sort({ createdAt: -1 }).exec();
+        return b;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 
 export default {
     getAllBooking,
@@ -191,4 +200,5 @@ export default {
     getBookingByPlayerId,
     getAll,
     getTopBookers,
+    getBookingDirectLasterOfPlayer,
 }

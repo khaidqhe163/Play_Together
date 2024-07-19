@@ -85,8 +85,18 @@ const createBooking = async (req, res) => {
 const createBookingT = async (req, res) => {
     try {
         const { playerId, price, hours, unit, bookingStatus } = req.body;
+        const checkDuo = await UserService.checkDuoPlayer(playerId);
+        const results = await Promise.all(
+            hours.map(async (h) => {
+                return await ScheduleService.checkScheduleBookingExist(h);
+            })
+        );
+        const exists = results.some(result => result === true);
+        if (!checkDuo) {
+            return res.status(406).json({ error: 'Hiện tại người chơi đang tắt chế độ duo. Xin lỗi về sự bất tiện này. 😓' });
+        }
+        if(exists) return res.status(400).json({error: "Khung giờ hiện tại của người chơi này đã có người đặt. Xin hãy chọn khung giờ khác. ❌"});
         const userId = req.payload.id;
-        // console.log(req.body);
         const aUser = await UserService.findUserById(userId);
         const aPlayer = await UserService.getPlayerById(playerId);
         aUser.accountBalance -= parseInt(price);
@@ -379,6 +389,28 @@ const getTopBookers = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
+};
+
+const getBookingDirectLasterOfPlayer = async (req, res) => {
+    try {
+        const now = new Date().getTime();
+        let checkedTime = true;
+        const playerId = req.payload.id;
+        const aBooking = await BookingService.getBookingDirectLasterOfPlayer(playerId);
+        // const tB = new Date(aBooking.createdAt).getTime();
+        // console.log("aBooking: ",aBooking);
+        // console.log("timeBooking: " + new Date(tB + (aBooking.unit * 30 * 60 * 1000)));
+        // console.log("now: " + new Date());
+        if (aBooking) {
+            const timeBooking = new Date(aBooking.createdAt).getTime() + (aBooking.unit * 30 * 60 * 1000);
+            console.log("timeBooking: " + timeBooking);
+            console.log("now: " + now);
+            checkedTime = now >= timeBooking;
+        }
+        res.status(200).json(checkedTime);
+    } catch (error) {
+        res.status(500).json(error)
+    }
 }
 
 export default {
@@ -394,4 +426,5 @@ export default {
     getBookingByPlayerId,
     getAll,
     getTopBookers,
+    getBookingDirectLasterOfPlayer,
 }
