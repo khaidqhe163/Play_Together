@@ -295,6 +295,7 @@ const updatePlayerInfo = async (req, res) => {
             videoHightlight,
             achivements
         } = req.body
+        console.log(req.body);
         const device = JSON.parse(deviceStatus);
         const service = JSON.parse(serviceType)
         const achivement = JSON.parse(achivements)
@@ -627,16 +628,9 @@ const getHotPlayers = async (req, res) => {
 
   const getFollowedPlayers = async (req, res) => {
     try {
-        const userId = req.payload.id; // Assuming the user ID is stored in the payload after JWT verification
-        const user = await User.findById(userId).populate('followers').exec();
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
-        }
-
-        const followedPlayers = await User.find({ _id: { $in: user.followers } }).exec();
-
-        res.status(200).json(followedPlayers);
+        const userId = req.payload.id;
+        const followers = await UserService.getFollowerById(userId);
+        res.status(200).json(followers);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching followed players.', error: error.message });
     }

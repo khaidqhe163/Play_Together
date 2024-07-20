@@ -8,11 +8,12 @@ import '../App.css';
 export default function AccountSettings() {
     const containerStyle = {
         backgroundColor: "#20202b",
-        width: "100%",
-        position: "sticky",
+        width: "400px",
+        position: "fixed",
         height: "calc(100vh - 70px)",
         overflowY: "auto",
         padding: "20px",
+
     };
 
     const headingStyle = {
@@ -76,17 +77,10 @@ export default function AccountSettings() {
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/player-album" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                    <NavLink to="/player-guide" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <BiSolidPhotoAlbum style={{ marginRight: "5px" }} />
-                            <span>Album ảnh của bạn</span>
-                        </div>
-                    </NavLink>
-                    <br />
-                    <NavLink to="/player-history" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <FaHistory style={{ marginRight: "5px" }} />
-                            <span>Lịch sử nhận Duo</span>
+                            <FaBook style={{ marginRight: "5px" }} />
+                            <span>Hướng dẫn</span>
                         </div>
                     </NavLink>
                     <br />
@@ -97,6 +91,13 @@ export default function AccountSettings() {
                         </div>
                     </NavLink>
                     <br />
+                    <NavLink to="/player-history" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <FaHistory style={{ marginRight: "5px" }} />
+                            <span>Lịch sử nhận Duo</span>
+                        </div>
+                    </NavLink>
+                    <br />
                     <NavLink to="/player-block-list" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <FaList style={{ marginRight: "5px" }} />
@@ -104,16 +105,10 @@ export default function AccountSettings() {
                         </div>
                     </NavLink>
                     <br />
-                    <NavLink to="/player-guide" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <FaBook style={{ marginRight: "5px" }} />
-                            <span>Hướng dẫn</span>
-                        </div>
-                    </NavLink>
-                    <br />
+
                     <NavLink to="/player-schedule" className="text-gray-300 hover:text-gray-400" style={{ textDecoration: 'none' }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <AiFillSchedule size={20}  style={{ marginRight: "5px" }} />
+                            <AiFillSchedule size={20} style={{ marginRight: "5px" }} />
                             <span>Thiết lập lịch Duo</span>
                         </div>
                     </NavLink>

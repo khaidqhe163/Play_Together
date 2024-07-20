@@ -7,10 +7,11 @@ import { baseUrl, getId } from '../../utils/service';
 import axios from 'axios'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs';
-function Services({ player, setOpenHire, setShowDonate}) {
+function Services({ player, setOpenHire, setShowDonate }) {
     const [linkYoutube, setLinkYoutube] = useState("")
     const [services, setService] = useState();
     const [reviews, setReviews] = useState(null);
+    const [booking, setBooking] = useState(null);
     dayjs.extend(relativeTime);
     useEffect(() => {
         console.log(linkYoutube);
@@ -20,6 +21,7 @@ function Services({ player, setOpenHire, setShowDonate}) {
         }
         getService();
         getReview();
+        getBooking();
     }, [player])
     const getService = async () => {
         try {
@@ -40,6 +42,28 @@ function Services({ player, setOpenHire, setShowDonate}) {
             console.log(error);
         }
     }
+
+    const getBooking = async () => {
+        try {
+            const bookings = await axios.get("http://localhost:3008/api/booking/private-booking/" + player._id)
+            setBooking(bookings.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const getRating = () => {
+        let total = 0;
+        if (reviews && reviews.length !== 0) {
+            reviews.forEach((r) => {
+                total += r.rating;
+            })
+            if (total === Math.floor(total))
+                return `${total / reviews.length}.0`;
+            else return total
+        }
+        if (total === Math.floor(total))
+            return `0.0`
+    }
     console.log(reviews);
     return (
         <div className='player-infor-container'>
@@ -59,22 +83,22 @@ function Services({ player, setOpenHire, setShowDonate}) {
                 <h3>Dịch vụ</h3>
                 <div style={{ color: "white", display: "flex", alignItems: "center", fontSize: "20px", fontWeight: "bold" }}>
                     <FaStar style={{ color: "#f39e22", marginRight: "5px" }} />
-                    <p style={{ margin: "0" }}>5.0</p>
+                    <p style={{ margin: "0" }}>{getRating()}</p>
                     <TbPointFilled />
-                    <p style={{ margin: "0" }}>744 lần được thuê</p>
+                    <p style={{ margin: "0" }}>{booking?.length} lần được thuê</p>
                     <TbPointFilled />
-                    <p style={{ margin: "0" }}>88 đánh giá</p>
+                    <p style={{ margin: "0" }}>{reviews?.length} đánh giá</p>
                 </div>
                 <h5 className='mt-20'>Tình trạng thiết bị</h5>
                 <div className='devices-status'>
                     {
-                        player?.player?.deviceStatus.mic && <button><IoIosMic style={{ margin: 'auto' }} /></button>
+                        player?.player?.deviceStatus?.mic && <button><IoIosMic style={{ margin: 'auto' }} /></button>
                     }
                     {
-                        player?.player?.deviceStatus.cam && <button> <FaCamera style={{ margin: 'auto' }} /></button>
+                        player?.player?.deviceStatus?.cam && <button> <FaCamera style={{ margin: 'auto' }} /></button>
                     }
                     {
-                        !player?.player?.deviceStatus.cam && !player?.player?.deviceStatus.mic && <button><FaBan style={{ margin: 'auto' }} /></button>
+                        !player?.player?.deviceStatus?.cam && !player?.player?.deviceStatus?.mic && <button><FaBan style={{ margin: 'auto' }} /></button>
                     }
                 </div>
                 {
@@ -113,7 +137,7 @@ function Services({ player, setOpenHire, setShowDonate}) {
 
                 </div>
             </div>
-            <PiRight id={player?._id} setOpenHire={setOpenHire} player={player} setShowDonate={setShowDonate}/>
+            <PiRight id={player?._id} setOpenHire={setOpenHire} player={player} setShowDonate={setShowDonate} />
         </div>
     )
 }
