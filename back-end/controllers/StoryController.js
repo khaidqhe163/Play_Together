@@ -111,7 +111,7 @@ const viewStory = async (req, res) => {
     }
 }
 
-// In StoryController.js
+ 
 const getUserStories = async (req, res) => {
     const { userId } = req.params;
     try {
