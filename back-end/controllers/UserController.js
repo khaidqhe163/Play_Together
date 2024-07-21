@@ -267,8 +267,6 @@ const getAllPlayer = async (req, res) => {
             return p;
         }));
 
-        console.log(players);
-
         res.status(200).json(players);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi khi truy vấn danh sách người dùng.', error: error.message });
@@ -364,8 +362,8 @@ const getPlayerById = async (req, res) => {
     try {
         const id = req.params.id;
         const user = await UserService.getPlayerById(id);
-        const { _id, username, gender, followers, player, avatar, images, dateOfBirth, createdAt } = user;
-        const returnPlayer = { _id, username, gender, followers, player, avatar, images, dateOfBirth, createdAt }
+        const { _id, username, gender, followers, player, avatar, images, dateOfBirth, status, createdAt } = user;
+        const returnPlayer = { _id, username, gender, followers, player, avatar, images, dateOfBirth, status, createdAt }
         res.status(200).json(returnPlayer)
     } catch (error) {
         res.status(500).json(error);

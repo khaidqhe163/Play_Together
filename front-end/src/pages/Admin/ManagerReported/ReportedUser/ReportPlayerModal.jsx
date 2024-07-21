@@ -38,7 +38,7 @@ function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
             setReport(report.data)
         }
         getReport();
-    }, [])
+    }, [id])
     useEffect(() => {
         if (complaint === null) return;
         disableSubmit();
@@ -56,16 +56,27 @@ function ReportPlayerModal({ lgShow, setLgShow, id, reports, setReports }) {
 
     const processReport = async () => {
         try {
-            const res = await axios.post("http://localhost:3008/api/report/process-report-player", {
-                playerId: report.accused._id,
-                complaint: complaint,
-                reason: des.current.value,
-                reportId: report._id
-            });
+            let res;
+            if (Number(complaint) !== 0) {
+                res = await axios.post("http://localhost:3008/api/report/process-report-player", {
+                    playerId: report.accused._id,
+                    complaint: complaint,
+                    reason: des.current.value,
+                    reportId: report._id
+                });
+            }
+            else {
+                res = await axios.post("http://localhost:3008/api/report/process-report-player", {
+                    playerId: report.accused._id,
+                    complaint: complaint,
+                    reportId: report._id
+                });
+            }
+            console.log(res);
             const updatedReports = reports.map((r) => {
                 if (r._id !== report._id) {
                     return r;
-                } else return report
+                } else return res.data
             })
             setReports(updatedReports);
             setReport(null);

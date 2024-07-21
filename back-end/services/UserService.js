@@ -79,6 +79,7 @@ const getAllPlayer = async () => {
   try {
     const players = await User.find({
       "player.duoSettings": true,
+      status: false
       // 'player.totalHiredHour': { $gte: 155 },
     }).populate("player.serviceType", "-_id image");
     return players;
@@ -89,7 +90,7 @@ const getAllPlayer = async () => {
 
 const searchPlayerByCriteria = async (gender, category, playerName, gameName, priceRange) => {
   try {
-    const query = { 'player.duoSettings': true };
+    const query = { 'player.duoSettings': true, 'status': false };
 
     if (gender) {
       query.gender = gender;
@@ -199,7 +200,6 @@ const getPlayerByServiceId = async (serviceId) => {
         user.player.serviceType.some((service) => service._id.equals(serviceId))
     );
 
-    console.log(players);
     return players;
   } catch (error) {
     throw new Error(error.toString());

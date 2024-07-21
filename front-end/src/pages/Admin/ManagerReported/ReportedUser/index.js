@@ -23,6 +23,11 @@ const ReportedUser = () => {
         getReports();
     }, [])
 
+    useEffect(() => {
+        if (lgShow === false)
+            setReportId(null);
+    }, [lgShow])
+    console.log(reports);
     return (
         <LayoutAdmin>
             <ContainerPage>

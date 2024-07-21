@@ -35,7 +35,7 @@ const createReportPlayer = async (userId, screenShot, type, title, description, 
 
 const getReportPlayer = async () => {
     try {
-        const report = await Report.find({ storyId: { $exists: false }, bookingId: { $exists: false } }).populate("owner", "username").populate("reportReason", "content")
+        const report = await Report.find({ storyId: { $exists: false }, bookingId: { $exists: false } }).populate("owner", "username").populate("reportReason", "content").sort({ createdAt: -1 })
         return report
     } catch (error) {
         throw new Error(error.toString);
@@ -81,27 +81,38 @@ const processReportPlayer = async (reportId, complaint, reason, playerId) => {
     try {
         let report;
         let endDate;
+        const user = await User.findById(playerId);
+        let today;
+        if (user.status === true) {
+            const ban = await BanService.getBanByUserId(playerId);
+            today = new Date(ban.endTime);
+        }
+        else {
+            today = new Date();
+        }
+
+        console.log("Today", today);
         if (complaint === 0) {
-            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Đơn bị từ chối" }, { new: true })
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Đơn bị từ chối" }, { new: true }).populate("owner", "username").populate("reportReason", "content")
         }
         if (complaint === 1) {
-            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cảnh cáo" }, { new: true })
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cảnh cáo" }, { new: true }).populate("owner", "username").populate("reportReason", "content")
         }
         if (complaint === 2) {
-            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cấm 3 ngày" }, { new: true })
-            endDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cấm 3 ngày" }, { new: true }).populate("owner", "username").populate("reportReason", "content")
+            endDate = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
         }
         if (complaint === 3) {
-            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cấm 7 ngày" }, { new: true })
-            endDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cấm 7 ngày" }, { new: true }).populate("owner", "username").populate("reportReason", "content")
+            endDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
         }
         if (complaint === 4) {
-            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cấm 1 tháng" }, { new: true })
-            endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Cấm 1 tháng" }, { new: true }).populate("owner", "username").populate("reportReason", "content")
+            endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
         }
         if (complaint === 5) {
-            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Vĩnh viễn" }, { new: true })
-            endDate = new Date(Date.now() + 100 * 365.25 * 24 * 60 * 60 * 1000);
+            report = await Report.findOneAndUpdate({ _id: reportId }, { status: 2, formsProcessing: "Vĩnh viễn" }, { new: true }).populate("owner", "username").populate("reportReason", "content")
+            endDate = new Date(today.getTime() + 100 * 365.25 * 24 * 60 * 60 * 1000);
         }
         if (complaint > 1) {
             await BanService.banUser(playerId, endDate, reason);

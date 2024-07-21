@@ -72,6 +72,8 @@ function PlayerProfile() {
     const getPlayerInformation = async () => {
         try {
             const player = (await axios.get("http://localhost:3008/api/user/player-information/" + id)).data;
+            console.log(player);
+            if(player.status === true) nav("/play-together")
             setPlayer(player);
             const dob = new Date(player.dateOfBirth);
             const currentTime = new Date();
