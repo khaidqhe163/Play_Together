@@ -22,7 +22,10 @@ const ReportedBooking = () => {
         }
         getReports();
     }, [])
-
+    useEffect(() => {
+        if (lgShow === false)
+            setReportId(null);
+    }, [lgShow])
     return (
         <LayoutAdmin>
             <ContainerPage>

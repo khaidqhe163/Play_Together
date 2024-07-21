@@ -14,7 +14,9 @@ const UserBanned = () => {
     const getList = async () => {
         try {
             const res = await axios.post("http://localhost:3008/api/user/users")
-            setUsersBan(res?.data)
+            setUsersBan(res?.data.filter((u) => {
+                return u.status === true
+            }))
         } catch (error) {
             console.log(error);
         }
@@ -46,7 +48,7 @@ const UserBanned = () => {
                             </thead>
                             <tbody>
                                 {
-                                    usersBan?.filter(u => u.status).map((u, i) => (
+                                    usersBan?.map((u, i) => (
                                         <tr key={i}>
                                             <td className="px-6 py-3">
                                                 <div className="d-flex">
@@ -88,6 +90,7 @@ const UserBanned = () => {
                         onCancel={() => setOpenModal(false)}
                         player={usersBan[currentPlayer]}
                         setPlayers={setUsersBan}
+                        type={2}
                     />
                 )}
             </ContainerPage>

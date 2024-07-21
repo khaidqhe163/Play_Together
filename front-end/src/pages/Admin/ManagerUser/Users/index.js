@@ -86,6 +86,7 @@ const ManagerUser = () => {
                         onCancel={() => setOpenModal(false)}
                         player={users[currentPlayer]}
                         setPlayers={setUsers}
+                        type={1}
                     />
                 )}
             </ContainerPage>

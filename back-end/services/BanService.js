@@ -3,7 +3,17 @@ import Ban from "../models/Ban.js";
 import User from "../models/User.js";
 const banUser = async (userId, endDate, reason) => {
     try {
-        const today = new Date();
+        const player = await User.findOne({ _id: userId });
+        let today;
+        console.log(player.status);
+        if (player.status === true) {
+            const preBan = await getBanByUserId(userId);
+            today = new Date(preBan.endTime);
+        } else {
+            today = new Date();
+        }
+        console.log(today);
+        console.log(endDate);
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(today.getDate() - 7);
         const bookings = await Booking.find({
@@ -19,15 +29,13 @@ const banUser = async (userId, endDate, reason) => {
             const filterBookings = bookings.filter((b) => {
                 if (b.hours.length !== 0) {
                     const date = new Date(b.hours[b.hours.length - 1].date).getTime();
-                    const end = b.hours[b.hours.length - 1].end * 1000 * 60 * 60 + date;
-                    if (endDate.getTime() > today.getTime() && end < endDate.getTime()) {
+                    const start = b.hours[0].start * 1000 * 60 * 60 + date;
+                    if (start > today.getTime() && start < endDate.getTime()) {
                         return b;
                     }
                 } else {
-                    const end = new Date(b.createdAt).getMilliseconds() + b.unit * 1000 * 60 * 30;
-                    console.log(end);
-                    console.log(today.getTime());
-                    if (endDate.getTime() > today.getTime() && end < endDate.getTime()) {
+                    const start = new Date(b.createdAt).getTime();
+                    if (start > today.getTime() && start < endDate.getTime()) {
                         return b;
                     }
                 }
@@ -46,7 +54,7 @@ const banUser = async (userId, endDate, reason) => {
             }
         }
         const user = await User.findOneAndUpdate({ _id: userId }, { $set: { status: true } }, { new: true })
-        const ban = await Ban.create({ userId: userId, startTime: Date.now(), endTime: endDate, reason: reason })
+        const ban = await Ban.create({ userId: userId, startTime: today, endTime: endDate, reason: reason })
         return user;
     } catch (error) {
         throw new Error(error.toString());
@@ -61,6 +69,7 @@ const getBanByUserId = async (id) => {
         throw new Error(error);
     }
 }
+
 export default {
     banUser,
     getBanByUserId

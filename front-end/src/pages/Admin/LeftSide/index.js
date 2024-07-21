@@ -7,7 +7,7 @@ import {
 import { Menu } from 'antd';
 import { HomeContainer } from './styled';
 import { useLocation, useNavigate } from "react-router-dom"
-
+import { IoIosLogOut } from "react-icons/io";
 
 const items = [
   {
@@ -50,13 +50,18 @@ const items = [
       {
         key: '/play-together/admin/reports/bookings',
         label: 'Booking bị báo cáo',
-      },
+      }
     ],
   },
   {
     key: '/play-together/admin/report-reason',
     icon: <ContainerOutlined />,
     label: 'Report Reason',
+  },
+  {
+    key: '/play-together/admin/logout',
+    label: 'Logout',
+    icon: <IoIosLogOut />,
   },
 ];
 

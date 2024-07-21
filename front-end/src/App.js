@@ -12,6 +12,7 @@ import { SocketProvider } from './context/SocketContext';
 import { adminInfor, setAdminInfo } from './features/adminInfoSlice';
 import { setAccessTokenAdmin } from './features/accessTokenAdminSlice';
 import { setRefreshTokenAdmin } from './features/refreshTokenAdminSlice';
+import NavHomePage from './pages/NavHomePage';
 function App() {
   const dispatch = useDispatch();
   const userInfo = useSelector(userInfor);
@@ -89,6 +90,7 @@ function MainRoutes({ userInfo, adminInfo }) {
   return (
     <>
       <Routes>
+        <Route path='/' element={<NavHomePage />}></Route>
         {route.routes.map((route) => (
           <Route
             key={route.path}

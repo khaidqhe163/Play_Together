@@ -1,4 +1,4 @@
-export const baseUrl = 'http://localhost:3008/';
+export const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export const formatDate = (date) => {
     if (!date) return;
