@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios';
 import { useDispatch } from 'react-redux'
 import { setUserInformation } from '../features/userSlice';
-import { setAccessToken } from '../features/accessTokenSlice';
+import { setAccessToken } from '../features/accessTokenSlice'
+import { toast } from 'react-toastify';
 function SocialMediaLogin() {
     const { token } = useParams();
     const nav = useNavigate();
@@ -27,6 +28,12 @@ function SocialMediaLogin() {
             dispatch(setAccessToken(user.data.accessToken));
             nav("/play-together/");
         } catch (error) {
+            if (error.response && error.response.status === 401) {
+                // alert(error.response.data.message)
+                toast(error.response.data.message);
+            } else {
+                toast('Xin lỗi: Đang có một vấn đề gì đó xảy ra');
+            }
             nav('/play-together/login')
             console.log(error);
         }

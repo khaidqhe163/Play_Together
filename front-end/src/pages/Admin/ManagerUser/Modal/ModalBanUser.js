@@ -4,13 +4,13 @@ import { Form, Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const ModalBanUser = ({ show, players, onCancel, setPlayers, player }) => {
+const ModalBanUser = ({ show, players, onCancel, setPlayers, player, type }) => {
     const [complaint, setComplaint] = useState(null);
     const reason = useRef();
     const [disabledBtn, setDisabledBtn] = useState(true);
 
     useEffect(() => {
-        if (player.status) {
+        if (player?.status && player?.status === true) {
             setDisabledBtn(false);
         }
     }, [show])
@@ -44,25 +44,33 @@ const ModalBanUser = ({ show, players, onCancel, setPlayers, player }) => {
                     reason: reason.current.value
                 })
             }
-            const newPlayer = players.map((m) => {
-                if (m._id === res.data._id) return res.data;
-                else return m;
-            })
+            let newPlayer
+            if (type === 1) {
+                newPlayer = players.map((m) => {
+                    if (m._id === res.data._id) return res.data;
+                    else return m;
+                })
+            }
+            else if (type === 2) {
+                newPlayer = players.filter((m) => {
+                    return m._id !== player._id;
+                })
+            }
             setPlayers(newPlayer);
             handleClose()
         } catch (error) {
             console.log(error);
         }
     }
-
+    console.log("player", player);
 
     return (
         <Modal show={show} onHide={handleClose} animation={false}>
             <Modal.Header closeButton>
-                <h6>Bạn có muốn {player.status ? "mở khoá" : "khoá"} "{player.username}"</h6>
+                <h6>Bạn có muốn {player?.status ? "mở khoá" : "khoá"} "{player?.username}"</h6>
             </Modal.Header>
             {
-                !player.status && (
+                (!player?.status || player?.status === false) && (
                     <Modal.Body>
                         <div className="p-20">
                             <Form.Label className='mt-10' style={{ color: "black" }}>Chọn thời gian khoá tài khoản</Form.Label>

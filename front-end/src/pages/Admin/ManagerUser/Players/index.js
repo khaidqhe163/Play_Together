@@ -87,6 +87,7 @@ const Players = () => {
                         onCancel={() => setOpenModal(false)}
                         player={players[currentPlayer]}
                         setPlayers={setPlayers}
+                        type={1}
                     />
                 )}
             </ContainerPage>

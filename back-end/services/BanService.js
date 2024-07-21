@@ -3,7 +3,15 @@ import Ban from "../models/Ban.js";
 import User from "../models/User.js";
 const banUser = async (userId, endDate, reason) => {
     try {
-        const today = new Date();
+        const player = await User.findOne({ _id: userId });
+        let today;
+        if (player.status === true) {
+            const preBan = await getBanByUserId(userId);
+            today = new Date(preBan.endTime);
+        } else {
+            today = new Date();
+        }
+        console.log(today);
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(today.getDate() - 7);
         const bookings = await Booking.find({

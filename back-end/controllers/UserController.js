@@ -55,7 +55,7 @@ const login = async (req, res) => {
                 message: "Sai thông tin tài khoản!"
             })
         }
-        if (user.status) {
+        if (user.status && user.status === true) {
             const ban = await BanService.getBanByUserId(user._id);
             const endTime = new Date(ban.endTime);
             if (Date.now() < endTime) {
@@ -88,7 +88,7 @@ const autoLogin = async (req, res) => {
     try {
         const user = await UserService.findUserByEmail(req.payload.email);
         const refreshToken = req.cookies.RefreshToken;
-        if (user.status) {
+        if (user.status && user.status === true) {
             const ban = await BanService.getBanByUserId(user._id);
             const endTime = new Date(ban.endTime);
             if (Date.now() < endTime) {
@@ -123,6 +123,17 @@ const loginPassport = async (req, res) => {
             throw new Error("Token is expired!");
         }
         const user = await UserService.autoLogin(tokenElements[0]);
+        if (user.status && user.status === true) {
+            const ban = await BanService.getBanByUserId(user._id);
+            const endTime = new Date(ban.endTime);
+            if (Date.now() < endTime) {
+                return res.status(401).json({
+                    message: "Tài khoản của bạn đã bị cấm"
+                })
+            } else {
+                await UserService.unban(user._id);
+            }
+        }
         const accessToken = jwt.signAccessToken({ id: user._id, email: user.email, username: user.username });
         const refreshToken = jwt.signRefreshToken({ id: user._id, email: user.email, username: user.username });
         res.cookie("RefreshToken", refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 360, httpOnly: true });
@@ -537,6 +548,18 @@ const logout = async (req, res) => {
         })
     }
 };
+const logoutAdmin = async (req, res) => {
+    try {
+        res.clearCookie('RefreshAdminToken');
+        res.status(200).json({
+            message: "Logout successful"
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.toString()
+        })
+    }
+};
 
 const addImagesToAlbum = async (req, res) => {
     try {
@@ -568,7 +591,7 @@ const deleteImageToAlbum = async (req, res) => {
     try {
         const image = req.body.image;
         const userId = req.payload.id;
-       
+
         const user = await UserService.deleteImageToAlbum(image, userId)
         fs.unlinkSync(image)
         res.status(200).json(user);
@@ -723,7 +746,8 @@ export default {
     addImagesToAlbum,
     getImagesFromAlbum,
     deleteImageToAlbum,
-    getHotPlayers ,
+    getHotPlayers,
     getFollowedPlayers,
     getAll,
+    logoutAdmin
 }

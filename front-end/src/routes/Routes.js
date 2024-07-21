@@ -31,6 +31,7 @@ import ReportedStory from "../pages/Admin/ManagerReported/ReportedStory"
 import ReportedUser from "../pages/Admin/ManagerReported/ReportedUser"
 import ReportReason from "../pages/Admin/ManagerReportReason"
 import ReportedBooking from "../pages/Admin/ManagerReported/ReportedBooking"
+import AdminLogout from "../components/AdminLogout"
 const routes = [
     {
         path: '/',
@@ -62,7 +63,7 @@ const routes = [
     },
     {
         path: '/player-profile/:id',
-        element: PlayerProfile,
+        element: PlayerProfile
     },
     {
         path: '/profile',
@@ -96,7 +97,6 @@ const routes = [
         path: '/player-guide',
         element: PlayerGuidePage
     },
-    ,
     {
         path: '/player-album',
         element: PlayerAlbumPage
@@ -156,6 +156,10 @@ const routes = [
     {
         path: '/stories/:storyId/:commentId',
         element: StoryPage
+    },
+    {
+        path: '/admin/logout',
+        element: AdminLogout
     },
 ]
 export default {
