@@ -46,16 +46,16 @@ export default function CanvasHire({ showHire, handleClose, player, snav, setSna
     useEffect(() => {
         if (player?._id) {
             // const newPlayerId = player._id;
-            if (!player.player.onlySchedule) {
+            if (!player?.player?.onlySchedule) {
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
-                    playerId: player._id,
+                    playerId: player?._id,
                     price: (player?.player?.rentCost || 0) * prevDetails.unit
                 }));
             } else {
                 setBookingDetails((prevDetails) => ({
                     ...prevDetails,
-                    playerId: player._id,
+                    playerId: player?._id,
                     unit: 0,
                     bookingStatus: 1,
                     price: (player?.player?.rentCost || 0) * prevDetails.hours.length

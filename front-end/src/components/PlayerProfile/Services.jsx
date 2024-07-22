@@ -61,8 +61,7 @@ function Services({ player, setOpenHire, setShowDonate }) {
                 return `${total / reviews.length}.0`;
             else return (total / reviews.length).toFixed(1);
         }
-        if (total === Math.floor(total))
-            return `0.0`
+        return `5.0`
     }
     return (
         <div className='player-infor-container'>

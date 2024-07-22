@@ -51,7 +51,6 @@ export default function ListStory() {
                         <div className="card rounded-4 w-100 h-100 text-white hover-card" style={{ backgroundColor: "#20202b" }}>
                             <div className='mx-auto position-relative'>
                                 <img src={baseUrl + story.thumbnail} style={{ width: "11em", height: "15em", objectFit: "cover" }} className=" mt-2 card-img-top img-fluid mx-auto rounded-top-4" alt="story" />
-                                <p className='position-absolute d-flex flex-col justify-center items-center' style={{ bottom: "-10px", right: "10px" }}><FaRegEye />{story.view.length}</p>
                             </div>
                             <div className="card-body py-2 d-flex align-items-center">
                                 {/* <h5 className="card-title">{story.name}</h5> */}
