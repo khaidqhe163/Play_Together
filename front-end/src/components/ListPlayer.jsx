@@ -43,7 +43,7 @@ export default function ListPlayer(props) {
                                     <p className='text-white m-0'>{p.player.rentCost.toLocaleString('en-US', {
                                         minimumFractionDigits: 0,
                                         maximumFractionDigits: 3,
-                                    })} đ/h</p>
+                                    })} đ/30p</p>
                                 </div>
                                 <div className="card-body">
                                     <h3 className="card-title text-lg text-white d-flex align-items-center">
