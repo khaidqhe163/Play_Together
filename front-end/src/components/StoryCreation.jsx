@@ -68,8 +68,10 @@ function StoryCreation({ show, close, stories, setStory }) {
                 storyId: story.data.data._id
             })
             socket.emit("sendNotification", notification.data)
-            setStory(updateStory)
-            close();
+            setTimeout(() => {
+                setStory(updateStory)
+                close();
+            }, 1000);
         } catch (error) {
             console.log(error);
         }
