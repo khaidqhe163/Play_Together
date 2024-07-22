@@ -235,7 +235,10 @@ function TableBooking({ endPoint }) {
                                                             {l.hours.length === 0 && `${formatTime(l.createdAt)} - ${formatEndTime(l.createdAt, l.unit)}`}
                                                             {l.hours.length !== 0 && l?.hours?.map((h, index) => <>{`${formatTimeH(h?.start)} - ${formatTimeH(h?.end)}`} {index === l.hours.length - 1 ? null : <br />}</>)}
                                                         </td>
-                                                        <td className='py-2'>{format(new Date(l.createdAt), "dd-MM-yyyy")}</td>
+                                                        <td className='py-2'>
+                                                            {l.hours.length === 0 && format(new Date(l.createdAt), "dd-MM-yyyy")}
+                                                            {l.hours.length !== 0 && l?.hours?.slice(0, 1).map((h, index) => <>{format(new Date(h.date), "dd-MM-yyyy")}</>)}
+                                                        </td>
                                                         <td className='py-2'>{formatMoney(l.price)} VNĐ</td>
                                                         <td className='py-2'>{formatStatus(l.bookingStatus, l.reported)}</td>
                                                         <td className='py-2'>
